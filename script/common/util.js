@@ -104,11 +104,17 @@ export default class RogueTraderUtil {
     rollData.weaponTraits = this.extractWeaponTraits(weapon.special);  
     rollData.damageFormula = weapon.damage + (isMelee && !weapon.damage.match(/SB/gi) ? "+SB" : "") + (rollData.weaponTraits.force ? "+PR" : "");
     if (rollData.weaponTraits.warp)
+    {
       rollData.penetrationFormula = "Ignores armor.";
+    }
     else
-      rollData.penetrationFormula = parseInt(weapon.penetration, 10) + parseInt(rollData.weaponTraits.force ? actor.psy.rating : 0, 10);  
+    {
+      const basePen = weapon.penetration || "0";
+      const forceBonus = rollData.weaponTraits.force ? actor.psy.rating : 0;
+      rollData.penetrationFormula = `${basePen}+${forceBonus}`;
+    }
     rollData.special= weapon.special;
-    rollData.psy= { value: actor.psy.rating, display: false};
+    rollData.psy = { value: actor.psy.rating, display: false};
     return rollData;
   }
 

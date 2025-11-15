@@ -281,6 +281,7 @@ async function _rollDamage(rollData) {
       }
       rollData.numberOfHit = maxAdditionalHit + 1;
       for (let i = 0; i < maxAdditionalHit; i++) {
+        penetration = _rollPenetration(rollData);
         let additionalHit = await _generateNextHit(formula, penetration, rollData, firstLocation, i);
         rollData.damages.push(additionalHit);
       }
