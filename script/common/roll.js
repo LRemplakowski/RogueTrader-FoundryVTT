@@ -184,6 +184,7 @@ async function _computeTarget(rollData) {
     }
     psyModifier = rollData.psy.value * 5;
   }
+  rollData.modifier = Number(rollData.modifier ?? 0);
   if (rollData.weaponTraits?.scatter && range > 0) {
     rollData.modifier += 10;
   }
@@ -295,7 +296,7 @@ async function _rollDamage(rollData) {
       }
     } else {
       rollData.numberOfHit = 1;
-      if (rollData.weaponAttackBonus.twinLinked && rollData.dos >= 2) {
+      if (rollData.weaponTraits.twinLinked && rollData.dos >= 2) {
         rollData.numberOfHit += 1;
         penetration = _rollPenetration(rollData);
         let additionalHit = await _generateNextHit(formula, penetration, rollData, firstLocation, 0);
