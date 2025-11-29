@@ -18,6 +18,6 @@ $compress = @{
 	CompressionLevel = "Optimal"
 	DestinationPath = ".\rogue-trader.zip"
 }
-Compress-Archive @compress
+Compress-Archive @compress -Update
 
 Remove-Item '.\release' -Recurse
