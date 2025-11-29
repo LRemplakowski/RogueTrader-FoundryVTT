@@ -75,6 +75,7 @@ export async function consumeResourceRoll(rollData) {
 export async function combatRoll(rollData) {
   if (rollData.weaponTraits.skipAttackRoll) {
     rollData.result = 5; // Attacks that skip the hit roll always hit body; 05 reversed 50 = body
+    rollData.dos = 2; // To account for Twin-linked Spray weapons
     await _rollDamage(rollData);
     // Without a To Hit Roll we need a substitute otherwise foundry can't render the message
     rollData.rollObject = rollData.damages[0].damageRoll;
@@ -169,7 +170,8 @@ export async function reportEmptyClip(rollData) {
  * @param {object} rollData
  */
 async function _computeTarget(rollData) {
-  const range = (rollData.range) ? rollData.range : "0";
+  const range = rollData.range ?? "0";
+  const weaponAttackBonus = rollData.attackBonus ?? "0";
   let attackType = 0;
   if (typeof rollData.attackType !== "undefined" && rollData.attackType != null) {
     _computeRateOfFire(rollData);
@@ -185,8 +187,11 @@ async function _computeTarget(rollData) {
   if (rollData.weaponTraits?.scatter && range > 0) {
     rollData.modifier += 10;
   }
-  let aim = rollData.aim?.val ? rollData.aim.val : 0;
-  const formula = `0 + ${rollData.modifier} + ${aim} + ${range} + ${attackType} + ${psyModifier}`;
+  if (rollData.weaponTraits?.twinLinked) {
+    rollData.modifier += 20;
+  }
+  const aim = rollData.aim?.val ? rollData.aim.val : 0;
+  const formula = `0 + ${rollData.modifier} + ${aim} + ${range} + ${attackType} + ${psyModifier} + ${weaponAttackBonus}}`;
   let r = new Roll(formula, {});
   r.evaluate({ async: false });
   if (r.total > 60) {
@@ -279,6 +284,9 @@ async function _rollDamage(rollData) {
       if (typeof rollData.maxAdditionalHit !== "undefined" && maxAdditionalHit > rollData.maxAdditionalHit) {
         maxAdditionalHit = rollData.maxAdditionalHit;
       }
+      if (rollData.weaponTraits.twinLinked && rollData.dos >= 2) {
+        maxAdditionalHit += 1;
+      }
       rollData.numberOfHit = maxAdditionalHit + 1;
       for (let i = 0; i < maxAdditionalHit; i++) {
         penetration = _rollPenetration(rollData);
@@ -287,6 +295,12 @@ async function _rollDamage(rollData) {
       }
     } else {
       rollData.numberOfHit = 1;
+      if (rollData.weaponAttackBonus.twinLinked && rollData.dos >= 2) {
+        rollData.numberOfHit += 1;
+        penetration = _rollPenetration(rollData);
+        let additionalHit = await _generateNextHit(formula, penetration, rollData, firstLocation, 0);
+        rollData.damages.push(additionalHit);
+      }
     }
     let minDamage = rollData.damages.reduce(
       (min, damage) => min.minDice < damage.minDice ? min : damage, rollData.damages[0]

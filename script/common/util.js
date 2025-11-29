@@ -93,15 +93,16 @@ export default class RogueTraderUtil {
     let isMelee = weapon.class === "melee";
     
     let rollData = this.createCommonAttackRollData(actor, weapon);
-    rollData.baseTarget= characteristic.total + weapon.attack,
+    rollData.baseTarget = characteristic.total,
     rollData.unnatural = characteristic.unnatural;
-    rollData.modifier= 0,
-    rollData.isMelee= isMelee;
-    rollData.isRange= !isMelee;
-    rollData.clip= weapon.clip;
+    rollData.modifier = 0,
+    rollData.attackBonus = weapon.attack,
+    rollData.isMelee = isMelee;
+    rollData.isRange = !isMelee;
+    rollData.clip = weapon.clip;
     rollData.rateOfFire= rateOfFire;
     rollData.weaponSpecial = weapon.special;
-    rollData.weaponTraits = this.extractWeaponTraits(weapon.special);  
+    rollData.weaponTraits = this.extractWeaponTraits(weapon.special);
     rollData.damageFormula = weapon.damage + (isMelee && !weapon.damage.match(/SB/gi) ? "+SB" : "") + (rollData.weaponTraits.force ? "+PR" : "");
     if (rollData.weaponTraits.warp)
     {
@@ -198,6 +199,7 @@ export default class RogueTraderUtil {
       melta: this.hasNamedTrait(/Melta/gi, traits),
       maximal: this.hasNamedTrait(/Maximal/gi, traits),
       storm: this.hasNamedTrait(/Storm/gi, traits),
+      twinLinked: this.hasNamedTrait(/twin[\s\W_]*linked/i, traits),
     };
   }
 

@@ -229,22 +229,7 @@ export class RogueTraderSheet extends ActorSheet {
       RogueTraderUtil.createPsychicRollData(this.actor, psychicPower)
     );
   }
-
-  _extractWeaponTraits(traits) {
-    // These weapon traits never go above 9 or below 2
-    return {
-      accurate: this._hasNamedTrait(/Accurate/gi, traits),
-      rfFace: this._extractNumberedTrait(/Vengeful.*\(\d\)/gi, traits), // The alternativ die face Righteous Fury is triggered on
-      proven: this._extractNumberedTrait(/Proven.*\(\d\)/gi, traits),
-      primitive: this._extractNumberedTrait(/Primitive.*\(\d\)/gi, traits),
-      razorSharp: this._hasNamedTrait(/Razor *Sharp/gi, traits),
-      skipAttackRoll: this._hasNamedTrait(/Spray/gi, traits),
-      tearing: this._hasNamedTrait(/Tearing/gi, traits),
-      force: this._hasNamedTrait(/Force/gi, traits),
-      scatter: this._hasNamedTrait(/Scatter/gi, traits)
-    };
-  }
-
+  
   _getMaxPsyRating() {
     let base = this.actor.psy.rating;
     switch (this.actor.psy.class) {

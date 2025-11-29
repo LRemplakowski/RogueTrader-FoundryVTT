@@ -199,7 +199,8 @@ export async function prepareCombatRoll(rollData, actorRef) {
                     rollData.penetrationFormula = html.find("#penetration")[0].value;
                     rollData.isCombatTest = true;
                     if (rollData.isRange && rollData.clip.max > 0) {
-                        const ammoUseMultiplier = rollData.weaponTraits.storm ? 2 : 1;
+                        let ammoUseMultiplier = rollData.weaponTraits.storm ? 2 : 1;
+                        ammoUseMultiplier *= rollData.weaponTraits.twinLinked ? 2 : 1;
                         const weapon = game.actors.get(rollData.ownerId)?.items?.get(rollData.itemId);
                         if(weapon) {
                           switch(rollData.attackType.name) {
