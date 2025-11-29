@@ -191,7 +191,7 @@ async function _computeTarget(rollData) {
     rollData.modifier += 20;
   }
   const aim = rollData.aim?.val ? rollData.aim.val : 0;
-  const formula = `0 + ${rollData.modifier} + ${aim} + ${range} + ${attackType} + ${psyModifier} + ${weaponAttackBonus}}`;
+  const formula = `0 + ${rollData.modifier} + ${aim} + ${range} + ${attackType} + ${psyModifier} + ${weaponAttackBonus}`;
   let r = new Roll(formula, {});
   r.evaluate({ async: false });
   if (r.total > 60) {
