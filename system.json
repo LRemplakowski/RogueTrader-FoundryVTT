@@ -6,8 +6,8 @@
   "minimumCoreVersion" : 10,
   "compatibility" : {
     "minimum" : 10,
-    "verified" : 13.351,
-    "maximum" : 13
+    "verified" : 11.315,
+    "maximum" : 11
   },
   "templateVersion": 2,
   "authors": [
