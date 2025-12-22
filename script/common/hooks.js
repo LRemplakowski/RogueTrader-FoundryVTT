@@ -55,6 +55,14 @@ Hooks.once("init", () => {
     }
   };
   game.macro = RtMacroUtil; 
+  
+  // v13: Use foundry.appv1.sheets namespace for sheet registration
+  // Unregister core sheets using v13 namespace
+  const ActorSheet = foundry.appv1.sheets.ActorSheet;
+  const ItemSheet = foundry.appv1.sheets.ItemSheet;
+  const Actors = foundry.documents.collections.Actors;
+  const Items = foundry.documents.collections.Items;
+  
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("rogue-trader", ExplorerSheet, { types: ["explorer"], makeDefault: true });
   Actors.registerSheet("rogue-trader", NpcSheet, { types: ["npc"], makeDefault: true });
@@ -84,14 +92,21 @@ Hooks.once("init", () => {
   Items.registerSheet("rogue-trader", PlanetaryResourceSheet, { types: ["planetaryResource"], makeDefault: true });
   Items.registerSheet("rogue-trader", ColonyUpgradeSheet, {types: ["colonyUpgrade"], makeDefault: true});
   Items.registerSheet("rogue-trader", ColonyEventSheet, {types: ["colonyEvent"], makeDefault: true});
-  initializeHandlebars();
+  
+  // Register settings before initializing handlebars
   registerSettings();
+  
+  // Initialize handlebars templates (will use global loadTemplates)
+  initializeHandlebars();
 });
 
 Hooks.once("ready", () => {
   migrateWorld();
-  CONFIG.ChatMessage.documentClass.prototype.getRollData = function() {
+  const ChatMessageClass = CONFIG.ChatMessage.documentClass || game.messages.documentClass;
+  if (ChatMessageClass && ChatMessageClass.prototype) {
+    ChatMessageClass.prototype.getRollData = function() {
       return this.getFlag("rogue-trader", "rollData") 
+    }
   }
 });
 

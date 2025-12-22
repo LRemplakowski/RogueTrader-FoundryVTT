@@ -28,6 +28,10 @@ export class RogueTraderActor extends Actor {
 
   prepareData() {
     super.prepareData();
+    
+    // v13: Guard against undefined system before accessing properties
+    if (!this.system) return;
+    
     if (this.type === 'ship') {
       this._computePower();
       this._computeSpace();
@@ -247,7 +251,12 @@ export class RogueTraderActor extends Actor {
     this.system.insanityBonus = Math.floor(this.insanity / 10);
     this.system.corruptionBonus = Math.floor(this.corruption / 10);
     this.psy.currentRating = this.psy.rating - this.psy.sustained;
-    this.initiative.bonus = this.characteristics[this.initiative.characteristic].bonus;
+    // v13: Directly access system.initiative to properly initialize the bonus property
+    const initiativeCharacteristicKey = this.system.initiative.characteristic;
+    const initiativeCharacteristic = this.characteristics[initiativeCharacteristicKey];
+    if (initiativeCharacteristic) {
+      this.system.initiative.bonus = initiativeCharacteristic.bonus;
+    }
     // Done as variables to make it easier to read & understand
     let tb = Math.floor(
       (this.characteristics.toughness.base
@@ -325,19 +334,23 @@ export class RogueTraderActor extends Actor {
   }
 
   _getSkillBonuses() {
-    const skillSchema = game.system.model.Actor.explorer.skills;
+    // v13: game.system.model.Actor is no longer available
+    // Instead, build the skill structure from the actor's current skills
     const result = {};
-    for (const entry in skillSchema) {
-      if (skillSchema.hasOwnProperty(entry)) {
-        const entryObject = skillSchema[entry];
-        if (entryObject.isSpecialist) {
+    
+    // Initialize result object with the same structure as skills
+    for (const entry in this.skills) {
+      if (this.skills.hasOwnProperty(entry)) {
+        const skill = this.skills[entry];
+        if (skill.isSpecialist) {
           result[entry] = {};
-          const specialities = skillSchema[entry].specialities;
-          for (const specialty in specialities) {
-            if (specialities.hasOwnProperty(specialty)) {
-              result[entry][specialty] = {
-                skillModifier: 0
-              };
+          if (skill.specialities) {
+            for (const specialty in skill.specialities) {
+              if (skill.specialities.hasOwnProperty(specialty)) {
+                result[entry][specialty] = {
+                  skillModifier: 0
+                };
+              }
             }
           }
         } else {
@@ -347,16 +360,22 @@ export class RogueTraderActor extends Actor {
         }
       }
     }
+    
     const items = this.items;
     items.forEach((value, key) => {
       const skillMods = value.skillModifiers;
       if (skillMods !== null && skillMods !== undefined) {
         for (const skillMod in skillMods) {
           const split = skillMod.split(":");
-          if (split.length > 1)
-            result[split[0]][split[1]].skillModifier += skillMods[skillMod].skillModifier;
-          else
-            result[split[0]].skillModifier += skillMods[skillMod].skillModifier;
+          if (split.length > 1) {
+            if (result[split[0]] && result[split[0]][split[1]]) {
+              result[split[0]][split[1]].skillModifier += skillMods[skillMod].skillModifier;
+            }
+          } else {
+            if (result[split[0]]) {
+              result[split[0]].skillModifier += skillMods[skillMod].skillModifier;
+            }
+          }
         }
       }
     });
@@ -436,7 +455,9 @@ export class RogueTraderActor extends Actor {
   }
 
   _computeArmour() {
-    let locations = Object.keys(game.system.template.Item.armour.part);
+    // v13: game.system.template is no longer available
+    // Use hardcoded armor locations based on the system's armor parts
+    const locations = ["head", "leftArm", "rightArm", "body", "leftLeg", "rightLeg"];
 
     let toughness = this.characteristics.toughness;
 

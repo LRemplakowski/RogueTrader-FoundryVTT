@@ -30,7 +30,7 @@ export class ColonyEventSheet extends RogueTraderItemSheet {
 
   async getData(options) {
     let data = await super.getData(options);
-    data.item.effectHTML = await TextEditor.enrichHTML(
+    data.item.effectHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.system.effect,
       {
         secrets: data.item.isOwner,

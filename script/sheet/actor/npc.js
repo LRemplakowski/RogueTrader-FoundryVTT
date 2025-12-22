@@ -33,7 +33,7 @@ export class NpcSheet extends RogueTraderSheet {
 	async getData() 
 	{
 		const data = await super.getData();
-		data.system.bio.biographyHTML = await TextEditor.enrichHTML(
+		data.system.bio.biographyHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
 			data.system.bio.notes,
 			{
 				secrets: data.actor.isOwner,

@@ -74,7 +74,8 @@ function preloadHandlebarsTemplates() {
     "systems/rogue-trader/template/sheet/shipComponent.html",
     "systems/rogue-trader/template/sheet/utility/modifiers.html"
   ];
-  return foundry.utils.loadTemplates(templatePaths);
+  // v13: Use global loadTemplates() function instead of foundry.utils.loadTemplates
+  return foundry.applications.handlebars.loadTemplates(templatePaths);
 }
 
 /**
@@ -87,7 +88,7 @@ function registerHandlebarsHelpers() {
   });
 
   Handlebars.registerHelper("enrich", function(string) {
-    return TextEditor.enrichHTML(string, {async: false});
+    return foundry.applications.ux.TextEditor.implementation.enrichHTML(string, {async: false});
   });
 
   Handlebars.registerHelper("damageTypeLong", function(damageType) {
@@ -142,17 +143,252 @@ function registerHandlebarsHelpers() {
   });
 
   Handlebars.registerHelper('getSkills', function() {
-    const actorSchema = game.system.model.Actor;
-    // console.log(actorSchema);
+    // v13: game.system.model.Actor is no longer available
+    // Build skills from CONFIG or template configuration
+    let skillSchema = {};
+    
+    // Try to get skills from system config
+    if (CONFIG.rogue && CONFIG.rogue.skills) {
+      skillSchema = CONFIG.rogue.skills;
+    } else if (game.system.documentTypes && game.system.documentTypes.Actor) {
+      // Fallback: build complete skills object from template
+      skillSchema = {
+        advAg: {
+          label: "SKILL.ADVANCED-AG",
+          isSpecialist: true,
+          specialities: {
+            acrobatics: { label: "SKILL.ACROBATICS" },
+            security: { label: "SKILL.SECURITY" },
+            shadowing: { label: "SKILL.SHADOWING" },
+            sleightOfHand: { label: "SKILL.SLEIGHT_OF_HAND" }
+          }
+        },
+        advInt: {
+          label: "SKILL.ADVANCED-INT",
+          isSpecialist: true,
+          specialities: {
+            chemUse: { label: "SKILL.CHEM-USE" },
+            demolition: { label: "SKILL.DEMOLITION" },
+            evaluate: { label: "SKILL.EVALUATE" },
+            gamble: { label: "SKILL.GAMBLE" },
+            literacy: { label: "SKILL.LITERACY" },
+            medicae: { label: "SKILL.MEDICAE" },
+            survival: { label: "SKILL.SURVIVAL" },
+            tracking: { label: "SKILL.TRACKING" },
+            wrangler: { label: "SKILL.WRANGLER" }
+          }
+        },
+        advPer: {
+          label: "SKILL.ADVANCED-PER",
+          isSpecialist: true,
+          specialities: {
+            psyniscience: { label: "SKILL.PSYNISCIENCE" }
+          }
+        },
+        advWP: {
+          label: "SKILL.ADVANCED-WP",
+          isSpecialist: true,
+          specialities: {
+            interrogation: { label: "SKILL.INTERROGATION" },
+            invocation: { label: "SKILL.INVOCATION" }
+          }
+        },
+        advFel: {
+          label: "SKILL.ADVANCED-FEL",
+          isSpecialist: true,
+          specialities: {
+            blather: { label: "SKILL.BLATHER" },
+            charm: { label: "SKILL.CHARM" },
+            commerce: { label: "SKILL.COMMERCE" }
+          }
+        },
+        awareness: { label: "SKILL.AWARENESS", isSpecialist: false },
+        barter: { label: "SKILL.BARTER", isSpecialist: false },
+        carouse: { label: "SKILL.CAROUSE", isSpecialist: false },
+        ciphers: {
+          label: "SKILL.CIPHERS",
+          isSpecialist: true,
+          specialities: {
+            rogueTraders: { label: "SKILL.ROGUE-TRADERS" },
+            mercenaryCant: { label: "SKILL.MERCENARY-CANT" },
+            nobiliteFamily: { label: "SKILL.NOBILITE-FAMILY" },
+            astropathSign: { label: "SKILL.ASTROPATH-SIGN" },
+            underworld: { label: "SKILL.UNDERWORLD" }
+          }
+        },
+        climb: { label: "SKILL.CLIMB", isSpecialist: false },
+        command: { label: "SKILL.COMMAND", isSpecialist: false },
+        commonLore: {
+          label: "SKILL.COMMON_LORE",
+          isSpecialist: true,
+          specialities: {
+            adeptaSororitas: { label: "SKILL.ADEPTA-SORORITAS" },
+            adeptusArbites: { label: "SKILL.ADEPTUS-ARBITES" },
+            adeptusAstartes: { label: "SKILL.ADEPTUS-ASTARTES" },
+            adeptusAstraTelepathica: { label: "SKILL.ADEPTUS-ASTRATELEPATHICA" },
+            adeptusMechanicus: { label: "SKILL.ADEPTUS-MECHANICUS" },
+            administratum: { label: "SKILL.ADMINISTRATUM" },
+            ecclesiarchy: { label: "SKILL.ECCLESIARCHY" },
+            imperialCreed: { label: "SKILL.IMPERIAL-CREED" },
+            imperialGuard: { label: "SKILL.IMPERIAL-GUARD" },
+            imperialNavy: { label: "SKILL.IMPERIAL-NAVY" },
+            imperium: { label: "SKILL.IMPERIUM" },
+            koronousExpanse: { label: "SKILL.KORONOUS-EXPANSE" },
+            machineCult: { label: "SKILL.MACHINE-CULT" },
+            navisNobilite: { label: "SKILL.NAVIS-NOBILITE" },
+            rogueTraders: { label: "SKILL.ROGUE-TRADERS" },
+            tech: { label: "SKILL.TECH" },
+            war: { label: "SKILL.WAR" },
+            underworld: { label: "SKILL.UNDERWORLD" }
+          }
+        },
+        deceive: { label: "SKILL.DECEIVE", isSpecialist: false },
+        disguise: { label: "SKILL.DISGUISE", isSpecialist: false },
+        dodge: { label: "SKILL.DODGE", isSpecialist: false },
+        drive: {
+          label: "SKILL.DRIVE",
+          isSpecialist: true,
+          specialities: {
+            groundVehicle: { label: "SKILL.GROUND-VEHICLE" },
+            skimmerHover: { label: "SKILL.SKIMMER-HOVER" },
+            walker: { label: "SKILL.WALKER" }
+          }
+        },
+        forbiddenLore: {
+          label: "SKILL.FORBIDDEN_LORE",
+          isSpecialist: true,
+          specialities: {
+            adeptusMechanicus: { label: "SKILL.ADEPTUS-MECHANICUS" },
+            archaeotech: { label: "SKILL.ARCHAEOTECH" },
+            daemonology: { label: "SKILL.DAEMONOLOGY" },
+            heresy: { label: "SKILL.HERESY" },
+            inquisition: { label: "SKILL.INQUISITION" },
+            mutants: { label: "SKILL.MUTANTS" },
+            navigators: { label: "SKILL.NAVIGATORS" },
+            pirates: { label: "SKILL.PIRATES" },
+            psykers: { label: "SKILL.PSYKERS" },
+            theWarp: { label: "SKILL.THE-WARP" },
+            xenos: { label: "SKILL.XENOS" }
+          }
+        },
+        inquiry: { label: "SKILL.INQUIRY", isSpecialist: false },
+        intimidate: { label: "SKILL.INTIMIDATE", isSpecialist: false },
+        logic: { label: "SKILL.LOGIC", isSpecialist: false },
+        navigate: {
+          label: "SKILL.NAVIGATE",
+          isSpecialist: true,
+          specialities: {
+            surface: { label: "SKILL.SURFACE" },
+            stellar: { label: "SKILL.STELLAR" },
+            warp: { label: "SKILL.WARP" }
+          }
+        },
+        performer: {
+          label: "SKILL.PERFORMER",
+          isSpecialist: true,
+          specialities: {
+            dancer: { label: "SKILL.DANCER" },
+            musician: { label: "SKILL.MUSICIAN" },
+            singer: { label: "SKILL.SINGER" },
+            storyteller: { label: "SKILL.STORYTELLER" }
+          }
+        },
+        pilot: {
+          label: "SKILL.PILOT",
+          isSpecialist: true,
+          specialities: {
+            personal: { label: "SKILL.PERSONAL" },
+            flyers: { label: "SKILL.FLYERS" },
+            spaceCraft: { label: "SKILL.SPACE-CRAFT" }
+          }
+        },
+        scholasticLore: {
+          label: "SKILL.SCHOLASTIC_LORE",
+          isSpecialist: true,
+          specialities: {
+            archaic: { label: "SKILL.ARCHAIC" },
+            astromancy: { label: "SKILL.ASTROMANCY" },
+            beasts: { label: "SKILL.BEASTS" },
+            bureaucracy: { label: "SKILL.BUREAUCRACY" },
+            chymistry: { label: "SKILL.CHYMISTRY" },
+            cryptology: { label: "SKILL.CRYPTOLOGY" },
+            heraldry: { label: "SKILL.HERALDRY" },
+            imperialWarrants: { label: "SKILL.IMPERIAL-WARRANTS" },
+            imperialCreed: { label: "SKILL.IMPERIAL-CREED" },
+            judgement: { label: "SKILL.JUDGEMENT" },
+            legend: { label: "SKILL.LEGEND" },
+            navisNobilite: { label: "SKILL.NAVIS-NOBILITE" },
+            numerology: { label: "SKILL.NUMEROLOGY" },
+            occult: { label: "SKILL.OCCULT" },
+            philosophy: { label: "SKILL.PHILOSOPHY" },
+            tacticaImperialis: { label: "SKILL.TACTICA-IMPERIALIS" }
+          }
+        },
+        scrutiny: { label: "SKILL.SCRUTINY", isSpecialist: false },
+        search: { label: "SKILL.SEARCH", isSpecialist: false },
+        secretTongue: {
+          label: "SKILL.SECRET-TONGUE",
+          isSpecialist: true,
+          specialities: {
+            administratum: { label: "SKILL.ADMINISTRATUM" },
+            ecclesiarchy: { label: "SKILL.ECCLESIARCHY" },
+            military: { label: "SKILL.MILITARY" },
+            navigators: { label: "SKILL.NAVIGATORS" },
+            rogueTrader: { label: "SKILL.ROGUE-TRADERS" },
+            tech: { label: "SKILL.TECH" },
+            underdeck: { label: "SKILL.UNDERDECK" }
+          }
+        },
+        silentMove: { label: "SKILL.SILENT-MOVE", isSpecialist: false },
+        speakLanguage: {
+          label: "SKILL.SPEAK-LANGUAGE",
+          isSpecialist: true,
+          specialities: {
+            eldar: { label: "SKILL.ELDAR" },
+            exploratorBinary: { label: "SKILL.EXPLORATOR-BINARY" },
+            highGothic: { label: "SKILL.HIGH-GOTHIC" },
+            hiveDialect: { label: "SKILL.HIVE-DIALECT" },
+            lowGothic: { label: "SKILL.LOW-GOTHIC" },
+            ork: { label: "SKILL.ORK" },
+            shipDialect: { label: "SKILL.SHIP-DIALECT" },
+            technaLingua: { label: "SKILL.TECHNA-LINGUA" },
+            tradersCant: { label: "SKILL.TRADERS-CANT" }
+          }
+        },
+        swim: { label: "SKILL.SWIM", isSpecialist: false },
+        techUse: { label: "SKILL.TECH_USE", isSpecialist: false },
+        trade: {
+          label: "SKILL.TRADE",
+          isSpecialist: true,
+          specialities: {
+            agri: { label: "SKILL.AGRI" },
+            archaeologist: { label: "SKILL.ARCHAEOLOGIST" },
+            armourer: { label: "SKILL.ARMOURER" },
+            astrographer: { label: "SKILL.ASTROGRAPHER" },
+            chymist: { label: "SKILL.CHYMIST" },
+            cryptographer: { label: "SKILL.CRYPTOGRAPHER" },
+            cook: { label: "SKILL.COOK" },
+            explorator: { label: "SKILL.EXPLORATOR" },
+            linguist: { label: "SKILL.LINGUIST" },
+            remembrancer: { label: "SKILL.REMEMBRANCER" },
+            shipwright: { label: "SKILL.SHIPWRIGHT" },
+            soothsayer: { label: "SKILL.SOOTHSAYER" },
+            technomat: { label: "SKILL.TECHNOMAT" },
+            trader: { label: "SKILL.TRADER" },
+            voidfarer: { label: "SKILL.VOIDFARER" }
+          }
+        }
+      };
+    }
+    
     const advSkillRegex = /^adv/;
-    const skillSchema = actorSchema.explorer.skills;
     const skills = {};
   
     for (const entry in skillSchema) {
       if (skillSchema.hasOwnProperty(entry)) {
         const entryObject = skillSchema[entry];
-        if (entryObject.isSpecialist) {
-          const specialities = skillSchema[entry].specialities;
+        if (entryObject.isSpecialist && entryObject.specialities) {
+          const specialities = entryObject.specialities;
           for (const specialty in specialities) {
             if (specialities.hasOwnProperty(specialty)) {
               if (advSkillRegex.test(entry))
@@ -162,7 +398,7 @@ function registerHandlebarsHelpers() {
             }
           }
         } else {
-          skills[entry] = skillSchema[entry].label;
+          skills[entry] = entryObject.label || entry;
         }
       }
     }

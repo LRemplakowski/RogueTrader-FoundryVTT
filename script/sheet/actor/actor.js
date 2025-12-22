@@ -1,7 +1,8 @@
 import {prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll, prepareForceFieldRoll} from "../../common/dialog.js";
 import RogueTraderUtil from "../../common/util.js";
 
-export class RogueTraderSheet extends ActorSheet {
+// v13: Use v13 namespace for ActorSheet base class
+export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
   activateListeners(html) {
     super.activateListeners(html);
     html.find(".item-create").click(ev => this._onItemCreate(ev));
@@ -147,19 +148,6 @@ export class RogueTraderSheet extends ActorSheet {
       initiativeOptions.push({ value: key, label: game.i18n.localize(char.label) });
     }
     optionsData.initiativeOptions = initiativeOptions;
-
-    // Colony type options from actor.colonyTypes
-    // const colonyTypeOptions = (this.actor.colonyTypes || []).map(ct => ({ value: ct, label: (function(t){
-    //   switch(t) {
-    //     case 'research': return game.i18n.localize('COLONY.TYPE.RESEARCH');
-    //     case 'mining': return game.i18n.localize('COLONY.TYPE.MINING');
-    //     case 'ecclesiastical': return game.i18n.localize('COLONY.TYPE.ECCLESIASTICAL');
-    //     case 'agricultural': return game.i18n.localize('COLONY.TYPE.AGRICULTURAL');
-    //     case 'pleasure': return game.i18n.localize('COLONY.TYPE.PLEASURE');
-    //     case 'war': return game.i18n.localize('COLONY.TYPE.WAR');
-    //     default: return ct;
-    //   }
-    // })(ct) }));
 
     // Attach generated option lists to data.options
     data.options = optionsData;

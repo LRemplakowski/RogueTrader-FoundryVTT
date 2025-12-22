@@ -30,7 +30,7 @@ export class ShipSheet extends RogueTraderSheet {
   /** @override */
   async getData(options) {
     const data = await super.getData(options);
-    data.system.pastHistoryHTML = await TextEditor.enrichHTML(
+    data.system.pastHistoryHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.system.pastHistory,
       {
         secrets: data.actor.isOwner,
@@ -39,7 +39,7 @@ export class ShipSheet extends RogueTraderSheet {
         relativeTo: this.actor,
       }
     );
-    data.system.complicationsHTML = await TextEditor.enrichHTML(
+    data.system.complicationsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.system.complications,
       {
         secrets: data.actor.isOwner,
@@ -48,7 +48,7 @@ export class ShipSheet extends RogueTraderSheet {
         relativeTo: this.actor,
       }
     );
-    data.system.notesHTML = await TextEditor.enrichHTML(
+    data.system.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.system.notes,
       {
         secrets: data.actor.isOwner,

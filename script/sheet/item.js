@@ -1,6 +1,7 @@
 import {showAddCharacteristicModifierDialog, showAddSkillModifierDialog} from "../common/dialog.js";
 
-export class RogueTraderItemSheet extends ItemSheet {
+// v13: Use v13 namespace for ItemSheet base class
+export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
   activateListeners(html) {
     super.activateListeners(html);
     html.find("input").focusin(ev => this._onFocusIn(ev));
@@ -80,7 +81,7 @@ export class RogueTraderItemSheet extends ItemSheet {
   async getData(options) {
     let data = super.getData(options);
         // Item HTML enrichment
-    data.item.descriptionHTML = await TextEditor.enrichHTML(
+    data.item.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.item.description,
       {
         secrets: data.item.isOwner,
@@ -90,7 +91,7 @@ export class RogueTraderItemSheet extends ItemSheet {
       }
     );
     // Component HTML enrichment
-    data.data.system.essentialComponentsHTML = await TextEditor.enrichHTML(
+    data.data.system.essentialComponentsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.data.system.essentialComponents,
       {
         secrets: data.item.isOwner,
@@ -99,7 +100,7 @@ export class RogueTraderItemSheet extends ItemSheet {
         relativeTo: this.item,
       }
     );
-    data.data.system.supplementalComponentsHTML = await TextEditor.enrichHTML(
+    data.data.system.supplementalComponentsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.data.system.supplementalComponents,
       {
         secrets: data.item.isOwner,
@@ -108,7 +109,7 @@ export class RogueTraderItemSheet extends ItemSheet {
         relativeTo: this.item,
       }
     );
-    data.data.system.complicationsHTML = await TextEditor.enrichHTML(
+    data.data.system.complicationsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.data.system.complications,
       {
         secrets: data.item.isOwner,
@@ -117,7 +118,7 @@ export class RogueTraderItemSheet extends ItemSheet {
         relativeTo: this.item,
       }
     );
-    data.data.system.pastHistoryHTML = await TextEditor.enrichHTML(
+    data.data.system.pastHistoryHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.data.system.pastHistory,
       {
         secrets: data.item.isOwner,
@@ -126,7 +127,7 @@ export class RogueTraderItemSheet extends ItemSheet {
         relativeTo: this.item,
       }
     );
-    data.data.system.weaponsHTML = await TextEditor.enrichHTML(
+    data.data.system.weaponsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       data.data.system.weapons,
       {
         secrets: data.item.isOwner,

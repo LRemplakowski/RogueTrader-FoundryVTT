@@ -123,7 +123,7 @@
             "advanced": -20,
             "isSpecialist": true,
             "specialities": {
-              "chem-use": {
+              "chemUse": {
                 "label": "SKILL.CHEM-USE",
                 "advance": -20,
                 "cost": 0
