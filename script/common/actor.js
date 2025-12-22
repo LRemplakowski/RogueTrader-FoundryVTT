@@ -243,6 +243,16 @@ export class RogueTraderActor extends Actor {
       characteristic.advanceCharacteristic = this._getAdvanceCharacteristic(characteristic.advance);
       i++;
     };
+    const agility = this._findCharacteristic("Ag");
+    let agilityCap = 0;
+    this.items.filter(item => item.isArmour).forEach(armour => {
+      if (armour.maxAgility > 0) {
+        agilityCap = armour.maxAgility < agilityCap ? armour.maxAgility : agilityCap;
+      }
+    });
+    if (agilityCap > 0) {
+      agility.total = agilityCap;
+    }
     this.system.insanityBonus = Math.floor(this.insanity / 10);
     this.system.corruptionBonus = Math.floor(this.corruption / 10);
     this.psy.currentRating = this.psy.rating - this.psy.sustained;
