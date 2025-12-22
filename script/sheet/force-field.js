@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class ForceFieldSheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "force-field"],
       template: "systems/rogue-trader/template/sheet/force-field.html",
       width: 500,

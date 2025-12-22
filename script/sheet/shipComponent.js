@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class ShipComponentSheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "shipComponent"],
       template: "systems/rogue-trader/template/sheet/shipComponent.html",
       width: 485,

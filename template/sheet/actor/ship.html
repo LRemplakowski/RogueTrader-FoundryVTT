@@ -16,17 +16,7 @@
                 <div class="hullClass">
                     <label>Hull Class</label>
                     <select class="hullClass" name="system.hullClass" type="text">
-                        {{#select system.hullClass}}
-                            <option value=""></option>
-                            <option value="Transport">Transport</option>
-                            <option value="Raider">Raider</option>
-                            <option value="Frigate">Frigate</option>
-                            <option value="Light Cruiser">Light Cruiser</option>
-                            <option value="Cruiser">Cruiser</option>
-                            <option value="Battlecruiser">Battlecruiser</option>
-                            <option value="Grand Cruiser">Grand Cruiser</option>
-                            <option value="Battleship">Battleship</option>
-                        {{/select}}
+                        {{{selectOptions options.hullClassOptions selected=system.hullClass}}}
                     </select>
                 </div>
             </div>

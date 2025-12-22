@@ -6,7 +6,7 @@ export class ShipSheet extends RogueTraderSheet {
   side = "";
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "actor"],
       template: "systems/rogue-trader/template/sheet/actor/ship.html",
       width: 775,

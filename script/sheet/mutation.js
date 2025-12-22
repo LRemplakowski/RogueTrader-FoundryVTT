@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class MutationSheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "mutation"],
       template: "systems/rogue-trader/template/sheet/mutation.html",
       width: 500,

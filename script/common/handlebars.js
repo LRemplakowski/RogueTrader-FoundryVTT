@@ -74,7 +74,7 @@ function preloadHandlebarsTemplates() {
     "systems/rogue-trader/template/sheet/shipComponent.html",
     "systems/rogue-trader/template/sheet/utility/modifiers.html"
   ];
-  return loadTemplates(templatePaths);
+  return foundry.utils.loadTemplates(templatePaths);
 }
 
 /**
@@ -321,6 +321,19 @@ function registerHandlebarsHelpers() {
         break;
     }
     return result;
+  });
+
+  // Helper to render option tags from an array of {value, label} objects.
+  // Usage in templates: {{{selectOptions options.weaponClassOptions selected=system.class}}}
+  Handlebars.registerHelper('selectOptions', function(optionArray, opts) {
+    const selected = (opts && opts.hash && opts.hash.selected) ? String(opts.hash.selected) : null;
+    if (!Array.isArray(optionArray)) return '';
+    return optionArray.map(opt => {
+      const val = String(opt.value);
+      const lbl = opt.label || opt.value;
+      const isSelected = selected !== null && val === String(selected) ? ' selected' : '';
+      return `<option value="${val}"${isSelected}>${lbl}</option>`;
+    }).join('');
   });
 }
 

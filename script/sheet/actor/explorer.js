@@ -3,7 +3,7 @@ import { RogueTraderSheet } from "./actor.js";
 export class ExplorerSheet extends RogueTraderSheet {
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "actor"],
       template: "systems/rogue-trader/template/sheet/actor/explorer.html",
       width: 720,

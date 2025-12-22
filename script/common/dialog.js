@@ -164,6 +164,42 @@ export async function prepareConsumeResourcesRoll(rollData, actorRef) {
  * @param {RogueTraderActor} actorRef
  */
 export async function prepareCombatRoll(rollData, actorRef) {
+    // Provide select option lists for the generic combat dialog
+    rollData.aimOptions = [
+      { value: '0', label: game.i18n.localize('AIMING.NONE') },
+      { value: '10', label: game.i18n.localize('AIMING.HALF') },
+      { value: '20', label: game.i18n.localize('AIMING.FULL') }
+    ];
+    rollData.meleeAttackOptions = [
+      { value: 'none', label: game.i18n.localize('ATTACK_TYPE.NONE') },
+      { value: 'standard', label: game.i18n.localize('ATTACK_TYPE.STANDARD') },
+      { value: 'charge', label: game.i18n.localize('ATTACK_TYPE.CHARGE') },
+      { value: 'swift', label: game.i18n.localize('ATTACK_TYPE.SWIFT') },
+      { value: 'lightning', label: game.i18n.localize('ATTACK_TYPE.LIGHTNING') },
+      { value: 'called_shot', label: game.i18n.localize('ATTACK_TYPE.CALLED_SHOT') },
+      { value: 'allOut', label: game.i18n.localize('ATTACK_TYPE.ALLOUT') }
+    ];
+    rollData.rangeOptions = [
+      { value: '0', label: game.i18n.localize('RANGE.NONE') },
+      { value: '30', label: game.i18n.localize('RANGE.POINT_BLANK') },
+      { value: '10', label: game.i18n.localize('RANGE.SHORT') },
+      { value: '-10', label: game.i18n.localize('RANGE.LONG') },
+      { value: '-30', label: game.i18n.localize('RANGE.EXTREME') }
+    ];
+    rollData.rangeAttackOptions = [
+      { value: 'none', label: game.i18n.localize('ATTACK_TYPE.NONE') },
+      { value: 'standard', label: game.i18n.localize('ATTACK_TYPE.STANDARD') },
+      { value: 'semi_auto', label: game.i18n.localize('ATTACK_TYPE.SEMI_AUTO') },
+      { value: 'full_auto', label: game.i18n.localize('ATTACK_TYPE.FULL_AUTO') },
+      { value: 'called_shot', label: game.i18n.localize('ATTACK_TYPE.CALLED_SHOT') }
+    ];
+    rollData.damageTypeOptions = [
+      {value: 'energy', label: game.i18n.localize('DAMAGE_TYPE.ENERGY')},
+      {value: 'impact', label: game.i18n.localize('DAMAGE_TYPE.IMPACT')},
+      {value: 'rending', label: game.i18n.localize('DAMAGE_TYPE.RENDING')},
+      {value: 'explosive', label: game.i18n.localize('DAMAGE_TYPE.EXPLOSIVE')}
+    ];
+
     const html = await renderTemplate("systems/rogue-trader/template/dialog/combat-roll.html", rollData);
     let dialog = new Dialog({
         title: rollData.name,
@@ -297,6 +333,31 @@ export async function prepareForceFieldRoll(rollData, actorRef) {
  */
 export async function prepareShipCombatRoll(rollData, actorRef) {
   rollData.ignoreArmor |= rollData.weaponType === "Lance";
+  // Build performer options (crew + any named crew members)
+  const performerOptions = [{ value: 'crew', label: game.i18n.localize('DIALOG.CREW') }];
+  try {
+    const characteristicSource = rollData.characteristicSource || actorRef;
+    const named = characteristicSource?.system?.namedCrew || {};
+    for (const [role, id] of Object.entries(named)) {
+      if (id) {
+        const a = game.actors.get(id);
+        if (a) performerOptions.push({ value: a.id, label: a.name });
+      }
+    }
+  } catch (err) {
+    console.warn("Could not build performer options", err);
+  }
+
+  const rangeOptions = [
+    { value: '0', label: game.i18n.localize('RANGE.NONE') },
+    { value: '10', label: game.i18n.localize('RANGE.SHORT') },
+    { value: '-10', label: game.i18n.localize('RANGE.LONG') }
+  ];
+
+  // Attach option lists to rollData for template rendering
+  rollData.performerOptions = performerOptions;
+  rollData.rangeOptions = rangeOptions;
+
   const html = await renderTemplate("systems/rogue-trader/template/dialog/ship-combat-roll.html", rollData);
   let dialog = new Dialog({
       title: rollData.name,
@@ -356,6 +417,26 @@ export async function prepareShipCombatRoll(rollData, actorRef) {
  * @param {object} rollData
  */
 export async function preparePsychicPowerRoll(rollData) {
+  // Provide select option lists for the template
+  rollData.psyStrengthOptions = [
+    { value: 'fettered', label: game.i18n.localize('PSY_STRENGTH.FETTERED') },
+    { value: 'unfettered', label: game.i18n.localize('PSY_STRENGTH.UNFETTERED') },
+    { value: 'push', label: game.i18n.localize('PSY_STRENGTH.PUSH') }
+  ];
+  rollData.damageTypeOptions = [
+    {value: 'energy', label: game.i18n.localize('DAMAGE_TYPE.ENERGY')},
+    {value: 'impact', label: game.i18n.localize('DAMAGE_TYPE.IMPACT')},
+    {value: 'rending', label: game.i18n.localize('DAMAGE_TYPE.RENDING')},
+    {value: 'explosive', label: game.i18n.localize('DAMAGE_TYPE.EXPLOSIVE')}
+  ];
+  rollData.attackTypeOptions = [
+    {value: 'none', label: game.i18n.localize('ATTACK_TYPE.NONE')},
+    {value: 'bolt', label: game.i18n.localize('PSYCHIC_POWER.BOLT')},
+    {value: 'barrage', label: game.i18n.localize('PSYCHIC_POWER.BARRAGE')},
+    {value: 'storm', label: game.i18n.localize('PSYCHIC_POWER.STORM')},
+    {value: 'blast', label: game.i18n.localize('PSYCHIC_POWER.BLAST')}
+  ];
+
   const html = await renderTemplate("systems/rogue-trader/template/dialog/psychic-power-roll.html", rollData);
   console.log(rollData);
   let dialog = new Dialog({

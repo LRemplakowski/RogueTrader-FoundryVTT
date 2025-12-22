@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class PsychicPowerSheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "psychic-power"],
       template: "systems/rogue-trader/template/sheet/psychic-power.html",
       width: 500,

@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class ToolSheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "tool"],
       template: "systems/rogue-trader/template/sheet/tool.html",
       width: 500,

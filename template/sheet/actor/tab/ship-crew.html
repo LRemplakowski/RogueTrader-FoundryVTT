@@ -5,13 +5,7 @@
                 <div class="stat crewSkill">
                     <label>{{localize "SHIP.CREW_SKILL"}}</label>
                     <select name="system.crewSkill">
-                        {{#select system.crewSkill}}
-                            <option value="incompetent">{{localize "SHIP.CREW_INCOMPETENT"}}</option>
-                            <option value="competent">{{localize "SHIP.CREW_COMPETENT"}}</option>
-                            <option value="crack">{{localize "SHIP.CREW_CRACK"}}</option>
-                            <option value="veteran">{{localize "SHIP.CREW_VETERAN"}}</option>
-                            <option value="elite">{{localize "SHIP.CREW_ELITE"}}</option>
-                        {{/select}}
+                        {{{selectOptions options.crewSkillOptions selected=system.crewSkill}}}
                     </select>
                 </div>
             </div>

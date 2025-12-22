@@ -22,15 +22,7 @@
                         </div>
                         <div class="flex">
                             <select name="system.governor.governorType">
-                                {{#select system.governor.governorType}}
-                                    <option value="administrative">{{localize "COLONY.GOV.ADMINISTRATIVE"}}</option>
-                                    <option value="faithful">{{localize "COLONY.GOV.FAITHFUL"}}</option>
-                                    <option value="lawful">{{localize "COLONY.GOV.LAWFUL"}}</option>
-                                    <option value="accounting">{{localize "COLONY.GOV.ACCOUNTING"}}</option>
-                                    <option value="local">{{localize "COLONY.GOV.LOCAL"}}</option>
-                                    <option value="relaxed">{{localize "COLONY.GOV.RELAXED"}}</option>
-                                    <option value="warlike">{{localize "COLONY.GOV.WARLIKE"}}</option>
-                                {{/select}}
+                                {{{selectOptions options.governorTypeOptions selected=system.governor.governorType}}}
                             </select>
                         </div>
                     </div>
@@ -128,11 +120,7 @@
                                 <label class="flex name">Type</label>
                                 <div class="flex colony-stat">
                                     <select name="system.colonyType">
-                                        {{#select system.colonyType}}
-                                            {{#each actor.colonyTypes as |colonyType|}}
-                                                <option value="{{colonyType}}">{{localizeColonyType colonyType}}</option>
-                                            {{/each}}
-                                        {{/select}}
+                                        {{{selectOptions options.colonyTypeOptions selected=system.colonyType}}}
                                     </select>
                                 </div>
                             </div>

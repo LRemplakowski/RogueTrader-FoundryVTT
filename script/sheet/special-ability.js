@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class SpecialAbilitySheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "special-ability"],
       template: "systems/rogue-trader/template/sheet/special-ability.html",
       width: 500,

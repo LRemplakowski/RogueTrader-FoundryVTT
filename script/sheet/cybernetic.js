@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class CyberneticSheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "cybernetic"],
       template: "systems/rogue-trader/template/sheet/cybernetic.html",
       width: 500,

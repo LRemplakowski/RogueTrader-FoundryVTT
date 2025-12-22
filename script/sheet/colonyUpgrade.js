@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class ColonyUpgradeSheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "colony-upgrade"],
       template: "systems/rogue-trader/template/sheet/colony-upgrade.html",
       width: 500,

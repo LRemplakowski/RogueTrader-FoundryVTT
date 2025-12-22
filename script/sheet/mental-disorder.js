@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class MentalDisorderSheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "mental-disorder"],
       template: "systems/rogue-trader/template/sheet/mental-disorder.html",
       width: 500,

@@ -243,7 +243,7 @@ export class RogueTraderActor extends Actor {
       characteristic.advanceCharacteristic = this._getAdvanceCharacteristic(characteristic.advance);
       i++;
     };
-    _handleAgilityCap();
+    _handleAgilityCap(this);
     this.system.insanityBonus = Math.floor(this.insanity / 10);
     this.system.corruptionBonus = Math.floor(this.corruption / 10);
     this.psy.currentRating = this.psy.rating - this.psy.sustained;
@@ -261,10 +261,10 @@ export class RogueTraderActor extends Actor {
     this.fatigue.max = tb + wb;
 
 
-    function _handleAgilityCap() {
-      const agility = this._findCharacteristic("Ag");
+    function _handleAgilityCap(self) {
+      const agility = self._findCharacteristic('Ag');
       let agilityCap = 0;
-      this.items.filter(item => item.isArmour).forEach(armour => {
+      self.items.filter(item => item.isArmour).forEach(armour => {
         if (armour.maxAgility > 0) {
           agilityCap = armour.maxAgility < agilityCap ? armour.maxAgility : agilityCap;
         }
@@ -291,7 +291,7 @@ export class RogueTraderActor extends Actor {
         }
       }
     });
-    console.log(`Modifier ${characteristic}: ${JSON.stringify(result)}`);
+    // console.log(`Modifier ${characteristic}: ${JSON.stringify(result)}`);
     return result;
   }
 

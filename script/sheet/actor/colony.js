@@ -6,7 +6,7 @@ import { RogueTraderSheet } from "./actor.js";
 export class ColonySheet extends RogueTraderSheet {
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "actor"],
       template: "systems/rogue-trader/template/sheet/actor/colony.html",
       width: 750,

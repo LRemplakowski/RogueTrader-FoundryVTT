@@ -2,7 +2,7 @@ import { RogueTraderItemSheet } from "./item.js";
 
 export class CriticalInjurySheet extends RogueTraderItemSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["rogue-trader", "sheet", "critical-injury"],
       template: "systems/rogue-trader/template/sheet/critical-injury.html",
       width: 500,
