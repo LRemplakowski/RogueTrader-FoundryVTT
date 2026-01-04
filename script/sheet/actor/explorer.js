@@ -1,45 +1,60 @@
 import { RogueTraderSheet } from "./actor.js";
 
 export class ExplorerSheet extends RogueTraderSheet {
-
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["rogue-trader", "sheet", "actor"],
-      template: "systems/rogue-trader/template/sheet/actor/explorer.html",
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
+  static DEFAULT_OPTIONS = {
+    ...super.DEFAULT_OPTIONS,
+	  id: "explorer-sheet",
+    classes: ["rogue-trader", "sheet", "actor"],
+    tag: "form",
+    window: {
+      resizable: true
+    },
+    position: {
       width: 720,
-      height: 881,
-      resizable: true,
-      tabs: [
-        {
-          navSelector: ".sheet-tabs",
-          contentSelector: ".sheet-body",
-          initial: "stats"
-        }
-      ]
-    });
+      height: 881
+    },
+    // v13 MIGRATION: appv2 sheets require template to be defined in DEFAULT_OPTIONS
+    template: "systems/rogue-trader/template/sheet/actor/explorer.html"
+  };
+
+  /** @override */
+static PARTS = {
+	// This defines the Handlebars template to render
+	sheet: {
+		template: "systems/rogue-trader/template/sheet/actor/explorer.html"
+	}
+};
+
+  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
+  get template() {
+    return this.options.template;
   }
 
   _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
-    if (this.actor.isOwner) {
+    if (this.document.isOwner) {
       buttons = [].concat(buttons);
     }
     return buttons;
   }
 
-  /** @override */
-  async getData() {
-    const data = await super.getData();
-    data.system.bio.biographyHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      data.system.bio.notes,
+  // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
+  // This provides data-specific enrichment for the Explorer sheet
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    
+    // Enrich biography field
+    context.system.bio.biographyHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      context.system.bio.notes,
       {
-        secrets: data.actor.isOwner,
-        rollData: data.rollData,
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
         async: true,
-        relativeTo: this.actor,
+        relativeTo: context.document,
       }
     );
-    return data;
+    return context;
   }
 
   activateListeners(html) {
@@ -53,22 +68,22 @@ export class ExplorerSheet extends RogueTraderSheet {
     event.preventDefault();
     let aptitudeId = Date.now().toString();
     let aptitude = { id: Date.now().toString(), name: "New Aptitude" };
-    await this.actor.update({[`system.aptitudes.${aptitudeId}`]: aptitude});
-    this._render(true);
+    await this.document.update({[`system.aptitudes.${aptitudeId}`]: aptitude});
+    this.render(false);
   }
 
   async _onAptitudeDelete(event) {
     event.preventDefault();
     const div = $(event.currentTarget).parents(".item");
     const aptitudeId = div.data("aptitudeId").toString();
-    await this.actor.update({[`system.aptitudes.-=${aptitudeId}`]: null});
-    this._render(true);
+    await this.document.update({[`system.aptitudes.-=${aptitudeId}`]: null});
+    this.render(false);
   }
 
   async _onItemCostFocusOut(event) {
     event.preventDefault();
     const div = $(event.currentTarget).parents(".item");
-    let item = this.actor.items.get(div.data("itemId"));
+    let item = this.document.items.get(div.data("itemId"));
     item.update({"system.cost": $(event.currentTarget)[0].value});
   }
 }

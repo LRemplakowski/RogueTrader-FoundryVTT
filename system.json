@@ -97,5 +97,36 @@
   "socket": true,
   "manifest": "https://github.com/LRemplakowski/RogueTrader-FoundryVTT/releases/latest/download/system.json",
   "download": "https://github.com/LRemplakowski/RogueTrader-FoundryVTT/releases/latest/download/rogue-trader.zip",
-  "license": "LICENSE.txt"
+  "license": "LICENSE.txt",
+  "actors": {
+    "explorer": { "label": "Explorer" },
+    "npc": { "label": "NPC" },
+    "ship": { "label": "Ship" },
+    "colony": { "label": "Colony" }
+  },
+  "items": {
+    "weapon": { "label": "Weapon" },
+    "ammunition": { "label": "Ammunition" },
+    "weaponModification": { "label": "Weapon Modification" },
+    "armour": { "label": "Armour" },
+    "forceField": { "label": "Force Field" },
+    "cybernetic": { "label": "Cybernetic" },
+    "drug": { "label": "Drug" },
+    "gear": { "label": "Gear" },
+    "tool": { "label": "Tool" },
+    "criticalInjury": { "label": "Critical Injury" },
+    "malignancy": { "label": "Malignancy" },
+    "mentalDisorder": { "label": "Mental Disorder" },
+    "mutation": { "label": "Mutation" },
+    "psychicPower": { "label": "Psychic Power" },
+    "talent": { "label": "Talent" },
+    "specialAbility": { "label": "Special Ability" },
+    "trait": { "label": "Trait" },
+    "aptitude": { "label": "Aptitude" },
+    "shipWeapon": { "label": "Ship Weapon" },
+    "shipComponent": { "label": "Ship Component" },
+    "planetaryResource": { "label": "Planetary Resource" },
+    "colonyUpgrade": { "label": "Colony Upgrade" },
+    "colonyEvent": { "label": "Colony Event" }
+  }
 }

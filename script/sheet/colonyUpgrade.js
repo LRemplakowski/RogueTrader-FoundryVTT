@@ -1,21 +1,29 @@
 import { RogueTraderItemSheet } from "./item.js";
 
 export class ColonyUpgradeSheet extends RogueTraderItemSheet {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["rogue-trader", "sheet", "colony-upgrade"],
-      template: "systems/rogue-trader/template/sheet/colony-upgrade.html",
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property with tabs configuration
+  static DEFAULT_OPTIONS = {
+    classes: ["rogue-trader", "sheet", "colony-upgrade"],
+    window: {
+      resizable: true
+    },
+    position: {
       width: 500,
-      height: 400,
-      resizable: true,
-      tabs: [
-        {
-          navSelector: ".sheet-tabs",
-          contentSelector: ".sheet-body",
-          initial: "stats"
-        }
-      ]
-    });
+      height: 400
+    },
+    template: "systems/rogue-trader/template/sheet/colony-upgrade.html",
+    tabs: [
+      {
+        navSelector: ".sheet-tabs",
+        contentSelector: ".sheet-body",
+        initial: "stats"
+      }
+    ]
+  };
+
+  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
+  get template() {
+    return this.options.template;
   }
 
   _getHeaderButtons() {

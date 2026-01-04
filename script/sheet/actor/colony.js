@@ -4,22 +4,25 @@ import RogueTraderUtil from "../../common/util.js";
 import { RogueTraderSheet } from "./actor.js";
 
 export class ColonySheet extends RogueTraderSheet {
-
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["rogue-trader", "sheet", "actor"],
-      template: "systems/rogue-trader/template/sheet/actor/colony.html",
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS with template definition
+  static DEFAULT_OPTIONS = {
+    ...super.DEFAULT_OPTIONS,
+	  id: "colony-sheet",
+    classes: ["rogue-trader", "sheet", "actor"],
+    tag: "form",
+    window: {
+      resizable: true
+    },
+    position: {
       width: 750,
-      height: 920,
-      resizable: true,
-      tabs: [
-        {
-          navSelector: ".sheet-tabs",
-          contentSelector: ".sheet-body",
-          initial: "stats"
-        }
-      ]
-    });
+      height: 920
+    },
+    template: "systems/rogue-trader/template/sheet/actor/colony.html"
+  };
+
+  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
+  get template() {
+    return this.options.template;
   }
 
   activateListeners(html) {
@@ -30,29 +33,23 @@ export class ColonySheet extends RogueTraderSheet {
     html.find(".roll-resources").click(async ev => await this._onRollConsumeResources(ev));
   }
 
-  /** @override */
-  async getData(options) {
-    const data = await super.getData(options);
-    return data;
-  }
-
   async _onRollColonyGrowth(ev) {
     ev.preventDefault();
-    const actorData = await this.getData();
-    const growthData = this._updateGrowthPoints(actorData);
-    await rollColonyGrowth(RogueTraderUtil.prepareColonyGrowthRollData(this.actor, growthData));
-    this._updateObject(ev, actorData);
+    const context = await this._prepareContext();
+    const growthData = this._updateGrowthPoints(context);
+    await rollColonyGrowth(RogueTraderUtil.prepareColonyGrowthRollData(this.document, growthData));
+    this._updateObject(ev, context);
   }
 
-  _updateGrowthPoints(actorData) {
-    const actorStats = actorData.system.stats;
+  _updateGrowthPoints(context) {
+    const actorStats = context.system.stats;
     const startLoyalty = actorStats.loyalty;
     const startProsperity = actorStats.prosperity;
     const startSecurity = actorStats.security;
     actorStats.loyalty += actorStats.loyaltyGain;
     actorStats.prosperity += actorStats.prosperityGain;
     actorStats.security += actorStats.securityGain;
-    switch (actorData.system.governor.governorType) {
+    switch (context.system.governor.governorType) {
       case "accounting":
         actorStats.prosperity = Math.max(actorStats.prosperity, 0);
         break;
@@ -84,12 +81,12 @@ export class ColonySheet extends RogueTraderSheet {
 
   async _onRollColonyEvents(ev) {
     ev.preventDefault();
-    await rollColonyEvents(RogueTraderUtil.prepareColonyRollData(this.actor));
+    await rollColonyEvents(RogueTraderUtil.prepareColonyRollData(this.document));
   }
 
   async _onRollConsumeResources(ev) {
     ev.preventDefault();
-    await prepareConsumeResourcesRoll(RogueTraderUtil.prepareResourceRollData(this.actor), this.actor);
+    await prepareConsumeResourcesRoll(RogueTraderUtil.prepareResourceRollData(this.document), this.document);
   }
 
   async _onRollGovernorSkill(ev) {
@@ -98,32 +95,31 @@ export class ColonySheet extends RogueTraderSheet {
   }
 
   async _prepareGovernorRoll() {
-    const actorData = await this.getData();
+    const context = await this._prepareContext();
     const rollData = {
       name: "DIALOG.GOVERNOR_SKILL_ROLL",
-      baseTarget: actorData.system.governor.skillBonus,
+      baseTarget: context.system.governor.skillBonus,
       modifier: 0,
-      ownerId: actorData.system.governor.actor
+      ownerId: context.system.governor.actor
     };
     await prepareCommonRoll(rollData);
   }
 
   async _onDropActor(event, data) {
-    const actorData = await this.getData();
+    const context = await this._prepareContext();
     const droppedActor = game.actors.get(data.uuid.split(".")[1]);
-    if (droppedActor)
-    {
+    if (droppedActor) {
       switch (event.target.dataset.crewrole) {
         case "governor":
           {
-            actorData.system.governor.actor = droppedActor.id;
+            context.system.governor.actor = droppedActor.id;
             break;
           }
         default:
           console.log(event.target.dataset.crewRole);
           break;
       }
-      this._updateObject(event, actorData);
+      this._updateObject(event, context);
     }
   }
 }

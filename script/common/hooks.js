@@ -42,6 +42,41 @@ Hooks.once("init", () => {
   CONFIG.Actor.documentClass = RogueTraderActor;
   CONFIG.Item.documentClass = RogueTraderItem;
   CONFIG.fontDefinitions["Caslon Antique"] = {editor: true, fonts: []};
+  
+  // v13: Set type labels for actors and items
+  CONFIG.Actor.typeLabels = {
+    "explorer": "Explorer",
+    "npc": "NPC",
+    "ship": "Ship",
+    "colony": "Colony"
+  };
+  
+  CONFIG.Item.typeLabels = {
+    "weapon": "Weapon",
+    "ammunition": "Ammunition",
+    "weaponModification": "Weapon Modification",
+    "armour": "Armour",
+    "forceField": "Force Field",
+    "cybernetic": "Cybernetic",
+    "drug": "Drug",
+    "gear": "Gear",
+    "tool": "Tool",
+    "criticalInjury": "Critical Injury",
+    "malignancy": "Malignancy",
+    "mentalDisorder": "Mental Disorder",
+    "mutation": "Mutation",
+    "psychicPower": "Psychic Power",
+    "talent": "Talent",
+    "specialAbility": "Special Ability",
+    "trait": "Trait",
+    "aptitude": "Aptitude",
+    "shipWeapon": "Ship Weapon",
+    "shipComponent": "Ship Component",
+    "planetaryResource": "Planetary Resource",
+    "colonyUpgrade": "Colony Upgrade",
+    "colonyEvent": "Colony Event"
+  };
+  
   game.rogueTrader = {
     testInit: {
       prepareCommonRoll,
@@ -56,19 +91,19 @@ Hooks.once("init", () => {
   };
   game.macro = RtMacroUtil; 
   
-  // v13: Use foundry.appv1.sheets namespace for sheet registration
-  // Unregister core sheets using v13 namespace
-  const ActorSheet = foundry.appv1.sheets.ActorSheet;
-  const ItemSheet = foundry.appv1.sheets.ItemSheet;
+  // v13 MIGRATION: Changed from using foundry.appv1.sheets namespace
+  // In v13, use foundry.documents.collections.Actors and foundry.documents.collections.Items directly
+  // These already provide the registerSheet method without needing appv1 references
   const Actors = foundry.documents.collections.Actors;
   const Items = foundry.documents.collections.Items;
   
-  Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("rogue-trader", ExplorerSheet, { types: ["explorer"], makeDefault: true });
-  Actors.registerSheet("rogue-trader", NpcSheet, { types: ["npc"], makeDefault: true });
+  // Register actor sheets
+  Actors.registerSheet("rogue-trader", ExplorerSheet, { label:"Explorer", types: ["explorer"], makeDefault: true });
+  Actors.registerSheet("rogue-trader", NpcSheet, { label:"NPC", types: ["npc"], makeDefault: true });
   Actors.registerSheet("rogue-trader", ShipSheet, {types: ["ship"], makeDefault: true});
   Actors.registerSheet("rogue-trader", ColonySheet, { types: ["colony"], makeDefault: true})
-  Items.unregisterSheet("core", ItemSheet);
+  
+  // Register item sheets
   Items.registerSheet("rogue-trader", WeaponSheet, { types: ["weapon"], makeDefault: true });
   Items.registerSheet("rogue-trader", AmmunitionSheet, { types: ["ammunition"], makeDefault: true });
   Items.registerSheet("rogue-trader", WeaponModificationSheet, { types: ["weaponModification"], makeDefault: true });

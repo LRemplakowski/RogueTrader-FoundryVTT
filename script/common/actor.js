@@ -252,7 +252,12 @@ export class RogueTraderActor extends Actor {
     this.system.corruptionBonus = Math.floor(this.corruption / 10);
     this.psy.currentRating = this.psy.rating - this.psy.sustained;
     // v13: Directly access system.initiative to properly initialize the bonus property
-    const initiativeCharacteristicKey = this.system.initiative.characteristic;
+    let initiativeCharacteristicKey = this.system.initiative.characteristic;
+    if (!initiativeCharacteristicKey)
+    {
+      this.system.initiative.characteristic = 'agility';
+      initiativeCharacteristicKey = 'agility'
+    }
     const initiativeCharacteristic = this.characteristics[initiativeCharacteristicKey];
     if (initiativeCharacteristic) {
       this.system.initiative.bonus = initiativeCharacteristic.bonus;

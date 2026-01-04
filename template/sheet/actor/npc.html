@@ -1,4 +1,5 @@
 <form class="{{cssClass}}" autocomplete="off">
+    {{log "foo"}}
     <div class="npc">
         <div class="header border">
             <div class="flex row">
@@ -60,25 +61,25 @@
 
         <div class="sheet-body">
             <div class="tab" data-group="primary" data-tab="stats">
-                {{> systems/rogue-trader/template/sheet/actor/tab/npc-stats.html}}
+                {{> systems/rogue-trader/template/sheet/actor/tab/npc-stats.html this}}
             </div>
             <div class="tab" data-group="primary" data-tab="combat">
-                {{> systems/rogue-trader/template/sheet/actor/tab/combat.html}}
+                {{> systems/rogue-trader/template/sheet/actor/tab/combat.html this}}
             </div>
             <div class="tab" data-group="primary" data-tab="abilities">
-                {{> systems/rogue-trader/template/sheet/actor/tab/abilities.html}}
+                {{> systems/rogue-trader/template/sheet/actor/tab/abilities.html this}}
             </div>
             <div class="tab" data-group="primary" data-tab="psychic-powers">
-                {{> systems/rogue-trader/template/sheet/actor/tab/psychic-powers.html}}
+                {{> systems/rogue-trader/template/sheet/actor/tab/psychic-powers.html this}}
             </div>
             <div class="tab" data-group="primary" data-tab="gear">
-                {{> systems/rogue-trader/template/sheet/actor/tab/gear.html}}
+                {{> systems/rogue-trader/template/sheet/actor/tab/gear.html this}}
             </div>
             <div class="tab" data-group="primary" data-tab="progression">
-                {{> systems/rogue-trader/template/sheet/actor/tab/progression.html}}
+                {{> systems/rogue-trader/template/sheet/actor/tab/progression.html this}}
             </div>
             <div class="tab" data-group="primary" data-tab="notes">
-                {{> systems/rogue-trader/template/sheet/actor/tab/npc-notes.html}}
+                {{> systems/rogue-trader/template/sheet/actor/tab/npc-notes.html this}}
             </div>
         </div>
     </div>

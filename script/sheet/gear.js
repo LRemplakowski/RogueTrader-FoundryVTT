@@ -1,22 +1,25 @@
 import { RogueTraderItemSheet } from "./item.js";
 
 export class GearSheet extends RogueTraderItemSheet {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["rogue-trader", "sheet", "gear"],
-      template: "systems/rogue-trader/template/sheet/gear.html",
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property with tabs configuration
+  static DEFAULT_OPTIONS = {
+    classes: ["rogue-trader", "sheet", "gear"],
+    window: {
+      resizable: true
+    },
+    position: {
       width: 500,
-      height: 369,
-      resizable: true,
-      tabs: [
-        {
-          navSelector: ".sheet-tabs",
-          contentSelector: ".sheet-body",
-          initial: "stats"
-        }
-      ]
-    });
-  }
+      height: 400
+    },
+    template: "systems/rogue-trader/template/sheet/gear.html",
+    tabs: [
+      {
+        navSelector: ".sheet-tabs",
+        contentSelector: ".sheet-body",
+        initial: "stats"
+      }
+    ]
+  };
 
   _getHeaderButtons() {
     let buttons = super._getHeaderButtons();

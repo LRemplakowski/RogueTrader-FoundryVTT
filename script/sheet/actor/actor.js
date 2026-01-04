@@ -1,31 +1,49 @@
 import {prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll, prepareForceFieldRoll} from "../../common/dialog.js";
 import RogueTraderUtil from "../../common/util.js";
 
-// v13: Use v13 namespace for ActorSheet base class
-export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
-  activateListeners(html) {
-    super.activateListeners(html);
-    html.find(".item-create").click(ev => this._onItemCreate(ev));
-    html.find(".item-edit").click(ev => this._onItemEdit(ev));
-    html.find(".item-delete").click(ev => this._onItemDelete(ev));
-    let inputs = html.find("input");
-    inputs.focusin(ev => this._onFocusIn(ev));
-    html.find(".roll-characteristic").click(async ev => await this._prepareRollCharacteristic(ev));
-    html.find(".roll-skill").click(async ev => await this._prepareRollSkill(ev));
-    html.find(".roll-speciality").click(async ev => await this._prepareRollSpeciality(ev));
-    html.find(".roll-insanity").click(async ev => await this._prepareRollInsanity(ev));
-    html.find(".roll-corruption").click(async ev => await this._prepareRollCorruption(ev));
-    html.find(".roll-weapon").click(async ev => await this._prepareRollWeapon(ev));
-    html.find(".roll-forceField").click(async ev => await this._prepareRollForceField(ev));
-    // html.find(".roll-shipWeapon").click(async ev => await this._prepareRollShipWeapon(ev));
-    html.find(".roll-psychic-power").click(async ev => await this._prepareRollPsychicPower(ev));
-  }
+// v13 MIGRATION: ActorSheetV2 includes HandlebarsApplicationMixin and DocumentSheetV2 functionality
+// No need for manual mixin composition - use the base class directly
+export class RogueTraderSheet extends foundry.applications.sheets.ActorSheetV2 {
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
+  static DEFAULT_OPTIONS = {
+    ...super.DEFAULT_OPTIONS,
+    id: "rogue-actor-sheet",
+    classes: ["rogue-trader", "sheet", "actor"],
+    window: {
+      resizable: true
+    },
+    position: {
+      width: 720,
+      height: 881
+    }
+  };
 
-  /** @override */
-  async getData(options) {
-    const data = super.getData(options);
-    data.system = data.data.system;
-    data.items = this.constructItemLists(data)
+  // v13 MIGRATION: PARTS defines the template structure and form submission
+  // Subclasses override PARTS to specify their template
+  static PARTS = {
+    sheet: {
+      template: "systems/rogue-trader/template/sheet/actor/actor.html"
+    }
+  };
+
+  // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
+  // This method prepares the context object passed to the Handlebars template
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    
+    // Add 'actor' alias for template backward compatibility (templates expect actor.name, actor.img, etc)
+    context.actor = this.document;
+    
+    // v13 MIGRATION: Ensure cssClass is available for form element
+    // DocumentSheetV2 should provide this, but ensure it's set
+    if (!context.cssClass) {
+      const classes = this.constructor.DEFAULT_OPTIONS.classes || [];
+      context.cssClass = classes.join(" ");
+    }
+    
+    // Add system data for template access
+    context.system = this.document.system;
+    context.items = this.constructItemLists(context);
 
     // Provide reusable option lists for actor templates using selectOptions
     const optionsData = {
@@ -144,29 +162,46 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
 
     // Build initiative characteristic options from the actor's characteristics
     const initiativeOptions = [];
-    for (const [key, char] of Object.entries(data.system.characteristics || {})) {
+    for (const [key, char] of Object.entries(context.system.characteristics || {})) {
       initiativeOptions.push({ value: key, label: game.i18n.localize(char.label) });
     }
     optionsData.initiativeOptions = initiativeOptions;
 
-    // Attach generated option lists to data.options
-    data.options = optionsData;
+    // Merge options with any existing options and attach to context
+    context.options = foundry.utils.mergeObject(context.options || {}, optionsData);
 
-    return data;
+    return context;
   }
 
-  /** @override */
-  get template() {
-    if (!game.user.isGM && this.actor.limited) {
-      return "systems/rogue-trader/template/sheet/actor/limited-sheet.html";
-    } else {
-      return this.options.template;
-    }
+  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 automatically handles form changes
+  // Override _onChangeInput to intercept any custom field processing needed
+  async _onChangeInput(event) {
+    // DocumentSheetV2 will automatically update system.* fields
+    // This is called before the document update, so we can validate or transform data
+    return super._onChangeInput(event);
+  }
+
+  activateListeners(html) {
+    super.activateListeners(html);
+    // v13 MIGRATION: Keep custom event listeners for non-form interactions
+    html.find(".item-create").click(ev => this._onItemCreate(ev));
+    html.find(".item-edit").click(ev => this._onItemEdit(ev));
+    html.find(".item-delete").click(ev => this._onItemDelete(ev));
+    let inputs = html.find("input");
+    inputs.focusin(ev => this._onFocusIn(ev));
+    html.find(".roll-characteristic").click(async ev => await this._prepareRollCharacteristic(ev));
+    html.find(".roll-skill").click(async ev => await this._prepareRollSkill(ev));
+    html.find(".roll-speciality").click(async ev => await this._prepareRollSpeciality(ev));
+    html.find(".roll-insanity").click(async ev => await this._prepareRollInsanity(ev));
+    html.find(".roll-corruption").click(async ev => await this._prepareRollCorruption(ev));
+    html.find(".roll-weapon").click(async ev => await this._prepareRollWeapon(ev));
+    html.find(".roll-forceField").click(async ev => await this._prepareRollForceField(ev));
+    html.find(".roll-psychic-power").click(async ev => await this._prepareRollPsychicPower(ev));
   }
 
   _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
-    if (this.actor.isOwner) {
+    if (this.document.isOwner) {
       buttons = [
         {
           label: game.i18n.localize("BUTTON.ROLL"),
@@ -187,7 +222,7 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
       name: `New ${game.i18n.localize(`TYPES.Item.${this.camelCase(header.type)}`)}`,
       type: header.type
     };
-    this.actor.createEmbeddedDocuments("Item", [data], { renderSheet: true });
+    this.document.createEmbeddedDocuments("Item", [data], { renderSheet: true });
   }
 
   camelCase(str) {
@@ -200,14 +235,14 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
   _onItemEdit(event) {
     event.preventDefault();
     const div = $(event.currentTarget).parents(".item");
-    let item = this.actor.items.get(div.data("itemId"));
+    let item = this.document.items.get(div.data("itemId"));
     item.sheet.render(true);
   }
 
   _onItemDelete(event) {
     event.preventDefault();
     const div = $(event.currentTarget).parents(".item");
-    this.actor.deleteEmbeddedDocuments("Item", [div.data("itemId")]);
+    this.document.deleteEmbeddedDocuments("Item", [div.data("itemId")]);
     div.slideUp(200, () => this.render(false));
   }
 
@@ -220,7 +255,7 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
       name: "DIALOG.CUSTOM_ROLL",
       baseTarget: 50,
       modifier: 0,
-      ownerId: this.actor.id
+      ownerId: this.document.id
     };
     await prepareCommonRoll(rollData);
   }
@@ -228,12 +263,12 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
   async _prepareRollCharacteristic(event) {
     event.preventDefault();
     const characteristicName = $(event.currentTarget).data("characteristic");
-    const characteristic = this.actor.characteristics[characteristicName];
+    const characteristic = this.document.characteristics[characteristicName];
     const rollData = {
       name: characteristic.label,
       baseTarget: characteristic.total,
       modifier: 0,
-      ownerId: this.actor.id,
+      ownerId: this.document.id,
       unnatural: characteristic.unnatural
     };
     await prepareCommonRoll(rollData);
@@ -241,7 +276,7 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
 
   _getCharacteristicOptions(selected) {
     const characteristics = [];
-    for (let char of Object.values(this.actor.characteristics)) {
+    for (let char of Object.values(this.document.characteristics)) {
       characteristics.push({
         label: char.label,
         target: char.total,
@@ -255,7 +290,7 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
   async _prepareRollSkill(event) {
     event.preventDefault();
     const skillName = $(event.currentTarget).data("skill");
-    const skill = this.actor.skills[skillName];
+    const skill = this.document.skills[skillName];
     const defaultChar = skill.defaultCharacteristic || skill.characteristics[0];
 
     let characteristics = this._getCharacteristicOptions(defaultChar);
@@ -269,7 +304,7 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
       baseTarget: skill.total,
       modifier: 0,
       characteristics: characteristics,
-      ownerId: this.actor.id,
+      ownerId: this.document.id,
       unnatural: 0
     };
     await prepareCommonRoll(rollData);
@@ -279,37 +314,37 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
     event.preventDefault();
     const skillName = $(event.currentTarget).parents(".item").data("skill");
     const specialityName = $(event.currentTarget).data("speciality");
-    const skill = this.actor.skills[skillName];
+    const skill = this.document.skills[skillName];
     const speciality = skill.specialities[specialityName];
     const rollData = {
       name: speciality.label,
       baseTarget: speciality.total,
       modifier: 0,
-      ownerId: this.actor.id
+      ownerId: this.document.id
     };
     await prepareCommonRoll(rollData);
   }
 
   async _prepareRollInsanity(event) {
     event.preventDefault();
-    const characteristic = this.actor.characteristics.willpower;
+    const characteristic = this.document.characteristics.willpower;
     const rollData = {
       name: "FEAR.HEADER",
       baseTarget: characteristic.total,
       modifier: 0,
-      ownerId: this.actor.id
+      ownerId: this.document.id
     };
     await prepareCommonRoll(rollData);
   }
 
   async _prepareRollCorruption(event) {
     event.preventDefault();
-    const characteristic = this.actor.characteristics.willpower;
+    const characteristic = this.document.characteristics.willpower;
     const rollData = {
       name: "CORRUPTION.HEADER",
       baseTarget: characteristic.total,
       modifier: this._getCorruptionModifier(),
-      ownerId: this.actor.id
+      ownerId: this.document.id
     };
     await prepareCommonRoll(rollData);
   }
@@ -317,49 +352,35 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
   async _prepareRollWeapon(event) {
     event.preventDefault();
     const div = $(event.currentTarget).parents(".item");
-    const weapon = this.actor.items.get(div.data("itemId"));
+    const weapon = this.document.items.get(div.data("itemId"));
     await prepareCombatRoll(
-      RogueTraderUtil.createWeaponRollData(this.actor, weapon), 
-      this.actor
+      RogueTraderUtil.createWeaponRollData(this.document, weapon), 
+      this.document
     );
   }
 
   async _prepareRollForceField(event) {
     event.preventDefault();
     const div = $(event.currentTarget).parents(".item");
-    const forceField = this.actor.items.get(div.data("itemId"));
+    const forceField = this.document.items.get(div.data("itemId"));
     await prepareForceFieldRoll(
-      RogueTraderUtil.createForceFieldRollData(this.actor, forceField),
-      this.actor
+      RogueTraderUtil.createForceFieldRollData(this.document, forceField),
+      this.document
     );
   }
 
-/*   async _prepareRollShipWeapon(event) {
-    event.preventDefault();
-    await this.selectTargetToken();
-    if (this.selectedToken) {
-      const div = $(event.currentTarget).parents(".item");
-      const weapon = this.actor.items.get(div.data("itemId"));
-      await prepareShipCombatRoll(
-        RogueTraderUtil.createShipWeaponRollData(this.actor, weapon), 
-        this.actor,
-        this.selectedToken
-      );
-    }
-  }
- */
   async _prepareRollPsychicPower(event) {
     event.preventDefault();
     const div = $(event.currentTarget).parents(".item");
-    const psychicPower = this.actor.items.get(div.data("itemId"));    
+    const psychicPower = this.document.items.get(div.data("itemId"));    
     await preparePsychicPowerRoll(
-      RogueTraderUtil.createPsychicRollData(this.actor, psychicPower)
+      RogueTraderUtil.createPsychicRollData(this.document, psychicPower)
     );
   }
   
   _getMaxPsyRating() {
-    let base = this.actor.psy.rating;
-    switch (this.actor.psy.class) {
+    let base = this.document.psy.rating;
+    switch (this.document.psy.class) {
       case "bound":
         return base + 2;
       case "unbound":
@@ -371,11 +392,11 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
 
   _getModifiers(modType) {
     let result = {}
-    for (let list in this.actor.items) {
+    for (let list in this.document.items) {
       switch (modType) {
         case 'characteristic':
-          for (let itemType in this.actor.items[list]) {
-            let items = this.actor.items[list][itemType];
+          for (let itemType in this.document.items[list]) {
+            let items = this.document.items[list][itemType];
             for (let item in items) {
               let itemModifiers = items[item].modifiers;
               for (let charMod in itemModifiers.characteristic) {
@@ -394,8 +415,8 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
           }
           break;
         case 'skill':
-          for (let itemType in this.actor.items[list]) {
-            let items = this.actor.items[list][itemType];
+          for (let itemType in this.document.items[list]) {
+            let items = this.document.items[list][itemType];
             for (let item in items) {
               let itemModifiers = items[item].modifiers;
               for (let skillMod in itemModifiers.skill) {
@@ -436,7 +457,7 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   _getCorruptionModifier() {
-    const corruption = this.actor.corruption;
+    const corruption = this.document.corruption;
     if (corruption <= 30) {
       return 0;
     } else if (corruption >= 31 && corruption <= 60) {
@@ -450,30 +471,30 @@ export class RogueTraderSheet extends foundry.appv1.sheets.ActorSheet {
 
   _getWeaponCharacteristic(weapon) {
     if (weapon.class === "melee") {
-      return this.actor.characteristics.weaponSkill;
+      return this.document.characteristics.weaponSkill;
     } else {
-      return this.actor.characteristics.ballisticSkill;
+      return this.document.characteristics.ballisticSkill;
     }
   }
 
   _getFocusPowerTarget(psychicPower) {
     const normalizeName = psychicPower.focusPower.test.toLowerCase();
-    if (this.actor.characteristics.hasOwnProperty(normalizeName)) {
-      return this.actor.characteristics[normalizeName];
-    } else if (this.actor.skills.hasOwnProperty(normalizeName)) {
-      return this.actor.skills[normalizeName];
+    if (this.document.characteristics.hasOwnProperty(normalizeName)) {
+      return this.document.characteristics[normalizeName];
+    } else if (this.document.skills.hasOwnProperty(normalizeName)) {
+      return this.document.skills[normalizeName];
     } else {
-      return this.actor.characteristics.willpower;
+      return this.document.characteristics.willpower;
     }
   }
 
   constructItemLists() {
       let items = {}
-      let itemTypes = this.actor.itemTypes;
+      let itemTypes = this.document.itemTypes;
       items.mentalDisorders = itemTypes["mentalDisorder"];
       items.malignancies = itemTypes["malignancy"];
       items.mutations = itemTypes["mutation"];
-      if (this.actor.type === "npc") {
+      if (this.document.type === "npc") {
           items.abilities = itemTypes["talent"]
           .concat(itemTypes["trait"])
           .concat(itemTypes["specialAbility"]);

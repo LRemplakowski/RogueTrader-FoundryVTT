@@ -1,21 +1,22 @@
 import { RogueTraderItemSheet } from "./item.js";
 
 export class ColonyEventSheet extends RogueTraderItemSheet {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["rogue-trader", "sheet", "colony-event"],
-      template: "systems/rogue-trader/template/sheet/colony-event.html",
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS with template definition
+  static DEFAULT_OPTIONS = {
+    classes: ["rogue-trader", "sheet", "colony-event"],
+    window: {
+      resizable: true
+    },
+    position: {
       width: 500,
-      height: 500,
-      resizable: true,
-      tabs: [
-        {
-          navSelector: ".sheet-tabs",
-          contentSelector: ".sheet-body",
-          initial: "stats"
-        }
-      ]
-    });
+      height: 500
+    },
+    template: "systems/rogue-trader/template/sheet/colony-event.html"
+  };
+
+  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
+  get template() {
+    return this.options.template;
   }
 
   _getHeaderButtons() {
@@ -28,17 +29,18 @@ export class ColonyEventSheet extends RogueTraderItemSheet {
     super.activateListeners(html);
   }
 
-  async getData(options) {
-    let data = await super.getData(options);
-    data.item.effectHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      data.system.effect,
+  // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.effectHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      context.system.effect,
       {
-        secrets: data.item.isOwner,
-        rollData: data.rollData,
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
         async: true,
-        relativeTo: this.item,
+        relativeTo: context.document,
       }
     );
-    return data;
+    return context;
   }
 }

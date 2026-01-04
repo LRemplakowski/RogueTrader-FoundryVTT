@@ -1,7 +1,32 @@
 import {showAddCharacteristicModifierDialog, showAddSkillModifierDialog} from "../common/dialog.js";
 
-// v13: Use v13 namespace for ItemSheet base class
-export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
+// v13 MIGRATION: Use HandlebarsApplicationMixin to provide _renderHTML and _replaceHTML methods
+// ItemSheetV2 provides the base document sheet functionality
+// HandlebarsApplicationMixin adds Handlebars template rendering support
+const BaseItemSheetV2 = foundry.applications.api.HandlebarsApplicationMixin(
+  foundry.applications.sheets.ItemSheetV2
+);
+
+export class RogueTraderItemSheet extends BaseItemSheetV2 {
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
+  // Subclasses will override this with their specific template and configuration
+  static DEFAULT_OPTIONS = {
+    classes: ["rogue-trader", "sheet", "item"],
+    window: {
+      resizable: true
+    },
+    position: {
+      width: 500,
+      height: 400
+    }
+  };
+
+  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
+  // This must be defined on the instance to be used by the mixin during rendering
+  get template() {
+    return this.options.template || "systems/rogue-trader/template/sheet/item.html";
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
     html.find("input").focusin(ev => this._onFocusIn(ev));
@@ -18,7 +43,8 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
     });
     html.find(".item-delete").click(ev => this._onModifierDelete(ev));
 
-    const { modifiers } = this.object.system;
+    // v13 MIGRATION: Changed from this.object to this.document for appv2 compatibility
+    const { modifiers } = this.document.system;
     for (const category in modifiers) {
       if (modifiers.hasOwnProperty(category)) {
         for (const key in modifiers[category]) {
@@ -78,62 +104,82 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
     this.addModifier(category, key, modifierData);
   }
   
-  async getData(options) {
-    let data = super.getData(options);
-        // Item HTML enrichment
-    data.item.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      data.item.description,
+  // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
+  // This method prepares the context object passed to the Handlebars template
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    
+    // Add 'item' alias for template backward compatibility (templates expect item.name, item.img, etc)
+    context.item = this.document;
+    
+    // Ensure document is available in context
+    if (!context.document) {
+      context.document = this.document;
+    }
+    
+    // v13 MIGRATION: Ensure cssClass is available for form element
+    // appv2 may not automatically include this, so we add it explicitly
+    if (!context.cssClass) {
+      const classes = this.constructor.DEFAULT_OPTIONS.classes || [];
+      context.cssClass = classes.join(" ");
+    }
+    
+    const systemData = context.document.system;
+    
+    // Item HTML enrichment
+    context.descriptionHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      context.document.description,
       {
-        secrets: data.item.isOwner,
-        rollData: data.rollData,
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
         async: true,
-        relativeTo: this.item,
+        relativeTo: context.document,
       }
     );
     // Component HTML enrichment
-    data.data.system.essentialComponentsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      data.data.system.essentialComponents,
+    context.essentialComponentsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      systemData.essentialComponents,
       {
-        secrets: data.item.isOwner,
-        rollData: data.rollData,
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
         async: true,
-        relativeTo: this.item,
+        relativeTo: context.document,
       }
     );
-    data.data.system.supplementalComponentsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      data.data.system.supplementalComponents,
+    context.supplementalComponentsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      systemData.supplementalComponents,
       {
-        secrets: data.item.isOwner,
-        rollData: data.rollData,
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
         async: true,
-        relativeTo: this.item,
+        relativeTo: context.document,
       }
     );
-    data.data.system.complicationsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      data.data.system.complications,
+    context.complicationsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      systemData.complications,
       {
-        secrets: data.item.isOwner,
-        rollData: data.rollData,
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
         async: true,
-        relativeTo: this.item,
+        relativeTo: context.document,
       }
     );
-    data.data.system.pastHistoryHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      data.data.system.pastHistory,
+    context.pastHistoryHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      systemData.pastHistory,
       {
-        secrets: data.item.isOwner,
-        rollData: data.rollData,
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
         async: true,
-        relativeTo: this.item,
+        relativeTo: context.document,
       }
     );
-    data.data.system.weaponsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      data.data.system.weapons,
+    context.weaponsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      systemData.weapons,
       {
-        secrets: data.item.isOwner,
-        rollData: data.rollData,
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
         async: true,
-        relativeTo: this.item,
+        relativeTo: context.document,
       }
     );
 
@@ -197,16 +243,12 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
         {value: 'storm', label: game.i18n.localize('PSYCHIC_POWER.STORM')},
         {value: 'blast', label: game.i18n.localize('PSYCHIC_POWER.BLAST')}
       ],
-
-      // Ship weapon classes (used by shipWeapon templates)
       shipWeaponClassOptions: [
         {value: 'macro', label: game.i18n.localize('SHIP_WEAPON.MACRO')},
         {value: 'lance', label: game.i18n.localize('SHIP_WEAPON.LANCE')},
         {value: 'torpedo', label: game.i18n.localize('SHIP_WEAPON.TORPEDO')},
         {value: 'hangar', label: game.i18n.localize('SHIP_WEAPON.HANGAR')}
       ],
-
-      // Armour types
       armourTypeOptions: [
         {value: 'basic', label: game.i18n.localize('ARMOUR_TYPE.BASIC')},
         {value: 'flak', label: game.i18n.localize('ARMOUR_TYPE.FLAK')},
@@ -215,8 +257,6 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
         {value: 'power', label: game.i18n.localize('ARMOUR_TYPE.POWER')},
         {value: 'other', label: game.i18n.localize('ARMOUR_TYPE.OTHER')}
       ],
-
-      // Critical injury parts
       criticalInjuryPartOptions: [
         {value: 'head', label: game.i18n.localize('ARMOUR.HEAD')},
         {value: 'leftArm', label: game.i18n.localize('ARMOUR.LEFT_ARM')},
@@ -225,8 +265,6 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
         {value: 'leftLeg', label: game.i18n.localize('ARMOUR.LEFT_LEG')},
         {value: 'rightLeg', label: game.i18n.localize('ARMOUR.RIGHT_LEG')}
       ],
-
-      // Ship component classes
       shipComponentClassOptions: [
         {value: 'voidEngine', label: game.i18n.localize('SHIP_COMPONENT.VOID_ENGINE')},
         {value: 'warpEngine', label: game.i18n.localize('SHIP_COMPONENT.WARP_ENGINE')},
@@ -241,11 +279,9 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
     };
 
     // Return context including options for selectOptions helper
-    return {
-      item: data.item,
-      system: data.data.system,
-      options: optionsData
-    };
+    context.options = foundry.utils.mergeObject(context.options || {}, optionsData);
+
+    return context;
   }
 
   _getHeaderButtons() {
@@ -255,7 +291,7 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
         label: game.i18n.localize("BUTTON.POST_ITEM"),
         class: "item-post",
         icon: "fas fa-comment",
-        onclick: ev => this.item.sendToChat()
+        onclick: ev => this.document.sendToChat()
       }
     ].concat(buttons);
     return buttons;
@@ -278,7 +314,7 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
       return;
     }
     // Directly access the item's data
-    const itemData = this.object.system;
+    const itemData = this.document.system;
     // Initialize the modifiers object if it doesn't exist
     if (!itemData.modifiers) {
       itemData.modifiers = { characteristic: {}, skill: {}, other: {} };
@@ -286,7 +322,7 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
     // Set the new modifier value
     itemData.modifiers[modifierType][attributeName] = modifierData;
     // Update the item with the new modifier
-    this.object.update({ 'system.modifiers': itemData.modifiers }).then(() => {
+    this.document.update({ 'system.modifiers': itemData.modifiers }).then(() => {
       console.log(`Modifier added: ${modifierType} - ${attributeName}: ${modifierData}`);
     }).catch(err => {
       console.error('Error updating item with new modifier:', err);
@@ -298,9 +334,9 @@ export class RogueTraderItemSheet extends foundry.appv1.sheets.ItemSheet {
     const div = $(event.currentTarget).parents(".modifier-item");
     const modId = div.data("modifierId");
     const modKey = div.data("modifierKey");
-    const itemData = this.object.system;
+    const itemData = this.document.system;
     delete itemData.modifiers[modId][modKey];
-    this.object.update({ [`system.modifiers.${modId}.-=${modKey}`]: null }).then(() => {
+    this.document.update({ [`system.modifiers.${modId}.-=${modKey}`]: null }).then(() => {
       console.log(`Modifier removed: ${modId} - ${modKey}`);
     }).catch(err => {
       console.error('Error updating item with deleted modifier:', err);

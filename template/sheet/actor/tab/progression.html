@@ -92,7 +92,10 @@
                     <b class="cost">{{localize "CHARACTERISTIC.COST"}}</b>
                 </div>
                 <div class="items">
+                    {{log system}}
+                    {{log this}}
                     {{#each system.characteristics as |characteristic key|}}
+                        {{log characteristic}}
                         <div class="characteristic item flex row">
                             <div class="name">{{localize characteristic.label}}</div>
                             <select class="advance" name="system.characteristics.{{key}}.advance" data-dtype="Number">
