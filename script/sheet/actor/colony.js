@@ -4,27 +4,26 @@ import RogueTraderUtil from "../../common/util.js";
 import { RogueTraderSheet } from "./actor.js";
 
 export class ColonySheet extends RogueTraderSheet {
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS with template definition
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
-	  id: "colony-sheet",
-    classes: ["rogue-trader", "sheet", "actor"],
-    tag: "form",
-    window: {
-      resizable: true
-    },
+    id: "colony-sheet",
+    classes: ["rogue-trader", "sheet", "actor", "colony"],
     position: {
       width: 750,
       height: 920
-    },
-    template: "systems/rogue-trader/template/sheet/actor/colony.html"
+    }
   };
 
-  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
-  get template() {
-    return this.options.template;
-  }
+  // v13 MIGRATION: PARTS defines the template structure
+  // DocumentSheetV2 automatically renders PARTS and handles form submission
+  static PARTS = {
+    sheet: {
+      template: "systems/rogue-trader/template/sheet/actor/colony.html"
+    }
+  };
 
+  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 handles name="system.*" fields automatically
   activateListeners(html) {
     super.activateListeners(html);
     html.find(".roll-growth").click(async ev => await this._onRollColonyGrowth(ev));
@@ -38,7 +37,7 @@ export class ColonySheet extends RogueTraderSheet {
     const context = await this._prepareContext();
     const growthData = this._updateGrowthPoints(context);
     await rollColonyGrowth(RogueTraderUtil.prepareColonyGrowthRollData(this.document, growthData));
-    this._updateObject(ev, context);
+    await this.document.update(context.system);
   }
 
   _updateGrowthPoints(context) {
@@ -119,7 +118,7 @@ export class ColonySheet extends RogueTraderSheet {
           console.log(event.target.dataset.crewRole);
           break;
       }
-      this._updateObject(event, context);
+      await this.document.update(context.system);
     }
   }
 }

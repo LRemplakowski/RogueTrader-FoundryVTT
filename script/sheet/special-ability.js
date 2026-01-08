@@ -1,36 +1,23 @@
 import { RogueTraderItemSheet } from "./item.js";
 
 export class SpecialAbilitySheet extends RogueTraderItemSheet {
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property with tabs configuration
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
+    ...super.DEFAULT_OPTIONS,
+    id: "special-ability-sheet",
     classes: ["rogue-trader", "sheet", "special-ability"],
-    window: {
-      resizable: true
-    },
     position: {
       width: 500,
       height: 400
-    },
-    template: "systems/rogue-trader/template/sheet/special-ability.html",
-    tabs: [
-      {
-        navSelector: ".sheet-tabs",
-        contentSelector: ".sheet-body",
-        initial: "stats"
-      }
-    ]
+    }
   };
 
-  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
-  get template() {
-    return this.options.template;
-  }
-
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    buttons = [].concat(buttons);
-    return buttons;
-  }
+  // v13 MIGRATION: PARTS defines the template structure
+  static PARTS = {
+    sheet: {
+      template: "systems/rogue-trader/template/sheet/special-ability.html"
+    }
+  };
 
   activateListeners(html) {
     super.activateListeners(html);

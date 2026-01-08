@@ -1,35 +1,20 @@
 import { RogueTraderSheet } from "./actor.js";
 
 export class ExplorerSheet extends RogueTraderSheet {
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
-	  id: "explorer-sheet",
-    classes: ["rogue-trader", "sheet", "actor"],
-    tag: "form",
-    window: {
-      resizable: true
-    },
-    position: {
-      width: 720,
-      height: 881
-    },
-    // v13 MIGRATION: appv2 sheets require template to be defined in DEFAULT_OPTIONS
-    template: "systems/rogue-trader/template/sheet/actor/explorer.html"
+    id: "explorer-sheet",
+    classes: ["rogue-trader", "sheet", "actor", "explorer"]
   };
 
-  /** @override */
-static PARTS = {
-	// This defines the Handlebars template to render
-	sheet: {
-		template: "systems/rogue-trader/template/sheet/actor/explorer.html"
-	}
-};
-
-  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
-  get template() {
-    return this.options.template;
-  }
+  // v13 MIGRATION: PARTS defines the template structure
+  // DocumentSheetV2 automatically renders PARTS and handles form submission
+  static PARTS = {
+    sheet: {
+      template: "systems/rogue-trader/template/sheet/actor/explorer.html"
+    }
+  };
 
   _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
@@ -45,18 +30,22 @@ static PARTS = {
     const context = await super._prepareContext(options);
     
     // Enrich biography field
-    context.system.bio.biographyHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      context.system.bio.notes,
-      {
-        secrets: context.document.isOwner,
-        rollData: context.rollData,
-        async: true,
-        relativeTo: context.document,
-      }
-    );
+    if (context.system?.bio?.notes) {
+      context.system.bio.biographyHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        context.system.bio.notes,
+        {
+          secrets: context.document.isOwner,
+          rollData: context.rollData,
+          async: true,
+          relativeTo: context.document,
+        }
+      );
+    }
     return context;
   }
 
+  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 handles name="system.*" fields automatically
+  // This listener handles custom aptitude creation and item cost submission
   activateListeners(html) {
     super.activateListeners(html);
     html.find(".aptitude-create").click(async ev => { await this._onAptitudeCreate(ev); });

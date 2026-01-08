@@ -1,14 +1,21 @@
-import {prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll, prepareForceFieldRoll} from "../../common/dialog.js";
+import { prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll, prepareForceFieldRoll } from "../../common/dialog.js";
 import RogueTraderUtil from "../../common/util.js";
 
-// v13 MIGRATION: ActorSheetV2 includes HandlebarsApplicationMixin and DocumentSheetV2 functionality
-// No need for manual mixin composition - use the base class directly
-export class RogueTraderSheet extends foundry.applications.sheets.ActorSheetV2 {
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { ActorSheetV2 } = foundry.applications.sheets;
+
+// v13 MIGRATION: HandlebarsApplicationMixin is REQUIRED for appv2 rendering — do not remove.
+// The mixin provides _renderHTML and _replaceHTML implementations that DocumentSheetV2 needs.
+// ActorSheetV2 provides DocumentSheetV2 base with automatic form submission
+// for inputs with name="system.*" attributes
+export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
+  // Subclasses will override this with their specific configuration
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
-    id: "rogue-actor-sheet",
+    id: "rogue-trader-sheet",
     classes: ["rogue-trader", "sheet", "actor"],
+    tag: "form",
     window: {
       resizable: true
     },
@@ -18,8 +25,8 @@ export class RogueTraderSheet extends foundry.applications.sheets.ActorSheetV2 {
     }
   };
 
-  // v13 MIGRATION: PARTS defines the template structure and form submission
-  // Subclasses override PARTS to specify their template
+  // v13 MIGRATION: PARTS defines the main template structure
+  // DocumentSheetV2 automatically renders PARTS and handles form submission
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/actor.html"
@@ -33,13 +40,6 @@ export class RogueTraderSheet extends foundry.applications.sheets.ActorSheetV2 {
     
     // Add 'actor' alias for template backward compatibility (templates expect actor.name, actor.img, etc)
     context.actor = this.document;
-    
-    // v13 MIGRATION: Ensure cssClass is available for form element
-    // DocumentSheetV2 should provide this, but ensure it's set
-    if (!context.cssClass) {
-      const classes = this.constructor.DEFAULT_OPTIONS.classes || [];
-      context.cssClass = classes.join(" ");
-    }
     
     // Add system data for template access
     context.system = this.document.system;

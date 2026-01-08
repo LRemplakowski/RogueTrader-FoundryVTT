@@ -5,28 +5,24 @@ import { RogueTraderSheet } from "./actor.js";
 export class ShipSheet extends RogueTraderSheet {
   side = "";
 
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS with template definition
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
-    classes: ["rogue-trader", "sheet", "actor"],
-    window: {
-      resizable: true
-    },
+    ...super.DEFAULT_OPTIONS,
+    id: "ship-sheet",
+    classes: ["rogue-trader", "sheet", "actor", "ship"],
     position: {
       width: 775,
       height: 835
-    },
-    template: "systems/rogue-trader/template/sheet/actor/ship.html"
+    }
   };
 
-  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
-  get template() {
-    return this.options.template;
-  }
-
-  activateListeners(html) {
-    super.activateListeners(html);
-    html.find(".roll-shipweapon").click(async ev => await this._prepareRollShipWeapon(ev));
-  }
+  // v13 MIGRATION: PARTS defines the template structure
+  // DocumentSheetV2 automatically renders PARTS and handles form submission
+  static PARTS = {
+    sheet: {
+      template: "systems/rogue-trader/template/sheet/actor/ship.html"
+    }
+  };
 
   // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
   async _prepareContext(options) {
@@ -60,6 +56,12 @@ export class ShipSheet extends RogueTraderSheet {
       }
     );
     return context;
+  }
+
+  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 handles name="system.*" fields automatically
+  activateListeners(html) {
+    super.activateListeners(html);
+    html.find(".roll-shipweapon").click(async ev => await this._prepareRollShipWeapon(ev));
   }
 
   async _prepareRollShipWeapon(event) {
@@ -217,7 +219,7 @@ export class ShipSheet extends RogueTraderSheet {
         console.log(event.target.dataset.crewRole);
         break;
     }
-    this._updateObject(event, context);
+    this.document.update(context.system);
   }
 
   async _onDropItemCreate(itemData) {
@@ -273,7 +275,7 @@ export class ShipSheet extends RogueTraderSheet {
   async _onDropItem(event, data) {
     const items = await super._onDropItem(event, data);
     let context = await this._prepareContext();
-    await this._updateObject(event, context);
+    await this.document.update(context.system);
     return items;
   }
 

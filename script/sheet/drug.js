@@ -1,31 +1,23 @@
 import { RogueTraderItemSheet } from "./item.js";
 
 export class DrugSheet extends RogueTraderItemSheet {
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property with tabs configuration
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
+    ...super.DEFAULT_OPTIONS,
+    id: "drug-sheet",
     classes: ["rogue-trader", "sheet", "drug"],
-    window: {
-      resizable: true
-    },
     position: {
       width: 500,
       height: 400
-    },
-    template: "systems/rogue-trader/template/sheet/drug.html",
-    tabs: [
-      {
-        navSelector: ".sheet-tabs",
-        contentSelector: ".sheet-body",
-        initial: "stats"
-      }
-    ]
+    }
   };
 
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    buttons = [].concat(buttons);
-    return buttons;
-  }
+  // v13 MIGRATION: PARTS defines the template structure
+  static PARTS = {
+    sheet: {
+      template: "systems/rogue-trader/template/sheet/drug.html"
+    }
+  };
 
   activateListeners(html) {
     super.activateListeners(html);

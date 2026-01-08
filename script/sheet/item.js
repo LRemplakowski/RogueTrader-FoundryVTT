@@ -1,17 +1,19 @@
 import {showAddCharacteristicModifierDialog, showAddSkillModifierDialog} from "../common/dialog.js";
 
-// v13 MIGRATION: Use HandlebarsApplicationMixin to provide _renderHTML and _replaceHTML methods
-// ItemSheetV2 provides the base document sheet functionality
-// HandlebarsApplicationMixin adds Handlebars template rendering support
-const BaseItemSheetV2 = foundry.applications.api.HandlebarsApplicationMixin(
-  foundry.applications.sheets.ItemSheetV2
-);
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+const { ItemSheetV2 } = foundry.applications.sheets;
 
-export class RogueTraderItemSheet extends BaseItemSheetV2 {
+// v13 MIGRATION: HandlebarsApplicationMixin is REQUIRED for appv2 rendering — do not remove.
+// The mixin provides _renderHTML and _replaceHTML implementations that DocumentSheetV2 needs.
+// ItemSheetV2 provides DocumentSheetV2 base with automatic form submission
+// for inputs with name="system.*" attributes
+export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
   // Subclasses will override this with their specific template and configuration
   static DEFAULT_OPTIONS = {
+    id: "rogue-trader-item-sheet",
     classes: ["rogue-trader", "sheet", "item"],
+    tag: "form",
     window: {
       resizable: true
     },
@@ -21,10 +23,20 @@ export class RogueTraderItemSheet extends BaseItemSheetV2 {
     }
   };
 
-  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
-  // This must be defined on the instance to be used by the mixin during rendering
-  get template() {
-    return this.options.template || "systems/rogue-trader/template/sheet/item.html";
+  // v13 MIGRATION: PARTS defines the main template structure
+  // DocumentSheetV2 automatically renders PARTS and handles form submission
+  static PARTS = {
+    sheet: {
+      template: "systems/rogue-trader/template/sheet/item.html"
+    }
+  };
+
+  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 automatically handles form changes
+  // Override _onChangeInput to intercept any custom field processing needed
+  async _onChangeInput(event) {
+    // DocumentSheetV2 will automatically update system.* fields
+    // This is called before the document update, so we can validate or transform data
+    return super._onChangeInput(event);
   }
 
   activateListeners(html) {
@@ -111,18 +123,6 @@ export class RogueTraderItemSheet extends BaseItemSheetV2 {
     
     // Add 'item' alias for template backward compatibility (templates expect item.name, item.img, etc)
     context.item = this.document;
-    
-    // Ensure document is available in context
-    if (!context.document) {
-      context.document = this.document;
-    }
-    
-    // v13 MIGRATION: Ensure cssClass is available for form element
-    // appv2 may not automatically include this, so we add it explicitly
-    if (!context.cssClass) {
-      const classes = this.constructor.DEFAULT_OPTIONS.classes || [];
-      context.cssClass = classes.join(" ");
-    }
     
     const systemData = context.document.system;
     

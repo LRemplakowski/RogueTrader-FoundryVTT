@@ -1,31 +1,24 @@
 import { RogueTraderItemSheet } from "./item.js";
 
 export class GearSheet extends RogueTraderItemSheet {
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property with tabs configuration
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
+    ...super.DEFAULT_OPTIONS,
+    id: "gear-sheet",
     classes: ["rogue-trader", "sheet", "gear"],
-    window: {
-      resizable: true
-    },
     position: {
       width: 500,
       height: 400
-    },
-    template: "systems/rogue-trader/template/sheet/gear.html",
-    tabs: [
-      {
-        navSelector: ".sheet-tabs",
-        contentSelector: ".sheet-body",
-        initial: "stats"
-      }
-    ]
+    }
   };
 
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    buttons = [].concat(buttons);
-    return buttons;
-  }
+  // v13 MIGRATION: PARTS defines the template structure
+  // DocumentSheetV2 automatically renders PARTS and handles form submission
+  static PARTS = {
+    sheet: {
+      template: "systems/rogue-trader/template/sheet/gear.html"
+    }
+  };
 
   activateListeners(html) {
     super.activateListeners(html);

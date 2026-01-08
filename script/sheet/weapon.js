@@ -1,36 +1,24 @@
 import { RogueTraderItemSheet } from "./item.js";
 
 export class WeaponSheet extends RogueTraderItemSheet {
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property with tabs configuration
+  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
+    ...super.DEFAULT_OPTIONS,
+    id: "weapon-sheet",
     classes: ["rogue-trader", "sheet", "weapon"],
-    window: {
-      resizable: true
-    },
     position: {
       width: 600,
       height: 500
-    },
-    template: "systems/rogue-trader/template/sheet/weapon.html",
-    tabs: [
-      {
-        navSelector: ".sheet-tabs",
-        contentSelector: ".sheet-body",
-        initial: "stats"
-      }
-    ]
+    }
   };
 
-  // v13 MIGRATION: HandlebarsApplicationMixin requires a template property getter
-  get template() {
-    return this.options.template;
-  }
-
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    buttons = [].concat(buttons);
-    return buttons;
-  }
+  // v13 MIGRATION: PARTS defines the template structure
+  // DocumentSheetV2 automatically renders PARTS and handles form submission
+  static PARTS = {
+    sheet: {
+      template: "systems/rogue-trader/template/sheet/weapon.html"
+    }
+  };
 
   activateListeners(html) {
     super.activateListeners(html);
