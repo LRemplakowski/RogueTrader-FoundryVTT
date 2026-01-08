@@ -27,10 +27,6 @@
                         </div>
                     </div>
                     <div class="header-row">
-                        <!-- <div class="birthright">
-                            <label>{{localize "BIO.BIRTHRIGHT"}}</label>
-                            <input style="margin-left: 18px" name="system.bio.birthright" type="text" value="{{system.bio.birthright}}" />
-                        </div> -->
                         <div class="home-world">
                             <label>{{localize "BIO.HOME_WORLD"}}</label>
                             <input name="system.bio.homeWorld" type="text" value="{{system.bio.homeWorld}}" />
@@ -50,38 +46,32 @@
             </div>
         </div>
 
-        <div class="sheet-tabs tabs flex row" data-group="primary">
-            <b class="item active" data-tab="stats">{{localize "TAB.STATS"}}</b>
-            <b class="item" data-tab="combat">{{localize "TAB.COMBAT"}}</b>
-            <b class="item" data-tab="abilities">{{localize "TAB.ABILITIES"}}</b>
-            <b class="item" data-tab="psychic-powers">{{localize "TAB.PSYCHIC_POWERS"}}</b>
-            <b class="item" data-tab="gear">{{localize "TAB.GEAR"}}</b>
-            <b class="item" data-tab="progression">{{localize "TAB.ADVANCES"}}</b>
-            <b class="item" data-tab="notes">{{localize "TAB.NOTES"}}</b>
-        </div>
+        <!-- v13 MIGRATION: V2 Tab System - Tab Navigation -->
+        <nav class="sheet-tabs tabs" data-group="primary">
+            {{#each tabs.primary.tabs as |tab tabId|}}
+                <button 
+                    class="item tab-button {{if tab.active 'active'}}"
+                    data-tab="{{tab.id}}"
+                    data-group="{{tab.group}}"
+                    type="button"
+                >
+                    {{localize tab.label}}
+                </button>
+            {{/each}}
+        </nav>
 
-        <div class="sheet-body">
-            <div class="tab active" data-group="primary" data-tab="stats">
-                {{> systems/rogue-trader/template/sheet/actor/tab/stats.html this}}
-            </div>
-            <div class="tab" data-group="primary" data-tab="combat">
-                {{> systems/rogue-trader/template/sheet/actor/tab/combat.html this}}
-            </div>
-            <div class="tab" data-group="primary" data-tab="abilities">
-                {{> systems/rogue-trader/template/sheet/actor/tab/abilities.html this}}
-            </div>
-            <div class="tab" data-group="primary" data-tab="psychic-powers">
-                {{> systems/rogue-trader/template/sheet/actor/tab/psychic-powers.html this}}
-            </div>
-            <div class="tab" data-group="primary" data-tab="gear">
-                {{> systems/rogue-trader/template/sheet/actor/tab/gear.html this}}
-            </div>
-            <div class="tab" data-group="primary" data-tab="progression">
-                {{> systems/rogue-trader/template/sheet/actor/tab/progression.html this}}
-            </div>
-            <div class="tab" data-group="primary" data-tab="notes">
-                {{> systems/rogue-trader/template/sheet/actor/tab/notes.html this}}
-            </div>
+        <!-- v13 MIGRATION: V2 Tab System - Tab Content Container -->
+        <div class="sheet-body tab-body">
+            {{#each tabs.primary.tabs as |tab tabId|}}
+                <section 
+                    class="tab {{tab.cssClass}} {{if tab.active 'active'}}"
+                    data-tab="{{tab.id}}"
+                    data-group="{{tab.group}}"
+                    {{#if tab.active}}aria-selected="true"{{/if}}
+                >
+                    {{{lookup this tabId}}}
+                </section>
+            {{/each}}
         </div>
     </div>
 </section>

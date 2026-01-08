@@ -21,11 +21,66 @@ export class ColonySheet extends RogueTraderSheet {
     }
   };
 
+    /**
+   * Return the dynamic tab configuration for this sheet.
+   * This allows different actor types to define different tabs if needed.
+   * @returns {object} The tabs configuration
+   */
+    _getTabsConfig(group) {
+      const tabs = foundry.utils.deepClone(super._getTabsConfig(group))
+      tabs.tabs.push({ id: 'core', group: 'primary', label: 'TAB.CORE', icon: 'fa-solid fa-home', cssClass: 'tab-core' });
+      tabs.tabs.push({ id: 'upgrades', group: 'primary', label: 'TAB.UPGRADES', icon: 'fa-solid fa-arrow-up', cssClass: 'tab-upgrades' });
+      tabs.tabs.push({ id: 'notes', group: 'primary', label: 'TAB.NOTES', icon: 'fa-solid fa-note-sticky', cssClass: 'tab-notes' });
+      return tabs;
+    }
+
+  // v13 MIGRATION: V2 Tab System Definition
+  // TABS must have 'tabs' as an ARRAY (not object) with 'initial' property
+  static TABS = {
+    sheet: {
+      id: "sheet",
+      group: "primary",
+      tabs: [
+        {
+          id: "core",
+          group: "primary",
+          label: "TAB.CORE",
+          icon: "fa-solid fa-home",
+          cssClass: "tab-core"
+        },
+        {
+          id: "upgrades",
+          group: "primary",
+          label: "TAB.UPGRADES",
+          icon: "fa-solid fa-arrow-up",
+          cssClass: "tab-upgrades"
+        },
+        {
+          id: "notes",
+          group: "primary",
+          label: "TAB.NOTES",
+          icon: "fa-solid fa-note-sticky",
+          cssClass: "tab-notes"
+        }
+      ],
+      initial: "core"
+    }
+  };
+
   // v13 MIGRATION: PARTS defines the template structure
   // DocumentSheetV2 automatically renders PARTS and handles form submission
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/colony.html"
+    },
+    core: {
+      template: "systems/rogue-trader/template/sheet/actor/tab/colony-core.html"
+    },
+    upgrades: {
+      template: "systems/rogue-trader/template/sheet/actor/tab/colony-upgrades.html"
+    },
+    notes: {
+      template: "systems/rogue-trader/template/sheet/actor/tab/colony-notes.html"
     }
   };
 
