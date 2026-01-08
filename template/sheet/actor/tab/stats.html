@@ -4,7 +4,7 @@
         <div class="flex" style="margin-top: 2px">
             <input class="total" name="system.insanity" type="number" value="{{system.insanity}}" data-dtype="Number" />
             <div class="information">
-                <button class="roll-insanity" type="button">
+                <button class="roll-insanity" data-action="rollInsanity" type="button">
                     <i class="fas fa-dice"></i>
                 </button>
                 <input class="bonus" type="number" value="{{system.insanityBonus}}" data-dtype="Number" disabled />
@@ -13,19 +13,19 @@
         <div class="item-list">
             <div class="flex header">
                 <b class="name">{{localize "INSANITY.MENTAL_DISORDER"}}</b>
-                <a class="button item-create" title="Add Mental Disorder" data-type="mentalDisorder"><i class="fas fa-plus"></i></a>
+                <a class="button item-create" data-action="itemCreate" title="Add Mental Disorder" data-type="mentalDisorder"><i class="fas fa-plus"></i></a>
             </div>
             <div class="items">
                 {{#each items.mentalDisorders as |item|}}
                     <div class="insanity item flex row" data-item-id="{{item.id}}">
-                        <div class="flex name item-edit">
+                        <div class="flex name item-edit" data-action="itemEdit">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
                             </div>
                             <div class="name">{{item.name}}</div>
                         </div>
                         <div class="button">
-                            <a class="item-control item-delete" title="Delete Mental Disorder"><i class="fas fa-trash"></i></a>
+                            <a class="item-control item-delete" data-action="itemDelete" title="Delete Mental Disorder"><i class="fas fa-trash"></i></a>
                         </div>
                     </div>
                 {{/each}}
@@ -54,7 +54,7 @@
         <div class="flex" style="margin-top: 2px">
             <input class="total" name="system.corruption" type="number" value="{{system.corruption}}" data-dtype="Number" />
             <div class="information">
-                <button class="roll-corruption" type="button">
+                <button class="roll-corruption" data-action="rollCorruption" type="button">
                     <i class="fas fa-dice"></i>
                 </button>
                 <input class="bonus" type="number" value="{{system.corruptionBonus}}" data-dtype="Number" disabled />
@@ -63,19 +63,19 @@
         <div class="item-list">
             <div class="flex header">
                 <b class="name">{{localize "CORRUPTION.MALIGNANCY"}}</b>
-                <a class="button item-create" title="Add Malignancy" data-type="malignancy"><i class="fas fa-plus"></i></a>
+                <a class="button item-create" data-action="itemCreate" title="Add Malignancy" data-type="malignancy"><i class="fas fa-plus"></i></a>
             </div>
             <div class="items">
                 {{#each items.malignancies as |item|}}
                         <div class="corruption item flex row" data-item-id="{{item.id}}">
-                            <div class="flex name item-edit">
+                            <div class="flex name item-edit" data-action="itemEdit">
                                 <div class="image-container">
                                     <div class="image" style="background-image: url('{{item.img}}')"></div>
                                 </div>
                                 <div class="name">{{item.name}}</div>
                             </div>
                             <div class="button">
-                                <a class="item-control item-delete" title="Delete Malignancy"><i class="fas fa-trash"></i></a>
+                                <a class="item-control item-delete" data-action="itemDelete" title="Delete Malignancy"><i class="fas fa-trash"></i></a>
                             </div>
                         </div>
                 {{/each}}
@@ -84,19 +84,19 @@
         <div class="item-list">
             <div class="flex header">
                 <b class="name">{{localize "CORRUPTION.MUTATION"}}</b>
-                <a class="button item-create" title="Add Mutation" data-type="mutation"><i class="fas fa-plus"></i></a>
+                <a class="button item-create" data-action="itemCreate" title="Add Mutation" data-type="mutation"><i class="fas fa-plus"></i></a>
             </div>
             <div class="items">
                 {{#each items.mutations as |item|}}
                     <div class="corruption item flex row" data-item-id="{{item.id}}">
-                        <div class="flex name item-edit">
+                        <div class="flex name item-edit" data-action="itemEdit">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
                             </div>
                             <div class="name">{{item.name}}</div>
                         </div>
                         <div class="button">
-                            <a class="item-control item-delete" title="Delete Mutation"><i class="fas fa-trash"></i></a>
+                            <a class="item-control item-delete" data-action="itemDelete" title="Delete Mutation"><i class="fas fa-trash"></i></a>
                         </div>
                     </div>
                 {{/each}}
@@ -111,7 +111,7 @@
                     {{#unless skill.isSpecialist}}
                         <div class="skill">
                             <div class="name">
-                                <button class="roll-skill" data-skill="{{key}}" type="button">{{localize skill.label}}</button>
+                                <button class="roll-skill" data-action="rollSkill" data-skill="{{key}}" type="button">{{localize skill.label}}</button>
                             </div>
                             <input class="total" type="number" value="{{skill.total}}" data-dtype="Number" disabled />
                             <div class="information">
@@ -135,7 +135,7 @@
                                     {{#if speciality.isKnown}}
                                         <div class="speciality item flex row" data-skill="{{key}}">
                                             <div class="name">
-                                                <button class="roll-speciality" data-speciality="{{keySpe}}" type="button">{{localize speciality.label}}</button>
+                                                <button class="roll-speciality" data-action="rollSpeciality" data-speciality="{{keySpe}}" type="button">{{localize speciality.label}}</button>
                                             </div>
                                             <input class="total" type="number" value="{{speciality.total}}" data-dtype="Number" disabled />
                                             <div class="information">

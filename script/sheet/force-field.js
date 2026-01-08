@@ -18,8 +18,4 @@ export class ForceFieldSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/force-field.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

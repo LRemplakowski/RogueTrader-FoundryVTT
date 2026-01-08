@@ -18,8 +18,4 @@ export class AptitudeSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/aptitude.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

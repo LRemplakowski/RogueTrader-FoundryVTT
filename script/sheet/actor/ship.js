@@ -13,6 +13,9 @@ export class ShipSheet extends RogueTraderSheet {
     position: {
       width: 775,
       height: 835
+    },
+    actions: {
+      rollShipWeapon: ShipSheet.#rollShipWeapon
     }
   };
 
@@ -24,54 +27,26 @@ export class ShipSheet extends RogueTraderSheet {
     }
   };
 
-  // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
-  async _prepareContext(options) {
-    const context = await super._prepareContext(options);
-    
-    context.system.pastHistoryHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      context.system.pastHistory,
-      {
-        secrets: context.document.isOwner,
-        rollData: context.rollData,
-        async: true,
-        relativeTo: context.document,
-      }
-    );
-    context.system.complicationsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      context.system.complications,
-      {
-        secrets: context.document.isOwner,
-        rollData: context.rollData,
-        async: true,
-        relativeTo: context.document,
-      }
-    );
-    context.system.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      context.system.notes,
-      {
-        secrets: context.document.isOwner,
-        rollData: context.rollData,
-        async: true,
-        relativeTo: context.document,
-      }
-    );
-    return context;
-  }
-
-  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 handles name="system.*" fields automatically
-  activateListeners(html) {
-    super.activateListeners(html);
-    html.find(".roll-shipweapon").click(async ev => await this._prepareRollShipWeapon(ev));
-  }
-
-  async _prepareRollShipWeapon(event) {
+  /**
+   * Handle ship weapon roll.
+   * @this {ShipSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollShipWeapon(event, target) {
     event.preventDefault();
-    const div = $(event.currentTarget).parents(".item");
-    const weapon = this.document.items.get(div.data("itemId"));
+    const div = target.closest(".item");
+    const weapon = this.document.items.get(div.dataset.itemId);
     await prepareShipCombatRoll(
       RogueTraderUtil.createShipWeaponRollData(this.document, weapon), 
       this.document
     );
+  }
+
+  _getHeaderButtons() {
+    let buttons = super._getHeaderButtons();
+    buttons = [].concat(buttons);
+    return buttons;
   }
 
   async selectTargetToken() {
@@ -279,9 +254,37 @@ export class ShipSheet extends RogueTraderSheet {
     return items;
   }
 
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    buttons = [].concat(buttons);
-    return buttons;
+  // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    
+    context.system.pastHistoryHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      context.system.pastHistory,
+      {
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
+        async: true,
+        relativeTo: context.document,
+      }
+    );
+    context.system.complicationsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      context.system.complications,
+      {
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
+        async: true,
+        relativeTo: context.document,
+      }
+    );
+    context.system.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      context.system.notes,
+      {
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
+        async: true,
+        relativeTo: context.document,
+      }
+    );
+    return context;
   }
 }

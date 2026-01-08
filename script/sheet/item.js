@@ -11,15 +11,26 @@ export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
   // Subclasses will override this with their specific template and configuration
   static DEFAULT_OPTIONS = {
+    ...super.DEFAULT_OPTIONS,
     id: "rogue-trader-item-sheet",
     classes: ["rogue-trader", "sheet", "item"],
     tag: "form",
+    form: {
+      handler: RogueTraderItemSheet.#onSubmitForm,
+      closeOnSubmit: false,
+      submitOnChange: true
+    },
     window: {
       resizable: true
     },
     position: {
       width: 500,
       height: 400
+    },
+    actions: {
+      addCharModifier: RogueTraderItemSheet.#addCharModifier,
+      addSkillModifier: RogueTraderItemSheet.#addSkillModifier,
+      deleteModifier: RogueTraderItemSheet.#deleteModifier
     }
   };
 
@@ -31,31 +42,73 @@ export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2
     }
   };
 
-  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 automatically handles form changes
-  // Override _onChangeInput to intercept any custom field processing needed
-  async _onChangeInput(event) {
-    // DocumentSheetV2 will automatically update system.* fields
-    // This is called before the document update, so we can validate or transform data
-    return super._onChangeInput(event);
+  /**
+   * Handle form submission for the item sheet.
+   * @this {RogueTraderItemSheet}
+   * @param {SubmitEvent} event
+   * @param {HTMLFormElement} form
+   * @param {FormDataExtended} formData
+   */
+  static async #onSubmitForm(event, form, formData) {
+    event.preventDefault();
+    await this.document.update(formData.object);
   }
 
-  activateListeners(html) {
-    super.activateListeners(html);
-    html.find("input").focusin(ev => this._onFocusIn(ev));
-    html.find('.add-char-modifier').click(event => {
-      const button = $(event.currentTarget);
-      const modifierType = button.data('type');
-      // Call a method to show a form or dialog to input new modifier details
-      showAddCharacteristicModifierDialog(this, modifierType);
-    });
-    html.find('.add-skill-modifier').click(event => {
-      const button = $(event.currentTarget);
-      const modifierType = button.data('type');
-      showAddSkillModifierDialog(this, modifierType);
-    });
-    html.find(".item-delete").click(ev => this._onModifierDelete(ev));
+  /**
+   * Handle adding a characteristic modifier.
+   * @this {RogueTraderItemSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #addCharModifier(event, target) {
+    event.preventDefault();
+    const modifierType = target.dataset.type;
+    showAddCharacteristicModifierDialog(this, modifierType);
+  }
 
-    // v13 MIGRATION: Changed from this.object to this.document for appv2 compatibility
+  /**
+   * Handle adding a skill modifier.
+   * @this {RogueTraderItemSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #addSkillModifier(event, target) {
+    event.preventDefault();
+    const modifierType = target.dataset.type;
+    showAddSkillModifierDialog(this, modifierType);
+  }
+
+  /**
+   * Handle deleting a modifier.
+   * @this {RogueTraderItemSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #deleteModifier(event, target) {
+    event.preventDefault();
+    const div = target.closest(".modifier-item");
+    const modId = div.dataset.modifierId;
+    const modKey = div.dataset.modifierKey;
+    const itemData = this.document.system;
+    delete itemData.modifiers[modId][modKey];
+    await this.document.update({ [`system.modifiers.${modId}.-=${modKey}`]: null });
+    console.log(`Modifier removed: ${modId} - ${modKey}`);
+  }
+
+  // v13 MIGRATION: ApplicationV2 activation - activateListeners is still needed for non-action event binding
+  // This method is called after rendering and handles subscription-based change events.
+  // Call super.activateListeners(html) to ensure parent class event binding occurs first.
+  activateListeners(html) {
+    // v13 MIGRATION: CRITICAL - Call super first to ensure ApplicationV2 form binding works
+    super.activateListeners(html);
+    
+    // v13 MIGRATION: Input focus handlers for auto-select
+    html.querySelectorAll("input").forEach(el => {
+      el.addEventListener("focusin", ev => this._onFocusIn(ev));
+    });
+
+    // v13 MIGRATION: Subscribe to modifier changes
+    // The { modifiers } destructuring accesses system.modifiers from the rendered document
     const { modifiers } = this.document.system;
     for (const category in modifiers) {
       if (modifiers.hasOwnProperty(category)) {
@@ -81,25 +134,25 @@ export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2
   }
 
   _subscribeCharacteristicChange(html, category, key) {
-    const charModInputField = html.find(`input[id='modifier-char-value-${key}']`);
-    const unnaturalModInputField = html.find(`input[id='modifier-unnatural-value-${key}']`);
-    const charModLabel = html.find(`a[id='modifier-char-label-${key}']`);
-    charModInputField.change(() => this._onCharacteristicModifierChange(category, key, charModLabel, charModInputField, unnaturalModInputField));
-    unnaturalModInputField.change(() => this._onCharacteristicModifierChange(category, key, charModLabel, charModInputField, unnaturalModInputField));
+    const charModInputField = html.querySelector(`input[id='modifier-char-value-${key}']`);
+    const unnaturalModInputField = html.querySelector(`input[id='modifier-unnatural-value-${key}']`);
+    const charModLabel = html.querySelector(`a[id='modifier-char-label-${key}']`);
+    charModInputField?.addEventListener("change", () => this._onCharacteristicModifierChange(category, key, charModLabel, charModInputField, unnaturalModInputField));
+    unnaturalModInputField?.addEventListener("change", () => this._onCharacteristicModifierChange(category, key, charModLabel, charModInputField, unnaturalModInputField));
   }
 
   _subscribeSkillChange(html, category, key) {
-    const skillModInputField = html.find(`input[id='modifier-skill-value-${key}']`);
-    const skillModLabel = html.find(`a[id='modifier-skill-label-${key}']`);
-    skillModInputField.change(() => this._onSkillModifierChange(category, key, skillModLabel, skillModInputField));
+    const skillModInputField = html.querySelector(`input[id='modifier-skill-value-${key}']`);
+    const skillModLabel = html.querySelector(`a[id='modifier-skill-label-${key}']`);
+    skillModInputField?.addEventListener("change", () => this._onSkillModifierChange(category, key, skillModLabel, skillModInputField));
   }
   
   _onCharacteristicModifierChange(category, key, labelElement, charValueField, unnaturalValueField) {
-    const charValue = parseInt(charValueField.val(), 10);
-    const unnaturalValue = parseInt(unnaturalValueField.val(), 10);
+    const charValue = parseInt(charValueField.value, 10);
+    const unnaturalValue = parseInt(unnaturalValueField.value, 10);
     const modifierData = {
       id: key,
-      label: labelElement.data('modifier-label'),
+      label: labelElement.dataset.modifierLabel,
       characteristicModifier: charValue,
       unnaturalModifier: unnaturalValue
     };
@@ -107,15 +160,60 @@ export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2
   }
 
   _onSkillModifierChange(category, key, labelElement, skillValueField) {
-    const skillValue = parseInt(skillValueField.val(), 10);
+    const skillValue = parseInt(skillValueField.value, 10);
     const modifierData = {
       id: key,
-      label: labelElement.data('modifier-label'),
+      label: labelElement.dataset.modifierLabel,
       skillModifier: skillValue,
     }
     this.addModifier(category, key, modifierData);
   }
-  
+
+  _getHeaderButtons() {
+    let buttons = super._getHeaderButtons();
+    buttons = [
+      {
+        label: game.i18n.localize("BUTTON.POST_ITEM"),
+        class: "item-post",
+        icon: "fas fa-comment",
+        onclick: ev => this.document.sendToChat()
+      }
+    ].concat(buttons);
+    return buttons;
+  }
+
+  _onFocusIn(event) {
+    $(event.currentTarget).select();
+  }
+
+  /**
+   * Adds a new modifier to the item.
+   * @param {string} modifierType - The type of the modifier ('characteristic', 'skill', 'other').
+   * @param {string} attributeName - The name of the affected attribute.
+   * @param {object} modifierData - The value of the modifier to add.
+   */
+  addModifier(modifierType, attributeName, modifierData) {
+    // Ensure the modifier type is valid
+    if (!['characteristic', 'skill', 'other'].includes(modifierType)) {
+      console.error('Invalid modifier type. Must be "characteristic", "skill", or "other".');
+      return;
+    }
+    // Directly access the item's data
+    const itemData = this.document.system;
+    // Initialize the modifiers object if it doesn't exist
+    if (!itemData.modifiers) {
+      itemData.modifiers = { characteristic: {}, skill: {}, other: {} };
+    }
+    // Set the new modifier value
+    itemData.modifiers[modifierType][attributeName] = modifierData;
+    // Update the item with the new modifier
+    this.document.update({ 'system.modifiers': itemData.modifiers }).then(() => {
+      console.log(`Modifier added: ${modifierType} - ${attributeName}: ${modifierData}`);
+    }).catch(err => {
+      console.error('Error updating item with new modifier:', err);
+    });
+  }
+
   // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
   // This method prepares the context object passed to the Handlebars template
   async _prepareContext(options) {
@@ -282,65 +380,5 @@ export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2
     context.options = foundry.utils.mergeObject(context.options || {}, optionsData);
 
     return context;
-  }
-
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    buttons = [
-      {
-        label: game.i18n.localize("BUTTON.POST_ITEM"),
-        class: "item-post",
-        icon: "fas fa-comment",
-        onclick: ev => this.document.sendToChat()
-      }
-    ].concat(buttons);
-    return buttons;
-  }
-
-  _onFocusIn(event) {
-    $(event.currentTarget).select();
-  }
-
-  /**
-   * Adds a new modifier to the item.
-   * @param {string} modifierType - The type of the modifier ('characteristic', 'skill', 'other').
-   * @param {string} attributeName - The name of the affected attribute.
-   * @param {object} modifierData - The value of the modifier to add.
-   */
-  addModifier(modifierType, attributeName, modifierData) {
-    // Ensure the modifier type is valid
-    if (!['characteristic', 'skill', 'other'].includes(modifierType)) {
-      console.error('Invalid modifier type. Must be "characteristic", "skill", or "other".');
-      return;
-    }
-    // Directly access the item's data
-    const itemData = this.document.system;
-    // Initialize the modifiers object if it doesn't exist
-    if (!itemData.modifiers) {
-      itemData.modifiers = { characteristic: {}, skill: {}, other: {} };
-    }
-    // Set the new modifier value
-    itemData.modifiers[modifierType][attributeName] = modifierData;
-    // Update the item with the new modifier
-    this.document.update({ 'system.modifiers': itemData.modifiers }).then(() => {
-      console.log(`Modifier added: ${modifierType} - ${attributeName}: ${modifierData}`);
-    }).catch(err => {
-      console.error('Error updating item with new modifier:', err);
-    });
-  }
-
-  _onModifierDelete(event) { 
-    event.preventDefault();
-    const div = $(event.currentTarget).parents(".modifier-item");
-    const modId = div.data("modifierId");
-    const modKey = div.data("modifierKey");
-    const itemData = this.document.system;
-    delete itemData.modifiers[modId][modKey];
-    this.document.update({ [`system.modifiers.${modId}.-=${modKey}`]: null }).then(() => {
-      console.log(`Modifier removed: ${modId} - ${modKey}`);
-    }).catch(err => {
-      console.error('Error updating item with deleted modifier:', err);
-    });
-    div.slideUp(200, () => this.render(false));
   }
 }

@@ -19,8 +19,4 @@ export class GearSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/gear.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

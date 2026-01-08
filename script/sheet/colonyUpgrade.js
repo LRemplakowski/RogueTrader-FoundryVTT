@@ -18,8 +18,4 @@ export class ColonyUpgradeSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/colonyUpgrade.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

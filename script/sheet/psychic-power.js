@@ -18,8 +18,4 @@ export class PsychicPowerSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/psychic-power.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

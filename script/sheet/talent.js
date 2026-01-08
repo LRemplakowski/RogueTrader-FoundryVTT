@@ -18,8 +18,4 @@ export class TalentSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/talent.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

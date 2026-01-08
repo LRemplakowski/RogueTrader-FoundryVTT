@@ -18,8 +18,4 @@ export class DrugSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/drug.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

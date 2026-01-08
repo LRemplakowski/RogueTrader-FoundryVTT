@@ -18,8 +18,4 @@ export class PlanetaryResourceSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/planetaryResource.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

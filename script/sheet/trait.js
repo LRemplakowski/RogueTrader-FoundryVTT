@@ -18,8 +18,4 @@ export class TraitSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/trait.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

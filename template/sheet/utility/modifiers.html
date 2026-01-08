@@ -9,7 +9,7 @@
           <b class="modifier-column">{{localize "DIALOG.CHARACTERISTIC_NAME"}}</b>
           <b class="modifier-column">{{localize "DIALOG.VALUE_MODIFIER"}}</b>
           <b class="modifier-column">{{localize "DIALOG.UNNATURAL_VALUE"}}</b>
-          <a class="modifier-button button add-char-modifier" title="Add Characteristic Modifier" data-type="characteristic"><i class="fas fa-plus"></i></a>
+          <a class="modifier-button button add-char-modifier" data-action="addCharModifier" title="Add Characteristic Modifier" data-type="characteristic"><i class="fas fa-plus"></i></a>
         </div>
         {{#each system.modifiers.characteristic as |charMod|}}
           {{log charMod}}
@@ -22,14 +22,14 @@
                 <input id="modifier-unnatural-value-{{charMod.id}}" type="number" value="{{charMod.unnaturalModifier}}" data-dtype="Number"/>
               </div>
               <div class="flex row modifier-button button">
-                <a class="item-control item-delete" title="Delete Modifier"><i class="fas fa-trash"></i></a>
+                <a class="item-control item-delete" data-action="deleteModifier" title="Delete Modifier"><i class="fas fa-trash"></i></a>
               </div>
           </div>
         {{/each}}
         <div class="modifier-item flex header row">
           <b class="modifier-column">Skill</b>
           <b class="modifier-column">Value Modifier</b>
-          <a class="modifier-button button add-skill-modifier" title="Add Skill Modifier" data-type="skill"><i class="fas fa-plus"></i></a>
+          <a class="modifier-button button add-skill-modifier" data-action="addSkillModifier" title="Add Skill Modifier" data-type="skill"><i class="fas fa-plus"></i></a>
         </div>
         {{#each system.modifiers.skill as |skillMod|}}
           <div class="modifier-item flex row" data-modifier-id="skill" data-modifier-key="{{skillMod.id}}">
@@ -38,7 +38,7 @@
               <input id="modifier-skill-value-{{skillMod.id}}" type="number" value="{{skillMod.skillModifier}}" data-dtype="Number"/>
             </div>
             <div class="flex row modifier-button button">
-              <a class="item-control item-delete" title="Delete Modifier"><i class="fas fa-trash"></i></a>
+              <a class="item-control item-delete" data-action="deleteModifier" title="Delete Modifier"><i class="fas fa-trash"></i></a>
             </div>
           </div>
         {{/each}}

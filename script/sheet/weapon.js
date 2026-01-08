@@ -19,8 +19,4 @@ export class WeaponSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/weapon.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

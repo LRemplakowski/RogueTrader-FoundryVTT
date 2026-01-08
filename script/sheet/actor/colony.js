@@ -12,6 +12,12 @@ export class ColonySheet extends RogueTraderSheet {
     position: {
       width: 750,
       height: 920
+    },
+    actions: {
+      rollGrowth: ColonySheet.#rollGrowth,
+      rollEvents: ColonySheet.#rollEvents,
+      rollGovernor: ColonySheet.#rollGovernor,
+      rollResources: ColonySheet.#rollResources
     }
   };
 
@@ -23,21 +29,51 @@ export class ColonySheet extends RogueTraderSheet {
     }
   };
 
-  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 handles name="system.*" fields automatically
-  activateListeners(html) {
-    super.activateListeners(html);
-    html.find(".roll-growth").click(async ev => await this._onRollColonyGrowth(ev));
-    html.find(".roll-events").click(async ev => await this._onRollColonyEvents(ev));
-    html.find(".roll-governor").click(async ev => await this._onRollGovernorSkill(ev));
-    html.find(".roll-resources").click(async ev => await this._onRollConsumeResources(ev));
-  }
-
-  async _onRollColonyGrowth(ev) {
-    ev.preventDefault();
+  /**
+   * Handle colony growth roll.
+   * @this {ColonySheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollGrowth(event, target) {
+    event.preventDefault();
     const context = await this._prepareContext();
     const growthData = this._updateGrowthPoints(context);
     await rollColonyGrowth(RogueTraderUtil.prepareColonyGrowthRollData(this.document, growthData));
     await this.document.update(context.system);
+  }
+
+  /**
+   * Handle colony events roll.
+   * @this {ColonySheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollEvents(event, target) {
+    event.preventDefault();
+    await rollColonyEvents(RogueTraderUtil.prepareColonyRollData(this.document));
+  }
+
+  /**
+   * Handle governor skill roll.
+   * @this {ColonySheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollGovernor(event, target) {
+    event.preventDefault();
+    await this._prepareGovernorRoll();
+  }
+
+  /**
+   * Handle resource consumption roll.
+   * @this {ColonySheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollResources(event, target) {
+    event.preventDefault();
+    await prepareConsumeResourcesRoll(RogueTraderUtil.prepareResourceRollData(this.document), this.document);
   }
 
   _updateGrowthPoints(context) {
@@ -76,21 +112,6 @@ export class ColonySheet extends RogueTraderSheet {
         difference: actorStats.security - startSecurity
       }
     }
-  }
-
-  async _onRollColonyEvents(ev) {
-    ev.preventDefault();
-    await rollColonyEvents(RogueTraderUtil.prepareColonyRollData(this.document));
-  }
-
-  async _onRollConsumeResources(ev) {
-    ev.preventDefault();
-    await prepareConsumeResourcesRoll(RogueTraderUtil.prepareResourceRollData(this.document), this.document);
-  }
-
-  async _onRollGovernorSkill(ev) {
-    ev.preventDefault();
-    await this._prepareGovernorRoll();
   }
 
   async _prepareGovernorRoll() {

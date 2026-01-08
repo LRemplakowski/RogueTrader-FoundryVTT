@@ -18,8 +18,4 @@ export class ArmourSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/armour.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

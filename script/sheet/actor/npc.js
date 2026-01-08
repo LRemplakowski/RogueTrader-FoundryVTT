@@ -5,7 +5,10 @@ export class NpcSheet extends RogueTraderSheet {
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
     id: "npc-sheet",
-    classes: ["rogue-trader", "sheet", "actor", "npc"]
+    classes: ["rogue-trader", "sheet", "actor", "npc"],
+    actions: {
+      itemCostFocusOut: NpcSheet.#itemCostFocusOut
+    }
   };
 
   // v13 MIGRATION: PARTS defines the template structure
@@ -15,6 +18,19 @@ export class NpcSheet extends RogueTraderSheet {
       template: "systems/rogue-trader/template/sheet/actor/npc.html"
     }
   };
+
+  /**
+   * Handle item cost focus out.
+   * @this {NpcSheet}
+   * @param {FocusEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #itemCostFocusOut(event, target) {
+    event.preventDefault();
+    const div = target.closest(".item");
+    let item = this.document.items.get(div.dataset.itemId);
+    await item.update({"system.cost": target.value});
+  }
 
   _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
@@ -41,19 +57,5 @@ export class NpcSheet extends RogueTraderSheet {
       );
     }
     return context;
-  }
-
-  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 handles name="system.*" fields automatically
-  // This listener handles custom item cost field submission
-  activateListeners(html) {
-    super.activateListeners(html);
-    html.find(".item-cost").focusout(async ev => { await this._onItemCostFocusOut(ev); });
-  }
-
-  async _onItemCostFocusOut(event) {
-    event.preventDefault();
-    const div = $(event.currentTarget).parents(".item");
-    let item = this.document.items.get(div.data("itemId"));
-    item.update({"system.cost": $(event.currentTarget)[0].value});
   }
 }

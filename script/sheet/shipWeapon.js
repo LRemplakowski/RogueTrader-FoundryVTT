@@ -18,8 +18,4 @@ export class ShipWeaponSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/shipWeapon.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

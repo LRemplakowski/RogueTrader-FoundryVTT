@@ -18,8 +18,4 @@ export class MutationSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/mutation.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

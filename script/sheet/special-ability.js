@@ -18,8 +18,4 @@ export class SpecialAbilitySheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/special-ability.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

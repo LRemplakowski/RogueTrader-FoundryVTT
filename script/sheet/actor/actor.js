@@ -16,12 +16,30 @@ export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     id: "rogue-trader-sheet",
     classes: ["rogue-trader", "sheet", "actor"],
     tag: "form",
+    form: {
+      handler: RogueTraderSheet.#onSubmitForm,
+      closeOnSubmit: false,
+      submitOnChange: true
+    },
     window: {
       resizable: true
     },
     position: {
       width: 720,
       height: 881
+    },
+    actions: {
+      itemCreate: RogueTraderSheet.#itemCreate,
+      itemEdit: RogueTraderSheet.#itemEdit,
+      itemDelete: RogueTraderSheet.#itemDelete,
+      rollCharacteristic: RogueTraderSheet.#rollCharacteristic,
+      rollSkill: RogueTraderSheet.#rollSkill,
+      rollSpeciality: RogueTraderSheet.#rollSpeciality,
+      rollInsanity: RogueTraderSheet.#rollInsanity,
+      rollCorruption: RogueTraderSheet.#rollCorruption,
+      rollWeapon: RogueTraderSheet.#rollWeapon,
+      rollForceField: RogueTraderSheet.#rollForceField,
+      rollPsychicPower: RogueTraderSheet.#rollPsychicPower
     }
   };
 
@@ -32,6 +50,385 @@ export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
       template: "systems/rogue-trader/template/sheet/actor/actor.html"
     }
   };
+
+  /**
+   * Handle form submission for the actor sheet.
+   * @this {RogueTraderSheet}
+   * @param {SubmitEvent} event
+   * @param {HTMLFormElement} form
+   * @param {FormDataExtended} formData
+   */
+  static async #onSubmitForm(event, form, formData) {
+    event.preventDefault();
+    await this.document.update(formData.object);
+  }
+
+  /**
+   * Handle item creation.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #itemCreate(event, target) {
+    event.preventDefault();
+    let header = target.dataset;
+    let data = {
+      name: `New ${game.i18n.localize(`TYPES.Item.${this.camelCase(header.type)}`)}`,
+      type: header.type
+    };
+    this.document.createEmbeddedDocuments("Item", [data], { renderSheet: true });
+  }
+
+  /**
+   * Handle item edit.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #itemEdit(event, target) {
+    event.preventDefault();
+    const div = target.closest(".item");
+    let item = this.document.items.get(div.dataset.itemId);
+    item.sheet.render(true);
+  }
+
+  /**
+   * Handle item deletion.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #itemDelete(event, target) {
+    event.preventDefault();
+    const div = target.closest(".item");
+    this.document.deleteEmbeddedDocuments("Item", [div.dataset.itemId]);
+  }
+
+  /**
+   * Handle characteristic roll.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollCharacteristic(event, target) {
+    event.preventDefault();
+    const characteristicName = target.dataset.characteristic;
+    const characteristic = this.document.characteristics[characteristicName];
+    const rollData = {
+      name: characteristic.label,
+      baseTarget: characteristic.total,
+      modifier: 0,
+      ownerId: this.document.id,
+      unnatural: characteristic.unnatural
+    };
+    await prepareCommonRoll(rollData);
+  }
+
+  /**
+   * Handle skill roll.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollSkill(event, target) {
+    event.preventDefault();
+    const skillName = target.dataset.skill;
+    const skill = this.document.skills[skillName];
+    const defaultChar = skill.defaultCharacteristic || skill.characteristics[0];
+
+    let characteristics = this._getCharacteristicOptions(defaultChar);
+    characteristics = characteristics.map(char => {
+      char.target += skill.advance;
+      return char;
+    });
+
+    const rollData = {
+      name: skill.label,
+      baseTarget: skill.total,
+      modifier: 0,
+      characteristics: characteristics,
+      ownerId: this.document.id,
+      unnatural: 0
+    };
+    await prepareCommonRoll(rollData);
+  }
+
+  /**
+   * Handle speciality roll.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollSpeciality(event, target) {
+    event.preventDefault();
+    const div = target.closest(".item");
+    const skillName = div.dataset.skill;
+    const specialityName = target.dataset.speciality;
+    const skill = this.document.skills[skillName];
+    const speciality = skill.specialities[specialityName];
+    const rollData = {
+      name: speciality.label,
+      baseTarget: speciality.total,
+      modifier: 0,
+      ownerId: this.document.id
+    };
+    await prepareCommonRoll(rollData);
+  }
+
+  /**
+   * Handle insanity roll.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollInsanity(event, target) {
+    event.preventDefault();
+    const characteristic = this.document.characteristics.willpower;
+    const rollData = {
+      name: "FEAR.HEADER",
+      baseTarget: characteristic.total,
+      modifier: 0,
+      ownerId: this.document.id
+    };
+    await prepareCommonRoll(rollData);
+  }
+
+  /**
+   * Handle corruption roll.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollCorruption(event, target) {
+    event.preventDefault();
+    const characteristic = this.document.characteristics.willpower;
+    const rollData = {
+      name: "CORRUPTION.HEADER",
+      baseTarget: characteristic.total,
+      modifier: this._getCorruptionModifier(),
+      ownerId: this.document.id
+    };
+    await prepareCommonRoll(rollData);
+  }
+
+  /**
+   * Handle weapon roll.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollWeapon(event, target) {
+    event.preventDefault();
+    const div = target.closest(".item");
+    const weapon = this.document.items.get(div.dataset.itemId);
+    await prepareCombatRoll(
+      RogueTraderUtil.createWeaponRollData(this.document, weapon), 
+      this.document
+    );
+  }
+
+  /**
+   * Handle force field roll.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollForceField(event, target) {
+    event.preventDefault();
+    const div = target.closest(".item");
+    const forceField = this.document.items.get(div.dataset.itemId);
+    await prepareForceFieldRoll(
+      RogueTraderUtil.createForceFieldRollData(this.document, forceField),
+      this.document
+    );
+  }
+
+  /**
+   * Handle psychic power roll.
+   * @this {RogueTraderSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollPsychicPower(event, target) {
+    event.preventDefault();
+    const div = target.closest(".item");
+    const psychicPower = this.document.items.get(div.dataset.itemId);    
+    await preparePsychicPowerRoll(
+      RogueTraderUtil.createPsychicRollData(this.document, psychicPower)
+    );
+  }
+
+  // v13 MIGRATION: ApplicationV2 activation - activateListeners is still needed for non-action event binding
+  // This method is called after rendering and must handle all custom event listeners.
+  // Call super.activateListeners(html) to ensure parent class event binding occurs first.
+  activateListeners(html) {
+    // v13 MIGRATION: CRITICAL - Call super first to ensure ApplicationV2 form binding works
+    super.activateListeners(html);
+    
+    // v13 MIGRATION: Input focus handlers for auto-select
+    html.querySelectorAll("input").forEach(el => {
+      el.addEventListener("focusin", ev => this._onFocusIn(ev));
+    });
+  }
+
+  _getHeaderButtons() {
+    let buttons = super._getHeaderButtons();
+    if (this.document.isOwner) {
+      buttons = [
+        {
+          label: game.i18n.localize("BUTTON.ROLL"),
+          class: "custom-roll",
+          icon: "fas fa-dice",
+          onclick: async ev => await this._prepareCustomRoll()
+        }
+      ].concat(buttons);
+    }
+    return buttons;
+  }
+
+  camelCase(str) {
+    // Using replace method with regEx
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+        return index == 0 ? word.toLowerCase() : word.toUpperCase();
+    }).replace(/\s+/g, '');
+  }
+
+  _onFocusIn(event) {
+    $(event.currentTarget).select();
+  }
+
+  async _prepareCustomRoll() {
+    const rollData = {
+      name: "DIALOG.CUSTOM_ROLL",
+      baseTarget: 50,
+      modifier: 0,
+      ownerId: this.document.id
+    };
+    await prepareCommonRoll(rollData);
+  }
+
+  _getCharacteristicOptions(selected) {
+    const characteristics = [];
+    for (let char of Object.values(this.document.characteristics)) {
+      characteristics.push({
+        label: char.label,
+        target: char.total,
+        selected: char.short === selected,
+        unnatural: char.unnatural
+      });
+    }
+    return characteristics;
+  }
+
+  _getMaxPsyRating() {
+    let base = this.document.psy.rating;
+    switch (this.document.psy.class) {
+      case "bound":
+        return base + 2;
+      case "unbound":
+        return base + 4;
+      case "daemonic":
+        return base + 3;
+    }
+  }
+
+  _getModifiers(modType) {
+    let result = {}
+    for (let list in this.document.items) {
+      switch (modType) {
+        case 'characteristic':
+          for (let itemType in this.document.items[list]) {
+            let items = this.document.items[list][itemType];
+            for (let item in items) {
+              let itemModifiers = items[item].modifiers;
+              for (let charMod in itemModifiers.characteristic) {
+                if (result[charMod]) {
+                  result[charMod].valueMod += itemModifiers.characteristic[charMod].valueMod;
+                  result[charMod].unnaturalMod += itemModifiers.characteristic[charMod].unnaturalMod;
+                }
+                else {
+                  result[charMod] = {
+                    valueMod: itemModifiers.characteristic[charMod].valueMod,
+                    unnaturalMod: itemModifiers.characteristic[charMod].unnaturalMod
+                  };
+                }
+              }
+            }
+          }
+          break;
+        case 'skill':
+          for (let itemType in this.document.items[list]) {
+            let items = this.document.items[list][itemType];
+            for (let item in items) {
+              let itemModifiers = items[item].modifiers;
+              for (let skillMod in itemModifiers.skill) {
+                if (result[skillMod]) {
+                  result[skillMod].valueMod += itemModifiers.skill[skillMod].valueMod;
+                }
+                else {
+                  result[skillMod] = {
+                    valueMod: itemModifiers.skill[skillMod].valueMod,
+                  };
+                }
+              }
+            }
+          }
+          break;
+        case 'other':
+          break;
+      }
+    }
+  }
+
+  _extractNumberedTrait(regex, traits) {
+    let rfMatch = traits.match(regex);
+    if (rfMatch) {
+      regex = /\d+/gi;
+      return parseInt(rfMatch[0].match(regex)[0]);
+    }
+    return undefined;
+  }
+
+  _hasNamedTrait(regex, traits) {
+    let rfMatch = traits.match(regex);
+    if (rfMatch) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  _getCorruptionModifier() {
+    const corruption = this.document.corruption;
+    if (corruption <= 30) {
+      return 0;
+    } else if (corruption >= 31 && corruption <= 60) {
+      return -10;
+    } else if (corruption >= 61 && corruption <= 90) {
+      return -20;
+    } else if (corruption >= 91) {
+      return -30;
+    }
+  }
+
+  _getWeaponCharacteristic(weapon) {
+    if (weapon.class === "melee") {
+      return this.document.characteristics.weaponSkill;
+    } else {
+      return this.document.characteristics.ballisticSkill;
+    }
+  }
+
+  _getFocusPowerTarget(psychicPower) {
+    const normalizeName = psychicPower.focusPower.test.toLowerCase();
+    if (this.document.characteristics.hasOwnProperty(normalizeName)) {
+      return this.document.characteristics[normalizeName];
+    } else if (this.document.skills.hasOwnProperty(normalizeName)) {
+      return this.document.skills[normalizeName];
+    } else {
+      return this.document.characteristics.willpower;
+    }
+  }
 
   // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
   // This method prepares the context object passed to the Handlebars template
@@ -171,321 +568,6 @@ export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     context.options = foundry.utils.mergeObject(context.options || {}, optionsData);
 
     return context;
-  }
-
-  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 automatically handles form changes
-  // Override _onChangeInput to intercept any custom field processing needed
-  async _onChangeInput(event) {
-    // DocumentSheetV2 will automatically update system.* fields
-    // This is called before the document update, so we can validate or transform data
-    return super._onChangeInput(event);
-  }
-
-  activateListeners(html) {
-    super.activateListeners(html);
-    // v13 MIGRATION: Keep custom event listeners for non-form interactions
-    html.find(".item-create").click(ev => this._onItemCreate(ev));
-    html.find(".item-edit").click(ev => this._onItemEdit(ev));
-    html.find(".item-delete").click(ev => this._onItemDelete(ev));
-    let inputs = html.find("input");
-    inputs.focusin(ev => this._onFocusIn(ev));
-    html.find(".roll-characteristic").click(async ev => await this._prepareRollCharacteristic(ev));
-    html.find(".roll-skill").click(async ev => await this._prepareRollSkill(ev));
-    html.find(".roll-speciality").click(async ev => await this._prepareRollSpeciality(ev));
-    html.find(".roll-insanity").click(async ev => await this._prepareRollInsanity(ev));
-    html.find(".roll-corruption").click(async ev => await this._prepareRollCorruption(ev));
-    html.find(".roll-weapon").click(async ev => await this._prepareRollWeapon(ev));
-    html.find(".roll-forceField").click(async ev => await this._prepareRollForceField(ev));
-    html.find(".roll-psychic-power").click(async ev => await this._prepareRollPsychicPower(ev));
-  }
-
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    if (this.document.isOwner) {
-      buttons = [
-        {
-          label: game.i18n.localize("BUTTON.ROLL"),
-          class: "custom-roll",
-          icon: "fas fa-dice",
-          onclick: async ev => await this._prepareCustomRoll()
-        }
-      ].concat(buttons);
-    }
-    return buttons;
-  }
-
-  _onItemCreate(event) {
-    event.preventDefault();
-    let header = event.currentTarget.dataset;
-
-    let data = {
-      name: `New ${game.i18n.localize(`TYPES.Item.${this.camelCase(header.type)}`)}`,
-      type: header.type
-    };
-    this.document.createEmbeddedDocuments("Item", [data], { renderSheet: true });
-  }
-
-  camelCase(str) {
-    // Using replace method with regEx
-    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-        return index == 0 ? word.toLowerCase() : word.toUpperCase();
-    }).replace(/\s+/g, '');
-  }
-
-  _onItemEdit(event) {
-    event.preventDefault();
-    const div = $(event.currentTarget).parents(".item");
-    let item = this.document.items.get(div.data("itemId"));
-    item.sheet.render(true);
-  }
-
-  _onItemDelete(event) {
-    event.preventDefault();
-    const div = $(event.currentTarget).parents(".item");
-    this.document.deleteEmbeddedDocuments("Item", [div.data("itemId")]);
-    div.slideUp(200, () => this.render(false));
-  }
-
-  _onFocusIn(event) {
-    $(event.currentTarget).select();
-  }
-
-  async _prepareCustomRoll() {
-    const rollData = {
-      name: "DIALOG.CUSTOM_ROLL",
-      baseTarget: 50,
-      modifier: 0,
-      ownerId: this.document.id
-    };
-    await prepareCommonRoll(rollData);
-  }
-
-  async _prepareRollCharacteristic(event) {
-    event.preventDefault();
-    const characteristicName = $(event.currentTarget).data("characteristic");
-    const characteristic = this.document.characteristics[characteristicName];
-    const rollData = {
-      name: characteristic.label,
-      baseTarget: characteristic.total,
-      modifier: 0,
-      ownerId: this.document.id,
-      unnatural: characteristic.unnatural
-    };
-    await prepareCommonRoll(rollData);
-  }
-
-  _getCharacteristicOptions(selected) {
-    const characteristics = [];
-    for (let char of Object.values(this.document.characteristics)) {
-      characteristics.push({
-        label: char.label,
-        target: char.total,
-        selected: char.short === selected,
-        unnatural: char.unnatural
-      });
-    }
-    return characteristics;
-  }
-
-  async _prepareRollSkill(event) {
-    event.preventDefault();
-    const skillName = $(event.currentTarget).data("skill");
-    const skill = this.document.skills[skillName];
-    const defaultChar = skill.defaultCharacteristic || skill.characteristics[0];
-
-    let characteristics = this._getCharacteristicOptions(defaultChar);
-    characteristics = characteristics.map(char => {
-      char.target += skill.advance;
-      return char;
-    });
-
-    const rollData = {
-      name: skill.label,
-      baseTarget: skill.total,
-      modifier: 0,
-      characteristics: characteristics,
-      ownerId: this.document.id,
-      unnatural: 0
-    };
-    await prepareCommonRoll(rollData);
-  }
-
-  async _prepareRollSpeciality(event) {
-    event.preventDefault();
-    const skillName = $(event.currentTarget).parents(".item").data("skill");
-    const specialityName = $(event.currentTarget).data("speciality");
-    const skill = this.document.skills[skillName];
-    const speciality = skill.specialities[specialityName];
-    const rollData = {
-      name: speciality.label,
-      baseTarget: speciality.total,
-      modifier: 0,
-      ownerId: this.document.id
-    };
-    await prepareCommonRoll(rollData);
-  }
-
-  async _prepareRollInsanity(event) {
-    event.preventDefault();
-    const characteristic = this.document.characteristics.willpower;
-    const rollData = {
-      name: "FEAR.HEADER",
-      baseTarget: characteristic.total,
-      modifier: 0,
-      ownerId: this.document.id
-    };
-    await prepareCommonRoll(rollData);
-  }
-
-  async _prepareRollCorruption(event) {
-    event.preventDefault();
-    const characteristic = this.document.characteristics.willpower;
-    const rollData = {
-      name: "CORRUPTION.HEADER",
-      baseTarget: characteristic.total,
-      modifier: this._getCorruptionModifier(),
-      ownerId: this.document.id
-    };
-    await prepareCommonRoll(rollData);
-  }
-
-  async _prepareRollWeapon(event) {
-    event.preventDefault();
-    const div = $(event.currentTarget).parents(".item");
-    const weapon = this.document.items.get(div.data("itemId"));
-    await prepareCombatRoll(
-      RogueTraderUtil.createWeaponRollData(this.document, weapon), 
-      this.document
-    );
-  }
-
-  async _prepareRollForceField(event) {
-    event.preventDefault();
-    const div = $(event.currentTarget).parents(".item");
-    const forceField = this.document.items.get(div.data("itemId"));
-    await prepareForceFieldRoll(
-      RogueTraderUtil.createForceFieldRollData(this.document, forceField),
-      this.document
-    );
-  }
-
-  async _prepareRollPsychicPower(event) {
-    event.preventDefault();
-    const div = $(event.currentTarget).parents(".item");
-    const psychicPower = this.document.items.get(div.data("itemId"));    
-    await preparePsychicPowerRoll(
-      RogueTraderUtil.createPsychicRollData(this.document, psychicPower)
-    );
-  }
-  
-  _getMaxPsyRating() {
-    let base = this.document.psy.rating;
-    switch (this.document.psy.class) {
-      case "bound":
-        return base + 2;
-      case "unbound":
-        return base + 4;
-      case "daemonic":
-        return base + 3;
-    }
-  }
-
-  _getModifiers(modType) {
-    let result = {}
-    for (let list in this.document.items) {
-      switch (modType) {
-        case 'characteristic':
-          for (let itemType in this.document.items[list]) {
-            let items = this.document.items[list][itemType];
-            for (let item in items) {
-              let itemModifiers = items[item].modifiers;
-              for (let charMod in itemModifiers.characteristic) {
-                if (result[charMod]) {
-                  result[charMod].valueMod += itemModifiers.characteristic[charMod].valueMod;
-                  result[charMod].unnaturalMod += itemModifiers.characteristic[charMod].unnaturalMod;
-                }
-                else {
-                  result[charMod] = {
-                    valueMod: itemModifiers.characteristic[charMod].valueMod,
-                    unnaturalMod: itemModifiers.characteristic[charMod].unnaturalMod
-                  };
-                }
-              }
-            }
-          }
-          break;
-        case 'skill':
-          for (let itemType in this.document.items[list]) {
-            let items = this.document.items[list][itemType];
-            for (let item in items) {
-              let itemModifiers = items[item].modifiers;
-              for (let skillMod in itemModifiers.skill) {
-                if (result[skillMod]) {
-                  result[skillMod].valueMod += itemModifiers.skill[skillMod].valueMod;
-                }
-                else {
-                  result[skillMod] = {
-                    valueMod: itemModifiers.skill[skillMod].valueMod,
-                  };
-                }
-              }
-            }
-          }
-          break;
-        case 'other':
-          break;
-      }
-    }
-  }
-
-  _extractNumberedTrait(regex, traits) {
-    let rfMatch = traits.match(regex);
-    if (rfMatch) {
-      regex = /\d+/gi;
-      return parseInt(rfMatch[0].match(regex)[0]);
-    }
-    return undefined;
-  }
-
-  _hasNamedTrait(regex, traits) {
-    let rfMatch = traits.match(regex);
-    if (rfMatch) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  _getCorruptionModifier() {
-    const corruption = this.document.corruption;
-    if (corruption <= 30) {
-      return 0;
-    } else if (corruption >= 31 && corruption <= 60) {
-      return -10;
-    } else if (corruption >= 61 && corruption <= 90) {
-      return -20;
-    } else if (corruption >= 91) {
-      return -30;
-    }
-  }
-
-  _getWeaponCharacteristic(weapon) {
-    if (weapon.class === "melee") {
-      return this.document.characteristics.weaponSkill;
-    } else {
-      return this.document.characteristics.ballisticSkill;
-    }
-  }
-
-  _getFocusPowerTarget(psychicPower) {
-    const normalizeName = psychicPower.focusPower.test.toLowerCase();
-    if (this.document.characteristics.hasOwnProperty(normalizeName)) {
-      return this.document.characteristics[normalizeName];
-    } else if (this.document.skills.hasOwnProperty(normalizeName)) {
-      return this.document.skills[normalizeName];
-    } else {
-      return this.document.characteristics.willpower;
-    }
   }
 
   constructItemLists() {

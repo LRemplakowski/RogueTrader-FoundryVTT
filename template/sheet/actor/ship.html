@@ -1,4 +1,4 @@
-<form class="{{cssClass}}" autocomplete="off">
+<section class="{{cssClass}}" autocomplete="off">
     <div class="header border">
         <div class="flex row">
             <div class="avatar">
@@ -30,7 +30,7 @@
     </div>
 
     <div class="sheet-tabs tabs flex row" data-group="primary">
-        <b class="item" data-tab="data">{{localize "TAB.DATA"}}</b>
+        <b class="item active" data-tab="data">{{localize "TAB.DATA"}}</b>
         <b class="item" data-tab="combat">{{localize "TAB.COMBAT"}}</b>
         <b class="item" data-tab="crew">{{localize "TAB.CREW"}}</b>
         <b class="item" data-tab="essential">{{localize "TAB.ESSENTIAL_COMPONENTS"}}</b>
@@ -41,7 +41,7 @@
     </div>
 
     <div class="sheet-body">
-        <div class="tab" data-group="primary" data-tab="data">
+        <div class="tab active" data-group="primary" data-tab="data">
             {{> systems/rogue-trader/template/sheet/actor/tab/ship-data.html this}}
         </div>
         <div class="tab" data-group="primary" data-tab="combat">
@@ -66,4 +66,4 @@
             {{> systems/rogue-trader/template/sheet/actor/tab/ship-notes.html this}}
         </div>
     </div>
-</form>
+</section>

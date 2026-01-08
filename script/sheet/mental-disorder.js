@@ -18,8 +18,4 @@ export class MentalDisorderSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/mental-disorder.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

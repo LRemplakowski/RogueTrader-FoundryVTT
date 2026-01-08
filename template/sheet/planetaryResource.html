@@ -1,5 +1,5 @@
-<form class="rogue-trader sheet planetary-resource">
-    <div class="header border" style="flex: 0;">
+<section class="rogue-trader sheet planetary-resource" autocomplete="off">
+    <div class="header border">
         <div class="flex row">
             <div class="avatar">
                 <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
@@ -14,12 +14,12 @@
     </div>
 
     <div class="sheet-tabs tabs flex row" data-group="primary" style="flex: 0;">
-        <b class="item" data-tab="data">{{localize "TAB.DATA"}}</b>
+        <b class="item active" data-tab="data">{{localize "TAB.DATA"}}</b>
         <b class="item" data-tab="notes">{{localize "TAB.NOTES"}}</b>
     </div>
 
     <div class="sheet-body">
-        <div class="tab" data-group="primary" data-tab="data">
+        <div class="tab active" data-group="primary" data-tab="data">
             <div class="stats border">
                 <h1>{{localize "TITLE.RESOURCE_DATA"}}</h1>
                 <div class="stats-row">
@@ -49,4 +49,4 @@
             </div>
         </div>
     </div>
-</form>
+</section>

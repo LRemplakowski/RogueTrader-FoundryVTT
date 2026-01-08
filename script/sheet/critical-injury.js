@@ -18,8 +18,4 @@ export class CriticalInjurySheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/critical-injury.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

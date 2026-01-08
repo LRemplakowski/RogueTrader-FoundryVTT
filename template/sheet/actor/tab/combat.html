@@ -24,7 +24,7 @@
                         <div class="image-container">
                             <div class="image" style="background-image: url('{{item.img}}')"></div>
                         </div>
-                        <a class="button roll-forceField">{{item.name}}</a>
+                        <a class="button roll-forceField" data-action="rollForceField">{{item.name}}</a>
                     </div>
                 {{/each}}
             </div>
@@ -139,7 +139,7 @@
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
                             </div>
-                            <button class="roll-weapon" type="button">{{item.name}}</button>
+                            <button class="roll-weapon" data-action="rollWeapon" type="button">{{item.name}}</button>
                         </div>
                         <div class="class">{{item.WeaponClass}}</div>
                         <div class="range">{{item.explorerRangeBrackets}}</div>
@@ -192,7 +192,7 @@
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
                             </div>
-                            <button class="roll-psychic-power" type="button">{{item.name}}</button>
+                            <button class="roll-psychic-power" data-action="rollPsychicPower" type="button">{{item.name}}</button>
                         </div>
                         <div class="action">{{item.action}}</div>
                         <div class="range">{{item.range}}</div>

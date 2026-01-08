@@ -1,4 +1,4 @@
-<form class="item-form" autocomplete="off">
+<section class="item-form" autocomplete="off">
     <div class="header border">
         <div class="flex row">
             <div class="avatar">
@@ -14,11 +14,14 @@
     </div>
 
     <div class="sheet-tabs tabs flex row" data-group="primary">
+        <b class="item active" data-tab="data">{{localize "TAB.DATA"}}</b>
         <b class="item" data-tab="notes">{{localize "TAB.NOTES"}}</b>
         <b class="item" data-tab="modifiers">{{localize "TAB.MODIFIERS"}}</b>
     </div>
 
     <div class="sheet-body">
+        <div class="tab active" data-group="primary" data-tab="data">
+        </div>
         <div class="tab" data-group="primary" data-tab="notes">
             <div class="notes-editor border">
                 <h1>{{localize "TITLE.NOTES"}}</h1>
@@ -31,4 +34,4 @@
             {{> systems/rogue-trader/template/sheet/utility/modifiers.html}}
         </div>
     </div>
-</form>
+</section>

@@ -18,8 +18,4 @@ export class ToolSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/tool.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

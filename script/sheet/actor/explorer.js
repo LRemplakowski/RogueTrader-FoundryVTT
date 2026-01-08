@@ -5,7 +5,12 @@ export class ExplorerSheet extends RogueTraderSheet {
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
     id: "explorer-sheet",
-    classes: ["rogue-trader", "sheet", "actor", "explorer"]
+    classes: ["rogue-trader", "sheet", "actor", "explorer"],
+    actions: {
+      aptitudeCreate: ExplorerSheet.#aptitudeCreate,
+      aptitudeDelete: ExplorerSheet.#aptitudeDelete,
+      itemCostFocusOut: ExplorerSheet.#itemCostFocusOut
+    }
   };
 
   // v13 MIGRATION: PARTS defines the template structure
@@ -15,6 +20,47 @@ export class ExplorerSheet extends RogueTraderSheet {
       template: "systems/rogue-trader/template/sheet/actor/explorer.html"
     }
   };
+
+  /**
+   * Handle aptitude creation.
+   * @this {ExplorerSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #aptitudeCreate(event, target) {
+    event.preventDefault();
+    let aptitudeId = Date.now().toString();
+    let aptitude = { id: Date.now().toString(), name: "New Aptitude" };
+    await this.document.update({[`system.aptitudes.${aptitudeId}`]: aptitude});
+    this.render(false);
+  }
+
+  /**
+   * Handle aptitude deletion.
+   * @this {ExplorerSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #aptitudeDelete(event, target) {
+    event.preventDefault();
+    const div = target.closest(".item");
+    const aptitudeId = div.dataset.aptitudeId.toString();
+    await this.document.update({[`system.aptitudes.-=${aptitudeId}`]: null});
+    this.render(false);
+  }
+
+  /**
+   * Handle item cost focus out.
+   * @this {ExplorerSheet}
+   * @param {FocusEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #itemCostFocusOut(event, target) {
+    event.preventDefault();
+    const div = target.closest(".item");
+    let item = this.document.items.get(div.dataset.itemId);
+    await item.update({"system.cost": target.value});
+  }
 
   _getHeaderButtons() {
     let buttons = super._getHeaderButtons();
@@ -42,37 +88,5 @@ export class ExplorerSheet extends RogueTraderSheet {
       );
     }
     return context;
-  }
-
-  // v13 MIGRATION: appv2 form submission - DocumentSheetV2 handles name="system.*" fields automatically
-  // This listener handles custom aptitude creation and item cost submission
-  activateListeners(html) {
-    super.activateListeners(html);
-    html.find(".aptitude-create").click(async ev => { await this._onAptitudeCreate(ev); });
-    html.find(".aptitude-delete").click(async ev => { await this._onAptitudeDelete(ev); });
-    html.find(".item-cost").focusout(async ev => { await this._onItemCostFocusOut(ev); });
-  }
-
-  async _onAptitudeCreate(event) {
-    event.preventDefault();
-    let aptitudeId = Date.now().toString();
-    let aptitude = { id: Date.now().toString(), name: "New Aptitude" };
-    await this.document.update({[`system.aptitudes.${aptitudeId}`]: aptitude});
-    this.render(false);
-  }
-
-  async _onAptitudeDelete(event) {
-    event.preventDefault();
-    const div = $(event.currentTarget).parents(".item");
-    const aptitudeId = div.data("aptitudeId").toString();
-    await this.document.update({[`system.aptitudes.-=${aptitudeId}`]: null});
-    this.render(false);
-  }
-
-  async _onItemCostFocusOut(event) {
-    event.preventDefault();
-    const div = $(event.currentTarget).parents(".item");
-    let item = this.document.items.get(div.data("itemId"));
-    item.update({"system.cost": $(event.currentTarget)[0].value});
   }
 }

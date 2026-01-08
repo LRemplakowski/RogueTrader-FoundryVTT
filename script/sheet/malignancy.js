@@ -18,8 +18,4 @@ export class MalignancySheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/malignancy.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

@@ -18,8 +18,4 @@ export class ColonyEventSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/colonyEvent.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

@@ -18,8 +18,4 @@ export class ShipComponentSheet extends RogueTraderItemSheet {
       template: "systems/rogue-trader/template/sheet/shipComponent.html"
     }
   };
-
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }
