@@ -132,7 +132,7 @@ export class ExplorerSheet extends RogueTraderSheet {
     let aptitudeId = Date.now().toString();
     let aptitude = { id: Date.now().toString(), name: "New Aptitude" };
     await this.document.update({[`system.aptitudes.${aptitudeId}`]: aptitude});
-    this.render(false);
+    this.render();
   }
 
   /**
@@ -146,7 +146,7 @@ export class ExplorerSheet extends RogueTraderSheet {
     const div = target.closest(".item");
     const aptitudeId = div.dataset.aptitudeId.toString();
     await this.document.update({[`system.aptitudes.-=${aptitudeId}`]: null});
-    this.render(false);
+    this.render();
   }
 
   /**

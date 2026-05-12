@@ -42,7 +42,7 @@ export async function prepareCommonRoll(rollData) {
   }, {
     width: 200
   });
-  dialog.render(true);
+  dialog.render({ force: true });
 }
 
 export async function prepareConsumeResourcesRoll(rollData, actorRef) {
@@ -58,7 +58,7 @@ export async function prepareConsumeResourcesRoll(rollData, actorRef) {
           const availableResource = html.find("#available-resource")[0].value;
           if (availableResource < rollData.requiredResources) {
             ui.notifications.error(`Not enough resources! You need resource with at least ${rollData.requiredResources} amount!`);
-            dialog.render(true);
+            dialog.render({ force: true });
           } else {
             rollData.name = game.i18n.localize(rollData.name);
             const selectedResourceID = html.find("#selected-resource")[0].value;
@@ -155,7 +155,7 @@ export async function prepareConsumeResourcesRoll(rollData, actorRef) {
   }, {
     width: 210,
   });
-  dialog.render(true);
+  dialog.render({ force: true });
 }
 
 /**
@@ -292,7 +292,7 @@ export async function prepareCombatRoll(rollData, actorRef) {
         default: "roll",
         close: () => {},
     }, {width: 200});
-    dialog.render(true);
+    dialog.render({ force: true });
 }
 
 /**
@@ -323,7 +323,7 @@ export async function prepareForceFieldRoll(rollData, actorRef) {
       },
     },
   }, {width: 200});
-  dialog.render(true);
+  dialog.render({ force: true });
 }
 
 /**
@@ -409,7 +409,7 @@ export async function prepareShipCombatRoll(rollData, actorRef) {
         });
       }
   }, {width: 200});
-  dialog.render(true);
+  dialog.render({ force: true });
 }
 
 /**
@@ -478,7 +478,7 @@ export async function preparePsychicPowerRoll(rollData) {
     close: () => {}
   }, {width: 200});
   console.log(dialog);
-  dialog.render(true);
+  dialog.render({ force: true });
 }
 
 export function getRollPsyRating(rollData) {  
@@ -555,7 +555,7 @@ export async function showAddCharacteristicModifierDialog(itemSheet, modifierTyp
     width: 400
   });
 
-  dialog.render(true);
+  dialog.render({ force: true });
 }
 
 export async function showAddSkillModifierDialog(itemSheet, modifierType){
@@ -599,5 +599,5 @@ export async function showAddSkillModifierDialog(itemSheet, modifierType){
     width: 400
   });
 
-  dialog.render(true);
+  dialog.render({ force: true });
 }

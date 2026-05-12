@@ -25,13 +25,13 @@ export default class RtMacroUtil {
             name: document.name,
             type: "script",
             img: document.img,
-            command: `game.actors.get("${document.id}").sheet.render(true)`
+            command: `game.actors.get("${document.id}").sheet.render({ force: true })`
         }, { displaySheet: false })
     }
     if (macro)
         game.user.assignHotbarMacro(macro, slot);
   }
-  
+
   static rollAttack(itemName, itemType) {
     const speaker = ChatMessage.getSpeaker();
     let actor;

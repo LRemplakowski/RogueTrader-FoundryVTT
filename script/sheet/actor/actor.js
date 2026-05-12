@@ -111,7 +111,7 @@ export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     event.preventDefault();
     const div = target.closest(".item");
     let item = this.document.items.get(div.dataset.itemId);
-    item.sheet.render(true);
+    item.sheet.render({ force: true });
   }
 
   /**
@@ -316,7 +316,7 @@ export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   _onFocusIn(event) {
-    $(event.currentTarget).select();
+    event.currentTarget.select();
   }
 
   async _prepareCustomRoll() {
@@ -587,7 +587,10 @@ export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     optionsData.initiativeOptions = initiativeOptions;
 
     // Merge options with any existing options and attach to context
-    context.options = foundry.utils.mergeObject(context.options || {}, optionsData);
+    context.options = {
+      ...(context.options || {}),
+      ...optionsData
+    };
 
     return context;
   }

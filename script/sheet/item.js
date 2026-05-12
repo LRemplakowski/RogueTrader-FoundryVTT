@@ -183,7 +183,7 @@ export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2
   }
 
   _onFocusIn(event) {
-    $(event.currentTarget).select();
+    event.currentTarget.select();
   }
 
   /**
@@ -377,7 +377,10 @@ export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2
     };
 
     // Return context including options for selectOptions helper
-    context.options = foundry.utils.mergeObject(context.options || {}, optionsData);
+    context.options = {
+      ...(context.options || {}),
+      ...optionsData
+    };
 
     return context;
   }
