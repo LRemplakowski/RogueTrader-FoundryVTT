@@ -98,31 +98,36 @@
   "download": "https://github.com/LRemplakowski/RogueTrader-FoundryVTT/releases/latest/download/rogue-trader.zip",
   "license": "LICENSE.txt",
   "documentTypes": {
-    "Actor": ["explorer", "npc", "ship", "colony"],
-    "Item": [
-      "weapon",
-      "ammunition",
-      "weaponModification",
-      "armour",
-      "forceField",
-      "cybernetic",
-      "drug",
-      "gear",
-      "tool",
-      "criticalInjury",
-      "malignancy",
-      "mentalDisorder",
-      "mutation",
-      "psychicPower",
-      "talent",
-      "specialAbility",
-      "trait",
-      "aptitude",
-      "shipWeapon",
-      "shipComponent",
-      "planetaryResource",
-      "colonyUpgrade",
-      "colonyEvent"
-    ]
+    "Actor": {
+      "explorer": {},
+      "npc": {},
+      "ship": {},
+      "colony": {}
+    },
+    "Item": {
+      "weapon":{},
+      "ammunition":{},
+      "weaponModification":{},
+      "armour":{},
+      "forceField":{},
+      "cybernetic":{},
+      "drug":{},
+      "gear":{},
+      "tool":{},
+      "criticalInjury":{},
+      "malignancy":{},
+      "mentalDisorder":{},
+      "mutation":{},
+      "psychicPower":{},
+      "talent":{},
+      "specialAbility":{},
+      "trait":{},
+      "aptitude":{},
+      "shipWeapon":{},
+      "shipComponent":{},
+      "planetaryResource":{},
+      "colonyUpgrade":{},
+      "colonyEvent":{}
+    }
   }
 }
