@@ -51,28 +51,6 @@ export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
   };
 
-  // v13 MIGRATION: V2 Tab System Definition
-  // TABS must have 'tabs' as an ARRAY (not object) with 'initial' property
-  // Subclasses will override this with their specific tabs
-  static TABS = {
-    sheet: {
-      id: "sheet",
-      group: "primary",
-      tabs: [],
-      initial: "stats"
-    }
-  };
-
-  /**
-   * Return the dynamic tab configuration for this sheet.
-   * This allows different actor types to define different tabs if needed.
-   * @returns {object} The tabs configuration
-   */
-  _getTabsConfig(group) {
-    const tabs = foundry.utils.deepClone(super._getTabsConfig(group))
-    return tabs;
-  }
-
   /**
    * Handle form submission for the actor sheet.
    * @this {RogueTraderSheet}
@@ -463,6 +441,18 @@ export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     // Add system data for template access
     context.system = this.document.system;
     context.items = this.constructItemLists(context);
+
+    const rawTabs = this.constructor.TABS.primary.tabs.map(t => ({
+      ...t,
+      partial: `systems/rogue-trader/template/sheet/actor/tab/${t.id}.html`,
+      active: t.id === this.constructor.TABS.primary.initial,
+      system: context.system,
+      items: context.items,
+      actor: context.actor
+    }));
+
+    // Remove any inherited enumerable properties (like "primary")
+    context.tabs = rawTabs;
 
     // Provide reusable option lists for actor templates using selectOptions
     const optionsData = {

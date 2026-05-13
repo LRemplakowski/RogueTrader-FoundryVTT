@@ -1,6 +1,18 @@
 import RogueTraderUtil from "./util.js";
 
 export class RogueTraderItem extends Item {
+  static metadata = {
+    ...super.metadata,
+    label: "Rogue Trader Item",
+    types: [
+      "weapon", "ammunition", "weaponModification", "armour", "forceField",
+      "cybernetic", "drug", "gear", "tool", "criticalInjury", "malignancy",
+      "mentalDisorder", "mutation", "psychicPower", "talent", "specialAbility",
+      "trait", "aptitude", "shipWeapon", "shipComponent", "planetaryResource",
+      "colonyUpgrade", "colonyEvent"
+    ]
+  };
+
   async sendToChat() {
     const item = new CONFIG.Item.documentClass(this.data._source);
     const html = await renderTemplate("systems/rogue-trader/template/chat/item.html", {item, data: item.system});

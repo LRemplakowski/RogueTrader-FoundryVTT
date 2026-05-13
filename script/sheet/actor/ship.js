@@ -22,9 +22,7 @@ export class ShipSheet extends RogueTraderSheet {
   // v13 MIGRATION: V2 Tab System Definition
   // TABS must have 'tabs' as an ARRAY (not object) with 'initial' property
   static TABS = {
-    sheet: {
-      id: "sheet",
-      group: "primary",
+    primary: {
       tabs: [
         {
           id: "data",
@@ -92,30 +90,6 @@ export class ShipSheet extends RogueTraderSheet {
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/ship.html"
-    },
-    data: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/ship-data.html"
-    },
-    combat: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/ship-combat.html"
-    },
-    crew: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/ship-crew.html"
-    },
-    essential: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/ship-essential.html"
-    },
-    supplemental: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/ship-supplemental.html"
-    },
-    weapons: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/ship-weapons.html"
-    },
-    complications: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/ship-complications.html"
-    },
-    notes: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/ship-notes.html"
     }
   };
 
@@ -377,26 +351,17 @@ export class ShipSheet extends RogueTraderSheet {
         relativeTo: context.document,
       }
     );
+
+    // Adjust partials for ship-specific tabs
+    const shipTabs = ['data', 'crew', 'essential', 'supplemental', 'weapons', 'complications', 'notes'];
+    for (const tab of context.tabs.primary.tabs) {
+      if (shipTabs.includes(tab.id)) {
+        tab.partial = `systems/rogue-trader/template/sheet/actor/tab/ship-${tab.id}.html`;
+      }
+    }
+
     return context;
   }
 
-  /**
-   * Return the dynamic tab configuration for this sheet.
-   * This allows different actor types to define different tabs if needed.
-   * @param {string} group - The tab group to retrieve configuration for
-   * @returns {object} The tabs configuration
-   */
-  _getTabsConfig(group) {
-    const tabs = foundry.utils.deepClone(super._getTabsConfig(group));
-    tabs.primary.tabs.push({id: 'data', group: 'primary', label: 'TAB.DATA', icon: 'fa-solid fa-database', cssClass: 'tab-data'});
-    tabs.primary.tabs.push({id: 'combat', group: 'primary', label: 'TAB.COMBAT', icon: 'fa-solid fa-shield', cssClass: 'tab-combat'});
-    tabs.primary.tabs.push({id: 'crew', group: 'primary', label: 'TAB.CREW', icon: 'fa-solid fa-people-group', cssClass: 'tab-crew'});
-    tabs.primary.tabs.push({id: 'essential', group: 'primary', label: 'TAB.ESSENTIAL_COMPONENTS', icon: 'fa-solid fa-cogs', cssClass: 'tab-essential'});
-    tabs.primary.tabs.push({id: 'supplemental', group: 'primary', label: 'TAB.SUPPLEMENTAL_COMPONENTS', icon: 'fa-solid fa-wrench', cssClass: 'tab-supplemental'});
-    tabs.primary.tabs.push({id: 'weapons', group: 'primary', label: 'TAB.WEAPONS', icon: 'fa-solid fa-gun', cssClass: 'tab-weapons'});
-    tabs.primary.tabs.push({id: 'complications', group: 'primary', label: 'TAB.COMPLICATIONS', icon: 'fa-solid fa-exclamation-triangle', cssClass: 'tab-complications'});
-    tabs.primary.tabs.push({id: 'notes', group: 'primary', label: 'TAB.NOTES', icon: 'fa-solid fa-note-sticky', cssClass: 'tab-notes'});
-    tabs.primary.initial = 'data';
-    return tabs;
-  }
+
 }

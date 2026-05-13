@@ -37,10 +37,9 @@ import RtMacroUtil from "./macro.js";
 import * as chat from "./chat.js";
 
 Hooks.once("init", () => {
-  CONFIG.Combat.initiative = { formula: "@initiative.base + @initiative.bonus", decimals: 0 };
-  console.log(CONFIG);
   CONFIG.Actor.documentClass = RogueTraderActor;
   CONFIG.Item.documentClass = RogueTraderItem;
+  CONFIG.Combat.initiative = { formula: "@initiative.base + @initiative.bonus", decimals: 0 };
   CONFIG.fontDefinitions["Caslon Antique"] = {editor: true, fonts: []};
   
   // v13: Set type labels for actors and items
@@ -89,8 +88,15 @@ Hooks.once("init", () => {
       combatRoll
     }
   };
-  game.macro = RtMacroUtil; 
+  game.macro = RtMacroUtil;
   
+  // Register game settings in init hook so they are available during actor prepareData
+  // (V14 requirement: settings accessed during prepareData must be registered in init)
+  registerSettings();
+  console.log(CONFIG);
+});
+
+Hooks.once("setup", () => {
   // v13 MIGRATION: Changed from using foundry.appv1.sheets namespace
   // In v13, use foundry.documents.collections.Actors and foundry.documents.collections.Items directly
   // These already provide the registerSheet method without needing appv1 references
@@ -128,11 +134,11 @@ Hooks.once("init", () => {
   Items.registerSheet("rogue-trader", ColonyUpgradeSheet, {types: ["colonyUpgrade"], makeDefault: true});
   Items.registerSheet("rogue-trader", ColonyEventSheet, {types: ["colonyEvent"], makeDefault: true});
   
-  // Register settings before initializing handlebars
-  registerSettings();
-  
   // Initialize handlebars templates (will use global loadTemplates)
   initializeHandlebars();
+  console.log(Actors);
+  console.log(Items);
+  console.log(CONFIG);
 });
 
 Hooks.once("ready", () => {

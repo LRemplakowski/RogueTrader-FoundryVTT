@@ -3,9 +3,8 @@
   "title": "Rogue Trader",
   "description": "Roleplaying in the grim darkness of the 41st Millennium",
   "version": "1.1.5a",
-  "minimumCoreVersion" : 10,
   "compatibility" : {
-    "minimum" : 10,
+    "minimum" : 13,
     "verified" : 14,
     "maximum" : 14
   },

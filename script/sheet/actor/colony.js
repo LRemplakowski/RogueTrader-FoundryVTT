@@ -21,49 +21,34 @@ export class ColonySheet extends RogueTraderSheet {
     }
   };
 
-    /**
-   * Return the dynamic tab configuration for this sheet.
-   * This allows different actor types to define different tabs if needed.
-   * @returns {object} The tabs configuration
-   */
-    _getTabsConfig(group) {
-      const tabs = foundry.utils.deepClone(super._getTabsConfig(group))
-      tabs.tabs.push({ id: 'core', group: 'primary', label: 'TAB.CORE', icon: 'fa-solid fa-home', cssClass: 'tab-core' });
-      tabs.tabs.push({ id: 'upgrades', group: 'primary', label: 'TAB.UPGRADES', icon: 'fa-solid fa-arrow-up', cssClass: 'tab-upgrades' });
-      tabs.tabs.push({ id: 'notes', group: 'primary', label: 'TAB.NOTES', icon: 'fa-solid fa-note-sticky', cssClass: 'tab-notes' });
-      return tabs;
-    }
-
   // v13 MIGRATION: V2 Tab System Definition
   // TABS must have 'tabs' as an ARRAY (not object) with 'initial' property
   static TABS = {
-    sheet: {
-      id: "sheet",
-      group: "primary",
+    primary: {
       tabs: [
         {
-          id: "core",
+          id: "colony-core",
           group: "primary",
           label: "TAB.CORE",
           icon: "fa-solid fa-home",
           cssClass: "tab-core"
         },
         {
-          id: "upgrades",
+          id: "colony-upgrades",
           group: "primary",
           label: "TAB.UPGRADES",
           icon: "fa-solid fa-arrow-up",
           cssClass: "tab-upgrades"
         },
         {
-          id: "notes",
+          id: "colony-notes",
           group: "primary",
           label: "TAB.NOTES",
           icon: "fa-solid fa-note-sticky",
           cssClass: "tab-notes"
         }
       ],
-      initial: "core"
+      initial: "colony-core"
     }
   };
 
@@ -72,15 +57,6 @@ export class ColonySheet extends RogueTraderSheet {
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/colony.html"
-    },
-    core: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/colony-core.html"
-    },
-    upgrades: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/colony-upgrades.html"
-    },
-    notes: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/colony-notes.html"
     }
   };
 
@@ -184,7 +160,7 @@ export class ColonySheet extends RogueTraderSheet {
     const context = await this._prepareContext();
     const droppedActor = game.actors.get(data.uuid.split(".")[1]);
     if (droppedActor) {
-      switch (event.target.dataset.crewrole) {
+      switch (event.target.dataset.crewRole) {
         case "governor":
           {
             context.system.governor.actor = droppedActor.id;
@@ -196,5 +172,11 @@ export class ColonySheet extends RogueTraderSheet {
       }
       await this.document.update(context.system);
     }
+  }
+
+  // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    return context;
   }
 }

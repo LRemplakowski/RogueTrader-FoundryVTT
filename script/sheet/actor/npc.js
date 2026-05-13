@@ -14,9 +14,7 @@ export class NpcSheet extends RogueTraderSheet {
   // v13 MIGRATION: V2 Tab System Definition
   // TABS must have 'tabs' as an ARRAY (not object) with 'initial' property
   static TABS = {
-    sheet: {
-      id: "sheet",
-      group: "primary",
+    primary: {
       tabs: [
         {
           id: "stats",
@@ -77,27 +75,6 @@ export class NpcSheet extends RogueTraderSheet {
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/npc.html"
-    },
-    stats: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/npc-stats.html"
-    },
-    combat: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/combat.html"
-    },
-    abilities: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/abilities.html"
-    },
-    psychicPowers: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/psychic-powers.html"
-    },
-    gear: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/gear.html"
-    },
-    progression: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/progression.html"
-    },
-    notes: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/npc-notes.html"
     }
   };
 
@@ -138,25 +115,18 @@ export class NpcSheet extends RogueTraderSheet {
         }
       );
     }
+
+    // Adjust partials for npc-specific tabs
+    for (const tab of context.tabs.primary.tabs) {
+      if (tab.id === 'stats') {
+        tab.partial = 'systems/rogue-trader/template/sheet/actor/tab/npc-stats.html';
+      } else if (tab.id === 'notes') {
+        tab.partial = 'systems/rogue-trader/template/sheet/actor/tab/npc-notes.html';
+      }
+    }
+
     return context;
   }
 
-  /**
-   * Return the dynamic tab configuration for this sheet.
-   * This allows different actor types to define different tabs if needed.
-   * @param {string} group - The tab group to retrieve configuration for
-   * @returns {object} The tabs configuration
-   */
-  _getTabsConfig(group) {
-    const tabs = foundry.utils.deepClone(super._getTabsConfig(group));
-    tabs.primary.tabs.push({id: 'stats', group: 'primary', label: 'TAB.STATS', icon: 'fa-solid fa-chart-bar', cssClass: 'tab-stats'});
-    tabs.primary.tabs.push({id: 'combat', group: 'primary', label: 'TAB.COMBAT', icon: 'fa-solid fa-shield', cssClass: 'tab-combat'});
-    tabs.primary.tabs.push({id: 'abilities', group: 'primary', label: 'TAB.ABILITIES', icon: 'fa-solid fa-star', cssClass: 'tab-abilities'});
-    tabs.primary.tabs.push({id: 'psychic-powers', group: 'primary', label: 'TAB.PSYCHIC_POWERS', icon: 'fa-solid fa-wand-magic-sparkles', cssClass: 'tab-psychic-powers'});
-    tabs.primary.tabs.push({id: 'gear', group: 'primary', label: 'TAB.GEAR', icon: 'fa-solid fa-backpack', cssClass: 'tab-gear'});
-    tabs.primary.tabs.push({id: 'progression', group: 'primary', label: 'TAB.ADVANCES', icon: 'fa-solid fa-arrow-up', cssClass: 'tab-progression'});
-    tabs.primary.tabs.push({id: 'notes', group: 'primary', label: 'TAB.NOTES', icon: 'fa-solid fa-note-sticky', cssClass: 'tab-notes'});
-    tabs.primary.initial = 'stats';
-    return tabs;
-  }
+
 }

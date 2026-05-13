@@ -332,8 +332,11 @@ li.folder > .folder-header {
 li.folder.collapsed > .folder-header {
   background: rgba(86, 78, 74, 0.4);
 }
-.window-app .window-content {
+.application .window-content {
   background: url("../asset/image/background.jpg") center;
+}
+.rogue-trader nav.tabs {
+  line-height: 1;
 }
 ::-webkit-scrollbar-thumb {
   background: #1b0f08b8;
@@ -755,6 +758,7 @@ li.folder.collapsed > .folder-header {
 .rogue-trader .tabs .item {
   padding: 5px;
   font-size: 18px;
+  color: white;
 }
 .rogue-trader .tabs .item.active {
   text-shadow: 0 0 10px var(--color-highlight);

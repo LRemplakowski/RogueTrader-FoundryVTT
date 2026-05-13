@@ -31,9 +31,9 @@
 
     <!-- v13 MIGRATION: V2 Tab System - Tab Navigation -->
     <nav class="sheet-tabs tabs" data-group="primary">
-        {{#each tabs.primary.tabs as |tab tabId|}}
+        {{#each tabs as |tab tabId|}}
             <button 
-                class="item tab-button {{if tab.active 'active'}}"
+                class="item tab-button {{#if tab.active}}active{{/if}}"
                 data-tab="{{tab.id}}"
                 data-group="{{tab.group}}"
                 type="button"
@@ -45,14 +45,14 @@
 
     <!-- v13 MIGRATION: V2 Tab System - Tab Content Container -->
     <div class="sheet-body tab-body">
-        {{#each tabs.primary.tabs as |tab tabId|}}
+        {{#each tabs as |tab|}}
             <section 
-                class="tab {{tab.cssClass}} {{if tab.active 'active'}}"
+                class="tab {{tab.cssClass}} {{#if tab.active}}active{{/if}}"
                 data-tab="{{tab.id}}"
                 data-group="{{tab.group}}"
                 {{#if tab.active}}aria-selected="true"{{/if}}
             >
-                {{{lookup this tabId}}}
+                {{> (lookup tab "partial")}}
             </section>
         {{/each}}
     </div>

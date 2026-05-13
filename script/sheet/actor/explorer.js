@@ -13,30 +13,11 @@ export class ExplorerSheet extends RogueTraderSheet {
     }
   };
 
-   /**
-   * Return the dynamic tab configuration for this sheet.
-   * This allows different actor types to define different tabs if needed.
-   * @returns {object} The tabs configuration
-   */
-   _getTabsConfig(group) {
-    const tabs = foundry.utils.deepClone(super._getTabsConfig(group))
-    tabs.tabs.push({id: 'stats', label: 'TAB.STATS', icon: 'fa-solid fa-chart-bar', cssClass: 'tab-stats'});
-    tabs.tabs.push({id: 'combat', label: 'TAB.COMBAT', icon: 'fa-solid fa-shield', cssClass: 'tab-combat'});
-    tabs.tabs.push({id: 'abilities', label: 'TAB.ABILITIES', icon: 'fa-solid fa-star', cssClass: 'tab-abilities'});
-    tabs.tabs.push({id: 'psychic-powers', label: 'TAB.PSYCHIC_POWERS', icon: 'fa-solid fa-wand-magic-sparkles', cssClass: 'tab-psychic-powers'});
-    tabs.tabs.push({id: 'gear', label: 'TAB.GEAR', icon: 'fa-solid fa-backpack', cssClass: 'tab-gear'});
-    tabs.tabs.push({id: 'progression', label: 'TAB.ADVANCES', icon: 'fa-solid fa-arrow-up', cssClass: 'tab-progression'});
-    tabs.tabs.push({id: 'notes', label: 'TAB.NOTES', icon: 'fa-solid fa-note-sticky', cssClass: 'tab-notes'});
-    return tabs;
-  }
-
 
   // v13 MIGRATION: V2 Tab System Definition
   // TABS must have 'tabs' as an ARRAY (not object) with 'initial' property
   static TABS = {
-    sheet: {
-      id: "sheet",
-      group: "primary",
+    primary: {
       tabs: [
         {
           id: "stats",
@@ -97,27 +78,6 @@ export class ExplorerSheet extends RogueTraderSheet {
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/explorer.html"
-    },
-    stats: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/stats.html"
-    },
-    combat: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/combat.html"
-    },
-    abilities: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/abilities.html"
-    },
-    psychicPowers: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/psychic-powers.html"
-    },
-    gear: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/gear.html"
-    },
-    progression: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/progression.html"
-    },
-    notes: {
-      template: "systems/rogue-trader/template/sheet/actor/tab/notes.html"
     }
   };
 
