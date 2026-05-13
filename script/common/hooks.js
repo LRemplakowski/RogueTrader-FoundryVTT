@@ -41,41 +41,7 @@ Hooks.once("init", () => {
   CONFIG.Item.documentClass = RogueTraderItem;
   CONFIG.Combat.initiative = { formula: "@initiative.base + @initiative.bonus", decimals: 0 };
   CONFIG.fontDefinitions["Caslon Antique"] = {editor: true, fonts: []};
-  
-  // v13: Set type labels for actors and items
-  CONFIG.Actor.typeLabels = {
-    "explorer": "Explorer",
-    "npc": "NPC",
-    "ship": "Ship",
-    "colony": "Colony"
-  };
-  
-  CONFIG.Item.typeLabels = {
-    "weapon": "Weapon",
-    "ammunition": "Ammunition",
-    "weaponModification": "Weapon Modification",
-    "armour": "Armour",
-    "forceField": "Force Field",
-    "cybernetic": "Cybernetic",
-    "drug": "Drug",
-    "gear": "Gear",
-    "tool": "Tool",
-    "criticalInjury": "Critical Injury",
-    "malignancy": "Malignancy",
-    "mentalDisorder": "Mental Disorder",
-    "mutation": "Mutation",
-    "psychicPower": "Psychic Power",
-    "talent": "Talent",
-    "specialAbility": "Special Ability",
-    "trait": "Trait",
-    "aptitude": "Aptitude",
-    "shipWeapon": "Ship Weapon",
-    "shipComponent": "Ship Component",
-    "planetaryResource": "Planetary Resource",
-    "colonyUpgrade": "Colony Upgrade",
-    "colonyEvent": "Colony Event"
-  };
-  
+  registerSettings();
   game.rogueTrader = {
     testInit: {
       prepareCommonRoll,
@@ -89,20 +55,12 @@ Hooks.once("init", () => {
     }
   };
   game.macro = RtMacroUtil;
-  
-  // Register game settings in init hook so they are available during actor prepareData
-  // (V14 requirement: settings accessed during prepareData must be registered in init)
-  registerSettings();
-  console.log(CONFIG);
-});
-
-Hooks.once("setup", () => {
   // v13 MIGRATION: Changed from using foundry.appv1.sheets namespace
   // In v13, use foundry.documents.collections.Actors and foundry.documents.collections.Items directly
   // These already provide the registerSheet method without needing appv1 references
   const Actors = foundry.documents.collections.Actors;
   const Items = foundry.documents.collections.Items;
-  
+
   // Register actor sheets
   Actors.registerSheet("rogue-trader", ExplorerSheet, { label:"Explorer", types: ["explorer"], makeDefault: true });
   Actors.registerSheet("rogue-trader", NpcSheet, { label:"NPC", types: ["npc"], makeDefault: true });
@@ -136,8 +94,10 @@ Hooks.once("setup", () => {
   
   // Initialize handlebars templates (will use global loadTemplates)
   initializeHandlebars();
-  console.log(Actors);
-  console.log(Items);
+  console.log(CONFIG);
+});
+
+Hooks.once("setup", () => {
   console.log(CONFIG);
 });
 

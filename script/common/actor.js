@@ -33,7 +33,6 @@ export class RogueTraderActor extends Actor {
 
   prepareData() {
     super.prepareData();
-    console.log(game.system.documentTypes);
     // v13: Guard against undefined system before accessing properties
     if (!this.system) return;
     
