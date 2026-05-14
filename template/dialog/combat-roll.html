@@ -13,14 +13,14 @@
             <div class="wrapper">
                 <label>{{localize "DIALOG.AIM"}}</label>
                 <select id="aim">
-                    {{{selectOptions aimOptions selected=aim}}}
+                    {{{selectOptions options.aimOptions selected=aim}}}
                 </select>
             </div>
             {{#if isMelee}}
             <div class="wrapper">
                 <label>{{localize "DIALOG.ATTACK_TYPE"}}</label>
                 <select id="attackType">
-                    {{{selectOptions meleeAttackOptions selected=attackType}}}
+                    {{{selectOptions options.meleeAttackOptions selected=attackType}}}
                 </select>
             </div>
             {{/if}}
@@ -28,13 +28,13 @@
             <div class="wrapper">
                 <label>{{localize "DIALOG.RANGE"}}</label>
                 <select id="range">
-                    {{{selectOptions rangeOptions selected=range}}}
+                    {{{selectOptions options.rangeOptions selected=range}}}
                 </select>
             </div>
             <div class="wrapper">
                 <label>{{localize "DIALOG.ATTACK_TYPE"}}</label>
                 <select id="attackType">
-                    {{{selectOptions rangeAttackOptions selected=attackType}}}
+                    {{{selectOptions options.rangeAttackOptions selected=attackType}}}
                 </select>
             </div>
             {{/if}}
@@ -47,7 +47,7 @@
         <div class="wrapper">
             <label>{{localize "DIALOG.TYPE"}}</label>
             <select id="damageType">
-                {{{selectOptions damageTypeOptions selected=damageType}}}
+                {{{selectOptions options.damageTypeOptions selected=damageType}}}
             </select>
         </div>
         <div class="wrapper">

@@ -13,7 +13,7 @@
         <div class="wrapper">
             <label>{{localize "DIALOG.PSY_STRENGTH"}}</label>
             <select id="psyStrength">
-                {{{selectOptions psyStrengthOptions selected=psy.psyStrength}}}
+                {{{selectOptions options.psyStrengthOptions selected=psy.psyStrength}}}
             </select>
         </div>
         <div class="wrapper" id="pushWrapper" style="display: none;">
@@ -54,13 +54,13 @@
         <div class="wrapper damage">
             <label>{{localize "DIALOG.TYPE"}}</label>
             <select id="damageType">
-                {{{selectOptions damageTypeOptions selected=damageType}}}
+                {{{selectOptions options.damageTypeOptions selected=damageType}}}
             </select>
         </div>
         <div class="wrapper">
             <label>{{localize "DIALOG.ATTACK_TYPE"}}</label>
             <select id="attackType">
-                {{{selectOptions attackTypeOptions selected=attackType.name}}}
+                {{{selectOptions options.attackTypeOptions selected=attackType.name}}}
             </select>
         </div>
         <div class="wrapper">

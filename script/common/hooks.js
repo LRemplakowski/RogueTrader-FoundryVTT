@@ -41,6 +41,7 @@ Hooks.once("init", () => {
   CONFIG.Item.documentClass = RogueTraderItem;
   CONFIG.Combat.initiative = { formula: "@initiative.base + @initiative.bonus", decimals: 0 };
   CONFIG.fontDefinitions["Caslon Antique"] = {editor: true, fonts: []};
+  CONFIG.HBS_SKIP_ESCAPE = true;
   registerSettings();
   game.rogueTrader = {
     testInit: {
@@ -62,8 +63,8 @@ Hooks.once("init", () => {
   const Items = foundry.documents.collections.Items;
 
   // Register actor sheets
-  Actors.registerSheet("rogue-trader", ExplorerSheet, { label:"Explorer", types: ["explorer"], makeDefault: true });
-  Actors.registerSheet("rogue-trader", NpcSheet, { label:"NPC", types: ["npc"], makeDefault: true });
+  Actors.registerSheet("rogue-trader", ExplorerSheet, { types: ["explorer"], makeDefault: true });
+  Actors.registerSheet("rogue-trader", NpcSheet, { types: ["npc"], makeDefault: true });
   Actors.registerSheet("rogue-trader", ShipSheet, {types: ["ship"], makeDefault: true});
   Actors.registerSheet("rogue-trader", ColonySheet, { types: ["colony"], makeDefault: true})
   

@@ -1,6 +1,11 @@
 export const initializeHandlebars = () => {
   registerHandlebarsHelpers();
   preloadHandlebarsTemplates();
+  // const original = Handlebars.helpers.selectOptions;
+  // Handlebars.unregisterHelper("selectOptions");
+  // Handlebars.registerHelper("selectOptions", function(...args) {
+  // return new Handlebars.SafeString(original.apply(this, args));
+// });
 };
 
 /**
@@ -563,17 +568,17 @@ function registerHandlebarsHelpers() {
     return result;
   });
 
-  // Helper to render option tags from an array of {value, label} objects.
-  // Usage in templates: {{{selectOptions options.weaponClassOptions selected=system.class}}}
-  Handlebars.registerHelper('selectOptions', function(optionArray, opts) {
-    const selected = (opts && opts.hash && opts.hash.selected) ? String(opts.hash.selected) : null;
-    if (!Array.isArray(optionArray)) return '';
-    return optionArray.map(opt => {
-      const val = String(opt.value);
-      const lbl = opt.label || opt.value;
-      const isSelected = selected !== null && val === String(selected) ? ' selected' : '';
-      return `<option value="${val}"${isSelected}>${lbl}</option>`;
-    }).join('');
-  });
+  // // Helper to render option tags from an array of {value, label} objects.
+  // // Usage in templates: {{{selectOptions options.weaponClassOptions selected=system.class}}}
+  // Handlebars.registerHelper('selectOptions', function(optionArray, opts) {
+  //   const selected = (opts && opts.hash && opts.hash.selected) ? String(opts.hash.selected) : null;
+  //   if (!Array.isArray(optionArray)) return '';
+  //   return optionArray.map(opt => {
+  //     const val = String(opt.value);
+  //     const lbl = opt.label || opt.value;
+  //     const isSelected = selected !== null && val === String(selected) ? ' selected' : '';
+  //     return `<option value="${val}"${isSelected}>${lbl}</option>`;
+  //   }).join('');
+  // });
 }
 

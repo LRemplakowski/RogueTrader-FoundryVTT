@@ -381,7 +381,7 @@ export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2
       ...(context.options || {}),
       ...optionsData
     };
-
+    context.system = systemData; // Provide direct access to system data for templates
     return context;
   }
 }

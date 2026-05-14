@@ -9,7 +9,7 @@
             <label>{{localize "DIALOG.ARTILLERIST"}}</label>
             {{log "foobar"}}
             <select id="performer">
-                {{{selectOptions performerOptions selected=performer}}}
+                {{{selectOptions options.performerOptions selected=performer}}}
             </select>
         </div>
         <div class="wrapper">
@@ -19,7 +19,7 @@
         <div class="wrapper">
             <label>{{localize "DIALOG.RANGE"}}</label>
             <select id="range">
-                {{{selectOptions rangeOptions selected=range}}}
+                {{{selectOptions options.rangeOptions selected=range}}}
             </select>
         </div>
         <div class="separator"></div>
