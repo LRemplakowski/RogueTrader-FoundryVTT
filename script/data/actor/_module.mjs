@@ -1,0 +1,1 @@
+export { default as VoidshipModel } from "./actor/voidship.mjs";
