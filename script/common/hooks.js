@@ -1,4 +1,4 @@
-import { RogueTraderActor } from "./actor.js";
+import { RogueTraderActor } from "../documents/actor.js";
 import { RogueTraderItem } from "./item.js";
 import { ExplorerSheet } from "../sheet/actor/explorer.js";
 import { ColonySheet } from "../sheet/actor/colony.js";
