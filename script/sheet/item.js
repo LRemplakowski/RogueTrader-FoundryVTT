@@ -364,15 +364,15 @@ export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2
         {value: 'rightLeg', label: game.i18n.localize('ARMOUR.RIGHT_LEG')}
       ],
       shipComponentClassOptions: [
-        {value: 'voidEngine', label: game.i18n.localize('SHIP_COMPONENT.VOID_ENGINE')},
-        {value: 'warpEngine', label: game.i18n.localize('SHIP_COMPONENT.WARP_ENGINE')},
-        {value: 'gellarField', label: game.i18n.localize('SHIP_COMPONENT.GELLAR_FIELD')},
-        {value: 'voidShield', label: game.i18n.localize('SHIP_COMPONENT.VOID_SHIELD')},
-        {value: 'bridge', label: game.i18n.localize('SHIP_COMPONENT.BRIDGE')},
-        {value: 'lifeSupport', label: game.i18n.localize('SHIP_COMPONENT.LIFE_SUPPORT')},
-        {value: 'crewQuarters', label: game.i18n.localize('SHIP_COMPONENT.CREW_QUARTERS')},
-        {value: 'augurArrays', label: game.i18n.localize('SHIP_COMPONENT.AUGUR_ARRAYS')},
-        {value: 'supplemental', label: game.i18n.localize('SHIP_COMPONENT.SUPPLEMENTAL')}
+        {value: 'voidEngine', label: game.i18n.localize('SHIP_ITEM.VOID_ENGINE')},
+        {value: 'warpEngine', label: game.i18n.localize('SHIP_ITEM.WARP_ENGINE')},
+        {value: 'gellarField', label: game.i18n.localize('SHIP_ITEM.GELLAR_FIELD')},
+        {value: 'voidShield', label: game.i18n.localize('SHIP_ITEM.VOID_SHIELD')},
+        {value: 'bridge', label: game.i18n.localize('SHIP_ITEM.BRIDGE')},
+        {value: 'lifeSupport', label: game.i18n.localize('SHIP_ITEM.LIFE_SUPPORT')},
+        {value: 'crewQuarters', label: game.i18n.localize('SHIP_ITEM.CREW_QUARTERS')},
+        {value: 'augurArray', label: game.i18n.localize('SHIP_ITEM.AUGUR_ARRAY')},
+        {value: 'supplemental', label: game.i18n.localize('SHIP_ITEM.SUPPLEMENTAL')}
       ]
     };
 

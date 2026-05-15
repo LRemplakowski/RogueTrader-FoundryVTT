@@ -1,7 +1,7 @@
 import BaseActorModel from "./base-actor.mjs";
 import { requiredInteger } from "../helpers.mjs";
 import { ActorReferenceField } from "../fields/actor-reference-field.mjs";
-import { CrewSkill } from "../constants.mjs";
+import { CrewSkill } from "../enums/crew-skill.mjs";
 import { choices } from "yargs";
 
 const { StringField, SchemaField } = foundry.data.fields;

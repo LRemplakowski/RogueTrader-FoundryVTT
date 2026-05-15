@@ -1,3 +1,5 @@
+import { EnumBase } from "./enum-base.mjs";
+
 export class CrewSkill extends EnumBase {
 	static DEFAULT = "competent";
 

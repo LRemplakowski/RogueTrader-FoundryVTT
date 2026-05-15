@@ -1,4 +1,4 @@
-import RogueTraderUtil from "./util.js";
+import RogueTraderUtil from "../common/util.js";
 
 export class RogueTraderItem extends Item {
   static metadata = {

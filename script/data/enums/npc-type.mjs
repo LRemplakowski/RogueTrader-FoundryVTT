@@ -1,0 +1,11 @@
+import { EnumBase } from "./enum-base.mjs";
+
+export class NPCType extends EnumBase {
+  static DEFAULT = "troop";
+
+  static DATA = {
+    troop: { label: "NPC_TYPE.TROOP" },
+    master: { label: "NPC_TYPE.MASTER" },
+    elite: { label: "NPC_TYPE.ELITE" }
+  };
+}
