@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class ShipWeaponClass extends EnumBase {
+export default class ShipWeaponClass extends EnumBase {
   static DEFAULT = "macro";
 
   static DATA = {

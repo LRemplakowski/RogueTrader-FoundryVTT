@@ -1,7 +1,7 @@
 // script/data/fields/actor-reference-field.mjs
 import { StringField } from "foundry/data/fields.mjs";
 
-export class ActorReferenceField extends StringField {
+export default class ActorReferenceField extends StringField {
   constructor(options = {}) {
     super({
       blank: true,      // allow empty crew slots

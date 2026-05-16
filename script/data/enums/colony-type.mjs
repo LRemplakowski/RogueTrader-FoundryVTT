@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class ColonyType extends EnumBase {
+export default class ColonyType extends EnumBase {
   static DEFAULT = "research";
 
   static DATA = {

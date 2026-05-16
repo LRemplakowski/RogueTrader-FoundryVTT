@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class PsyStrength extends EnumBase {
+export default class PsyStrength extends EnumBase {
   static DEFAULT = "fettered";
 
   static DATA = {

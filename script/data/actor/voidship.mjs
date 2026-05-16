@@ -108,14 +108,6 @@ export default class VoidshipModel extends BaseActorModel {
         });
     }
 
-    static #immutableNumberField(initialValue) {
-        return new NumberField({
-            initial: initialValue,
-            readonly: true,
-            persisted: false
-        });
-    }
-
     prepareBaseData() {
         super.prepareBaseData();
         this.hull.integrity.max = this.hull.integrity.base;

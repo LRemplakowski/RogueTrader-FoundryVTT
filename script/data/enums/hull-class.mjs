@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class HullClass extends EnumBase {
+export default class HullClass extends EnumBase {
   static DEFAULT = "Transport";
 
   static DATA = {

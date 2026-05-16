@@ -11,3 +11,29 @@ const { NumberField, SchemaField, StringField } = foundry.data.fields;
  * @returns A number field that is non-nullable and always defined.
  */
 export const requiredInteger = ({ initial = 0, min = 0, max, label, persisted = true } = {}) => new NumberField({ initial, label, min, max, persisted, required: true, nullable: false, integer: true });
+
+export const immutableNumberField = ({initial = 0, label, integer} = {}) => {
+    return new NumberField({
+        initial: initial,
+        min: initial,
+        max: initial,
+        readonly: true,
+        persisted: false,
+        required: true, 
+        nullable: false, 
+        integer: integer
+    });
+}
+
+export const immutableIntegerField = ({initial = 0, label} = {}) => {
+    return new NumberField({
+        initial: initial,
+        min: initial,
+        max: initial,
+        readonly: true,
+        persisted: false,
+        required: true, 
+        nullable: false, 
+        integer: true
+    });
+}

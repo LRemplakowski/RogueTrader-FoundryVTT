@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class Availability extends EnumBase {
+export default class Availability extends EnumBase {
   static DEFAULT = "common";
 
   static DATA = {

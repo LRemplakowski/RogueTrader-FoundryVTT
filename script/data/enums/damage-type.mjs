@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class DamageType extends EnumBase {
+export default class DamageType extends EnumBase {
   static DEFAULT = "energy";
 
   static DATA = {

@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class Craftsmanship extends EnumBase {
+export default class Craftsmanship extends EnumBase {
   static DEFAULT = "common";
 
   static DATA = {

@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class SkillAdvance extends EnumBase {
+export default class SkillAdvance extends EnumBase {
   static DEFAULT = "-20";
 
   static DATA = {

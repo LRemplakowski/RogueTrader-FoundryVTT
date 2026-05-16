@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class NPCType extends EnumBase {
+export default class NPCType extends EnumBase {
   static DEFAULT = "troop";
 
   static DATA = {

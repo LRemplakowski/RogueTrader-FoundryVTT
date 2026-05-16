@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class GovernorType extends EnumBase {
+export default class GovernorType extends EnumBase {
   static DEFAULT = "administrative";
 
   static DATA = {

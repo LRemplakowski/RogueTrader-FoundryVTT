@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class ShipComponentClass extends EnumBase {
+export default class ShipComponentClass extends EnumBase {
   static DEFAULT = "voidEngine";
 
   static DATA = {

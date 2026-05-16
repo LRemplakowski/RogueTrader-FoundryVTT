@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export class CriticalInjuryPart extends EnumBase {
+export default class CriticalInjuryPart extends EnumBase {
   static DEFAULT = "head";
 
   static DATA = {
