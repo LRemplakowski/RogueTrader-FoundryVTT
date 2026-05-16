@@ -1,12 +1,16 @@
 import { EnumBase } from "./enum-base.mjs";
 
 export default class SkillAdvance extends EnumBase {
-  static DEFAULT = "-20";
+	static DEFAULT = "untrained";
 
-  static DATA = {
-    "-20": { value: -20, label: "ADVANCE.UNTRAINED" },
-    "0":   { value: 0,   label: "ADVANCE.TRAINED" },
-    "10":  { value: 10,  label: "ADVANCE.EXPERT" },
-    "20":  { value: 20,  label: "ADVANCE.VETERAN" }
-  };
+	static DATA = {
+		untrained: 	{ rating: -20, label: "ADVANCE.UNTRAINED" },
+		trained:   	{ rating: 0,   label: "ADVANCE.TRAINED" },
+		expert:  	{ rating: 10,  label: "ADVANCE.EXPERT" },
+		veteran:  	{ rating: 20,  label: "ADVANCE.VETERAN" }
+	};
+
+	static value(key) {
+		return this.DATA[key]?.rating ?? this.DATA[this.DEFAULT].rating;
+	}
 }

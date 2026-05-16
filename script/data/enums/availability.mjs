@@ -11,9 +11,9 @@ export default class Availability extends EnumBase {
     average: { label: "AVAILABILITY.AVERAGE" },
     scarce: { label: "AVAILABILITY.SCARCE" },
     rare: { label: "AVAILABILITY.RARE" },
-    "very-rare": { label: "AVAILABILITY.VERY_RARE" },
-    "extremely-rare": { label: "AVAILABILITY.EXTREMELY_RARE" },
-    "near-unique": { label: "AVAILABILITY.NEAR_UNIQUE" },
+    veryRare: { label: "AVAILABILITY.VERY_RARE" },
+    extremelyRare: { label: "AVAILABILITY.EXTREMELY_RARE" },
+    nearUnique: { label: "AVAILABILITY.NEAR_UNIQUE" },
     unique: { label: "AVAILABILITY.UNIQUE" }
   };
 }
