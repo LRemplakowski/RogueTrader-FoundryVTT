@@ -1,9 +1,24 @@
-export class RogueTraderActor extends Actor {
-  static metadata = {
-    ...super.metadata,
-    label: "Rogue Trader Actor",
-    types: ["explorer", "npc", "ship", "colony"]
-  };
+import { BaseDocumentMixin } from "./base-document-mixin.mjs";
+import { CharacterActor } from "./_module.mjs";
+
+export class RogueTraderActor extends BaseDocumentMixin(foundry.documents.Actor) {
+	static metadata = {
+		...super.metadata,
+		label: "Rogue Trader Actor",
+		types: ["explorer", "npc", "ship", "colony"]
+	};
+
+	static subclasses = {
+		character: CharacterActor,
+		npc: CharacterActor,
+		ship: ShipActor,
+		colony: ColonyActor,
+	};
+
+	static create(data, options) {
+		const cls = this._subclasses[data.type] ?? this;
+		return cls.create(data, options);
+	}
 
   async _preCreate(data, options, user) {
     let initData;

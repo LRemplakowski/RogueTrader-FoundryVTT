@@ -1,6 +1,7 @@
 import RogueTraderUtil from "../common/util.js";
+import BaseDocumentMixin from "./base-document-mixin.mjs";
 
-export class RogueTraderItem extends Item {
+export class RogueTraderItem extends BaseDocumentMixin(foundry.documents.Item) {
   static metadata = {
     ...super.metadata,
     label: "Rogue Trader Item",

@@ -143,125 +143,15 @@ export class ShipSheet extends RogueTraderSheet {
   }
 
   async _onDropActor(event, data) {
-    const context = await this._prepareContext();
-    const droppedActor = game.actors.get(data.uuid.split(".")[1]);
-    switch (event.target.dataset.crewrole) {
-      case "captain":
-        {
-          context.system.namedCrew.lordCaptain = data.uuid.split(".")[1];
-          break;
-        }
-      case "firstOfficer":
-        {
-          context.system.namedCrew.firstOfficer = data.uuid.split(".")[1];
-          break;
-        }
-      case "enginseerPrime": 
-        {
-          context.system.namedCrew.enginseerPrime = data.uuid.split(".")[1];
-          break;
-        }
-      case "highFactotum": 
-        {
-          context.system.namedCrew.highFactotum = data.uuid.split(".")[1];
-          break;
-        }
-      case "masterArms": 
-        {
-          context.system.namedCrew.masterArms = data.uuid.split(".")[1];
-          break;
-        }
-      case "masterHelmsman": 
-        {
-          context.system.namedCrew.masterHelmsman = data.uuid.split(".")[1];
-          break;
-        }
-      case "masterOrdnance":
-        {
-          context.system.namedCrew.masterOrdnance = data.uuid.split(".")[1];
-          break;
-        }
-      case "masterEtherics": 
-        {
-          context.system.namedCrew.masterEtherics = data.uuid.split(".")[1];
-          break;
-        }
-      case "masterChirurgeon":
-        {
-          context.system.namedCrew.masterChirurgeon = data.uuid.split(".")[1];
-          break;
-        }
-      case "masterWhispers": 
-        {
-          context.system.namedCrew.masterWhispers = data.uuid.split(".")[1];
-          break;
-        }
-      case "masterTelepathica":
-        {
-          context.system.namedCrew.masterTelepathica = data.uuid.split(".")[1];
-          break;
-        }
-      case "masterWarp":
-        {
-          context.system.namedCrew.masterWarp = data.uuid.split(".")[1];
-          break;
-        }
-      case "confessor":
-        {
-          context.system.namedCrew.confessor = data.uuid.split(".")[1];
-          break;
-        }
-      case "drivesmaster":
-        {
-          context.system.namedCrew.drivesmaster = data.uuid.split(".")[1];
-          break;
-        }
-      case "congregator":
-        {
-          context.system.namedCrew.congregator = data.uuid.split(".")[1];
-          break;
-        }
-      case "bosun":
-        {
-          context.system.namedCrew.bosun = data.uuid.split(".")[1];
-          break;
-        }
-      case "infernus":
-        {
-          context.system.namedCrew.infernus = data.uuid.split(".")[1];
-          break;
-        }
-      case "twistcatcher":
-        {
-          context.system.namedCrew.twistcatcher = data.uuid.split(".")[1];
-          break;
-        }
-      case "voxmaster":
-        {
-          context.system.namedCrew.voxmaster = data.uuid.split(".")[1];
-          break;
-        }
-      case "purser":
-        {
-          context.system.namedCrew.purser = data.uuid.split(".")[1];
-          break;
-        }
-      case "cartographer":
-        {
-          context.system.namedCrew.cartographer = data.uuid.split(".")[1];
-          break;
-        }
-      case "steward":
-        {
-          context.system.namedCrew.steward = data.uuid.split(".")[1];
-          break;
-        }
-      default:
-        console.log(event.target.dataset.crewRole);
-        break;
-    }
-    this.document.update(context.system);
+    const droppedActorId = data.uuid.split(".")[1];
+    const role = event.target.dataset.crewrole;
+    if (!role) return;
+
+    await this.actor.update({
+      [`system.namedCrew.${role}.actor`]: droppedActorId
+    });
   }
+
 
   async _onDropItemCreate(itemData) {
     const context = await this._prepareContext();
