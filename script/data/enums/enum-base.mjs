@@ -33,7 +33,7 @@ export class EnumBase {
 
   /** Numeric or other primary value lookup */
   static value(key) {
-    return this.DATA[key]?.rating ?? null;
+    return this.DATA[key];
   }
 
   /** Localized label lookup */
@@ -41,4 +41,19 @@ export class EnumBase {
     const entry = this.DATA[key];
     return entry ? game.i18n.localize(entry.label) : key;
   }
+
+  /** Find key by value or by value.short */
+  static keyOf(value) {
+    if (!value) return null;
+    for (const [key, entry] of Object.entries(this.DATA)) {
+      if (entry === value) return key;
+    }
+    if (value.short) {
+      for (const [key, entry] of Object.entries(this.DATA)) {
+        if (entry.short === value.short) return key;
+      }
+    }
+    return null;
+  }
+
 }
