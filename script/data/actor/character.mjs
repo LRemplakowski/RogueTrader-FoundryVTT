@@ -2,6 +2,7 @@ import { BaseActorModel } from "./base-actor.mjs";
 import { requiredInteger } from "../helpers.mjs";
 import { PsyClass, CreatureCharacteristic, CreatureSkill, SkillAdvance, CharacteristicAdvance } from "../enums/_module.mjs";
 import { FormulaField } from "../fields/_module.mjs";
+import HitLocations from "../enums/hit-locations.mjs";
 const { Characteristic } = CreatureCharacteristic.DATA;
 const {
     StringField,
@@ -121,9 +122,74 @@ export default class CharacterModel extends BaseActorModel {
         super.prepareBaseData();
         this.insanity.bonus = Math.floor(this.insanity.value / 10);
         this.corruption.bonus = Math.floor(this.corruption.value / 10);
+    }
+
+    prepareDerivedData() {
+        super.prepareDerivedData();
         this.#computeCharacteristicData();
         this.#computeSkillData();
-        this.speed = this.#getComputedSpeed();
+        this.#computeSpeed();
+        this.#computeExperience();
+        this.#compueRank();
+        this.#computeArmour();
+    }
+
+    #prepareItemMaps() {
+
+    }
+
+    #computeExperience() {
+        this.experience.spentCharacteristics = 0;
+        this.experience.spentSkills = 0;
+        this.experience.spentTalents = 0;
+        this.experience.spentPsychicPowers = this.psy.cost;
+        for (let characteristic of Object.values(this.characteristics)) {
+            this.experience.spentCharacteristics += parseInt(characteristic.cost, 10);
+        }
+        for (let skill of Object.values(this.skills)) {
+            this.experience.spentSkills = skill.cost;
+        }
+        for (let item of this.parent.items) {
+            if (item.system instanceof TalentDataModel) {
+                this.experience.spentTalents += parseInt(item.system.cost, 10);
+            } else if (item.system instanceof PsychicPowerDataModel) {
+                this.experience.spentPsychicPowers += parseInt(item.system.cost, 10);
+            }
+        }
+        this.experience.totalSpent = 4500
+            + this.experience.spentCharacteristics
+            + this.experience.spentSkills
+            + this.experience.spentTalents
+            + this.experience.spentPsychicPowers;
+        if (this.experience.value < 5000) {
+            this.experience.value = 5000;
+        }
+        this.experience.remaining = this.experience.value - this.experience.totalSpent;
+    }
+
+    _computeRank() {
+        const expSpent = this.experience.totalSpent;
+        let rank = "";
+        if (expSpent < 7000) {
+            rank = "1";
+        } else if (expSpent < 10000) {
+            rank = "2";
+        } else if (expSpent < 13000) {
+            rank = "3";
+        } else if (expSpent < 17000) {
+            rank = "4";
+        } else if (expSpent < 21000) {
+            rank = "5";
+        } else if (expSpent < 25000) {
+            rank = "6";
+        } else if (expSpent < 30000) {
+            rank = "7";
+        } else if (expSpent < 35000) {
+            rank = "8";
+        } else {
+            rank = "Retired";
+        }
+        this.bio.rank = rank;
     }
 
     #computeCharacteristicData() {
@@ -135,22 +201,76 @@ export default class CharacterModel extends BaseActorModel {
 
     #computeSkillData() {
         for (const [key, skill] of Object.entries(this.skills)) {
-            skill.value = Characteristic.value(skill.characteristic) + SkillAdvance.value(skill.advance);
+            const skillAdvance = SkillAdvance[skill.advance];
+            skill.value = Characteristic.value(skill.characteristic) + skillAdvance.rating;
+            skill.isKnown = !skill.isSpecialist || skillAdvance.rating >= 0;
         }
     }
 
-    #getComputedSpeed() {
-        const speedBase = this.characteristics.agility.bonus + this.size;
-        const speed = {
-            half:   speedBase,
-            full:   speedBase * 2,
+    #computeSpeed() { 
+        const defaultSize = 4;
+        const sizeModifier = this.size - defaultSize;
+        const speedBase = this.characteristics.agility.bonus + sizeModifier;
+        this.speed = {
+            base: speedBase,
+            half: speedBase,
+            full: speedBase * 2,
             charge: speedBase * 3,
-            run:    speedBase * 6
+            run: speedBase * 6
         }
-        return speed;
     }
 
-    prepareDerivedData() {
-        super.prepareDerivedData();
+    #computeArmour() {
+        const locations = Object.keys(HitLocations.DATA);
+        const toughnessBonus = this.characteristics.toughness.bonus;
+
+        // 1. Initialize armour structure
+        const armour = {};
+        for (const loc of locations) {
+            armour[loc] = {
+                toughnessBonus,
+                value: 0,
+                total: toughnessBonus,
+                item: null,
+            };
+        }
+
+        // 2. Compute max non-additive armour
+        const maxArmour = Object.fromEntries(
+            locations.map(loc => [loc, 0])
+        );
+        for (const item of this.parent.items) {
+            const itemData = item.system;
+            if (!(itemData instanceof ArmourModel)) continue;
+            if (!itemData.isAdditive) continue;
+
+            for (const loc of locations) {
+                const armourValue = itemData.part?.[loc] ?? 0;
+                if (armourValue > maxArmour[loc]) {
+                    maxArmour[loc] = armourValue;
+                    armour[loc].item = item;
+                }
+            }
+        }
+
+        // 3. Add additive armour
+        for (const item of this.parent.items) {
+            const itemData = item.system;
+            if (!(itemData instanceof ArmourModel)) continue;
+            if (!itemData.isAdditive) continue;
+
+            for (const loc of locations) {
+                maxArmour[loc] += item.part?.[loc] ?? 0;
+            }
+        }
+
+        // 4. Sum total and assign
+        for (const loc of locations) {
+            armour[loc].value = maxArmour[loc];
+            armour[loc].total += maxArmour[loc];
+        }
+
+        this.armour = armour;
     }
+
 }
