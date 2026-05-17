@@ -223,7 +223,6 @@ export default class CharacterModel extends BaseActorModel {
     #computeArmour() {
         const locations = Object.keys(HitLocations.DATA);
         const toughnessBonus = this.characteristics.toughness.bonus;
-
         // 1. Initialize armour structure
         const armour = {};
         for (const loc of locations) {
@@ -234,7 +233,6 @@ export default class CharacterModel extends BaseActorModel {
                 item: null,
             };
         }
-
         // 2. Compute max non-additive armour
         const maxArmour = Object.fromEntries(
             locations.map(loc => [loc, 0])
@@ -252,7 +250,6 @@ export default class CharacterModel extends BaseActorModel {
                 }
             }
         }
-
         // 3. Add additive armour
         for (const item of this.parent.items) {
             const itemData = item.system;
@@ -263,13 +260,11 @@ export default class CharacterModel extends BaseActorModel {
                 maxArmour[loc] += item.part?.[loc] ?? 0;
             }
         }
-
         // 4. Sum total and assign
         for (const loc of locations) {
             armour[loc].value = maxArmour[loc];
             armour[loc].total += maxArmour[loc];
         }
-
         this.armour = armour;
     }
 

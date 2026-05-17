@@ -3,14 +3,14 @@ import { requiredInteger } from "../helpers.mjs";
 import { ActorReferenceField } from "../fields/actor-reference-field.mjs";
 import { CrewSkill, HullClass } from "../enums/_module.mjs";
 
-const { StringField, SchemaField, HtmlField, NumberField } = foundry.data.fields;
+const { StringField, SchemaField, HtmlField: HTMLField, NumberField } = foundry.data.fields;
 
 export default class VoidshipModel extends BaseActorModel {
     static defineSchema() {
         const schema = super.defineSchema();
         schema.bio.extendFiels({
-            complications: new HtmlField(),
-            pastHistory: new HtmlField(),
+            complications: new HTMLField(),
+            pastHistory: new HTMLField(),
         });
         schema.crew = new SchemaField({
             count: new SchemaField({
