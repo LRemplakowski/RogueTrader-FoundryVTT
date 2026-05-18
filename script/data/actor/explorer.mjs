@@ -6,7 +6,7 @@ export default class ExplorerModel extends CharacterModel {
     static defineSchema() {
         const schema = super.defineSchema();
 
-        schema.bio.extendFiels({
+        schema.bio.extendFields({
             homeWorld: new StringField({ blank: true, initial: "" }),
             birthright: new StringField({ blank: true, initial: "" }),
             career: new StringField({ blank: true, initial: "" }),

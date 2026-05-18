@@ -9,7 +9,7 @@ const { StringField, SchemaField, HtmlField: HTMLField, NumberField } = foundry.
 export default class VoidshipModel extends BaseActorModel {
     static defineSchema() {
         const schema = super.defineSchema();
-        schema.bio.extendFiels({
+        schema.bio.extendFields({
             complications: new HTMLField(),
             pastHistory: new HTMLField(),
         });
