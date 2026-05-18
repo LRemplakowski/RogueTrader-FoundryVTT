@@ -1,6 +1,6 @@
-import { RogueTraderSheet } from "./actor.js";
+import RogueTraderSheet from "./actor.mjs";
 
-export class ExplorerSheet extends RogueTraderSheet {
+export default class ExplorerSheet extends RogueTraderSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,

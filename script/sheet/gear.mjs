@@ -1,6 +1,6 @@
-import { RogueTraderItemSheet } from "./item.js";
+import RogueTraderItemSheet from "./item.mjs";
 
-export class GearSheet extends RogueTraderItemSheet {
+export default class GearSheet extends RogueTraderItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,

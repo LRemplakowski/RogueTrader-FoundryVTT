@@ -1,8 +1,8 @@
 import {prepareCommonRoll, prepareShipCombatRoll, preparePsychicPowerRoll} from "../../common/dialog.js";
 import RogueTraderUtil from "../../common/util.js";
-import { RogueTraderSheet } from "./actor.js";
+import RogueTraderSheet from "./actor.mjs";
 
-export class ShipSheet extends RogueTraderSheet {
+export default class ShipSheet extends RogueTraderSheet {
   side = "";
 
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property

@@ -1,11 +1,11 @@
-import { RogueTraderItemSheet } from "./item.js";
+import RogueTraderItemSheet from "./item.mjs";
 
-export class ShipWeaponSheet extends RogueTraderItemSheet {
+export default class ColonyUpgradeSheet extends RogueTraderItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
-    id: "ship-weapon-sheet",
-    classes: ["rogue-trader", "sheet", "ship-weapon"],
+    id: "colony-upgrade-sheet",
+    classes: ["rogue-trader", "sheet", "colony-upgrade"],
     position: {
       width: 500,
       height: 400
@@ -15,7 +15,7 @@ export class ShipWeaponSheet extends RogueTraderItemSheet {
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {
-      template: "systems/rogue-trader/template/sheet/shipWeapon.html"
+      template: "systems/rogue-trader/template/sheet/colonyUpgrade.html"
     }
   };
 }

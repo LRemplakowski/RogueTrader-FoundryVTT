@@ -1,6 +1,6 @@
-import { RogueTraderSheet } from "./actor.js";
+import RogueTraderSheet from "./actor.mjs";
 
-export class NpcSheet extends RogueTraderSheet {
+export default class NpcSheet extends RogueTraderSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS with configuration
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,

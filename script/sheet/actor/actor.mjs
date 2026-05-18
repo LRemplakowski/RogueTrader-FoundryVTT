@@ -8,7 +8,7 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 // The mixin provides _renderHTML and _replaceHTML implementations that DocumentSheetV2 needs.
 // ActorSheetV2 provides DocumentSheetV2 base with automatic form submission
 // for inputs with name="system.*" attributes
-export class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
   // Subclasses will override this with their specific configuration
   static DEFAULT_OPTIONS = {

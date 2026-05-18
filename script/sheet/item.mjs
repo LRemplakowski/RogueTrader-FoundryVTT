@@ -7,7 +7,7 @@ const { ItemSheetV2 } = foundry.applications.sheets;
 // The mixin provides _renderHTML and _replaceHTML implementations that DocumentSheetV2 needs.
 // ItemSheetV2 provides DocumentSheetV2 base with automatic form submission
 // for inputs with name="system.*" attributes
-export class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
+export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
   // Subclasses will override this with their specific template and configuration
   static DEFAULT_OPTIONS = {
