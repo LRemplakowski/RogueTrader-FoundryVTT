@@ -32,6 +32,7 @@ import { migrateWorld } from "./migration.js";
 import { prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll, showAddCharacteristicModifierDialog } from "./dialog.js";
 import { commonRoll, combatRoll } from "./roll.js";
 import RtMacroUtil from "./macro.js";
+import * as data from "../data/_module.mjs";
 
 // Import Helpers
 import * as chat from "./chat.js";
@@ -61,6 +62,16 @@ Hooks.once("init", () => {
   // These already provide the registerSheet method without needing appv1 references
   const Actors = foundry.documents.collections.Actors;
   const Items = foundry.documents.collections.Items;
+
+  // Assign data models & setup templates
+  for (const [doc, models] of Object.entries(data)) {
+    if (!CONST.ALL_DOCUMENT_TYPES.includes(doc)) continue;
+    for (const modelCls of Object.values(models)) {
+      if (modelCls.metadata?.type) CONFIG[doc].dataModels[modelCls.metadata.type] = modelCls;
+      if (modelCls.metadata?.icon) CONFIG[doc].typeIcons[modelCls.metadata.type] = modelCls.metadata.icon;
+      if (modelCls.metadata?.detailsPartial) templates.push(...modelCls.metadata.detailsPartial);
+    }
+  }
 
   // Register actor sheets
   Actors.registerSheet("rogue-trader", ExplorerSheet, { types: ["explorer"], makeDefault: true });
