@@ -1,6 +1,6 @@
-import { DamageType, PsyZone } from "../enums/_module.mjs";
-import { FormulaField } from "../fields/_module.mjs";
-import { requiredInteger } from "../helpers.mjs";
+import { DamageType, PsyZone } from "../../enums/_module.mjs";
+import { FormulaField } from "../../fields/_module.mjs";
+import { requiredInteger } from "../../helpers.mjs";
 import CharacterItemModel from "./character-item.mjs";
 
 const { StringField, SchemaField, HTMLField } = foundry.data.fields;

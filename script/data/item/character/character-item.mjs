@@ -1,4 +1,4 @@
-import BaseItemModel from "./base-item.mjs";
+import { BaseItemModel } from "../base-item.mjs";
 
 const { SchemaField, ObjectField } = foundry.data.fields;
 
@@ -13,9 +13,9 @@ export default class CharacterItemModel extends BaseItemModel {
     static defineSchema() {
         const schema = super.defineSchema();
         schema.modifiers = new SchemaField({
-            characteristic: new SchemaField({}),
-            skill: new SchemaField({}),
-            other: new SchemaField({})
+            characteristic: new ObjectField({ initial: {}}),
+            skill: new ObjectField({ initial: {}}),
+            other: new ObjectField({ initial: {}})
         });
         return schema;
     }

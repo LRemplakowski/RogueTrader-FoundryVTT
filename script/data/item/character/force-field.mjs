@@ -1,4 +1,4 @@
-import { requiredInteger } from "../helpers.mjs";
+import { requiredInteger } from "../../helpers.mjs";
 import EquipmentModel from "./equipment.mjs";
 
 export default class ForceFieldModel extends EquipmentModel {

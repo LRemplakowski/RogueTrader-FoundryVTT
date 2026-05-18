@@ -1,16 +1,16 @@
-import { StringField } from "foundry/data/fields.js";
+const { StringField } = foundry.data.fields;
 
 export class EnumBase {
-  /** Override in subclass */
   static DATA = {};
 
   /** Override in subclass */
   static DEFAULT = "";
 
   /** Schema: keys only, no localization, no metadata */
-  static schema() {
+  static schema({ blank = false } = {}) {
     return new StringField({
       initial: this.DEFAULT,
+      blank: blank,
       choices: () =>
         Object.fromEntries(
           Object.keys(this.DATA).map(key => [key, key])
@@ -54,6 +54,16 @@ export class EnumBase {
       }
     }
     return null;
+  }
+
+  /**
+   * @template {keyof this["DATA"]} K
+   * @template {this["DATA"][K]} V
+   * @param {V} value
+   * @param {K} key
+   */
+  static compare(value, key) {
+    return this.keyOf(value) === key;
   }
 
 }

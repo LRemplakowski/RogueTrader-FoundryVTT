@@ -3,6 +3,7 @@ export { default as Availability } from "./availability.mjs";
 export { default as Craftsmanship } from "./craftsmanship.mjs";
 export { default as DamageType } from "./damage-type.mjs";
 export { default as ShipWeaponClass } from "./ship-weapon-class.mjs";
+export { default as ShipFacing } from "./ship-facing.mjs";
 export { default as ShipComponentClass } from "./ship-component-class.mjs";
 export { default as ArmourType } from "./armour-type.mjs";
 export { default as PsyClass } from "./psy-class.mjs";

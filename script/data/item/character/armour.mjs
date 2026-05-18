@@ -1,5 +1,5 @@
-import { ArmourType, HitLocations } from "../enums/_module.mjs";
-import { requiredInteger } from "../helpers.mjs";
+import { ArmourType, HitLocations } from "../../enums/_module.mjs";
+import { requiredInteger } from "../../helpers.mjs";
 import EquipmentModel from "./equipment.mjs";
 
 const { BooleanField, SchemaField } = foundry.data.fields;

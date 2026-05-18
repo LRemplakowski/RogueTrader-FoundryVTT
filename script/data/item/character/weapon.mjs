@@ -1,7 +1,7 @@
 import EquipmentModel from "./equipment.mjs";
-import { WeaponClass, WeaponType, DamageType } from "../enums/_module.mjs";
-import { requiredInteger } from "../helpers.mjs";
-import FormulaField from "../fields/_module.mjs";
+import { WeaponClass, WeaponType, DamageType } from "../../enums/_module.mjs";
+import { requiredInteger } from "../../helpers.mjs";
+import { FormulaField } from "../../fields/_module.mjs";
 
 const { StringField, SchemaField } = foundry.data.fields;
 

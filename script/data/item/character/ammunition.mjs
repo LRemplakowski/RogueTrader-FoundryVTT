@@ -1,6 +1,6 @@
-import { DamageType } from "../enums/_module.mjs";
-import { FormulaField } from "../fields/_module.mjs";
-import { requiredInteger } from "../helpers.mjs";
+import { DamageType } from "../../enums/_module.mjs";
+import { FormulaField } from "../../fields/_module.mjs";
+import { requiredInteger } from "../../helpers.mjs";
 import EquipmentModel from "./equipment.mjs";
 
 export default class AmmunitionModel extends EquipmentModel {

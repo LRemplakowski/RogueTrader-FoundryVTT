@@ -1,5 +1,5 @@
-import { Availability, Craftsmanship } from "../enums/_module.mjs";
-import { requiredInteger } from "../helpers.mjs";
+import { Availability, Craftsmanship } from "../../enums/_module.mjs";
+import { requiredInteger } from "../../helpers.mjs";
 import CharacterItemModel from "./character-item.mjs";
 
 export default class EquipmentModel extends CharacterItemModel {

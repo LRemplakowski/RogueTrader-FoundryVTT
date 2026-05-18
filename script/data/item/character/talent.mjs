@@ -1,4 +1,4 @@
-import { requiredInteger } from "../helpers.mjs";
+import { requiredInteger } from "../../helpers.mjs";
 import CharacterItemModel from "./character-item.mjs";
 
 const { StringField } = foundry.data.fields;

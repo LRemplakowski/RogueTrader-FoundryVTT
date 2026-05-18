@@ -1,7 +1,8 @@
 import BaseActorModel from "./base-actor.mjs";
 import { requiredInteger } from "../helpers.mjs";
-import { ActorReferenceField } from "../fields/actor-reference-field.mjs";
-import { CrewSkill, HullClass } from "../enums/_module.mjs";
+import { ActorReferenceField, ItemReferenceField } from "../fields/_module.mjs";
+import { CrewSkill, HullClass, ShipComponentClass, ShipFacing } from "../enums/_module.mjs";
+import { VoidshipItemModel, VoidshipComponentModel, VoidshipWeaponModel } from "../item/_module.mjs";
 
 const { StringField, SchemaField, HtmlField: HTMLField, NumberField } = foundry.data.fields;
 
@@ -21,11 +22,7 @@ export default class VoidshipModel extends BaseActorModel {
                 base: this.#immutableNumberField(100),
                 value: requiredInteger(),
             }),
-            skill: new StringField({ 
-                blank: false, 
-                initial: CrewSkill.DEFAULT, 
-                choices: CrewSkill.schema()
-            }),
+            skill: CrewSkill.schema(),
             namedCrew: new SchemaField({
                 lordCaptain: this.#crewRole(1),
                 firstOfficer: this.#crewRole(2),
@@ -85,13 +82,11 @@ export default class VoidshipModel extends BaseActorModel {
                 components: requiredInteger(),
                 total: requiredInteger(),
             }),
-            weaponCapacity: new SchemaField({
-                dorsal: requiredInteger(),
-                prow: requiredInteger(),
-                keel: requiredInteger(),
-                port: requiredInteger(),
-                starboard: requiredInteger(),
-            }),
+            weaponCapacity: new SchemaField(this.#shipFacings()),
+        });
+        const componentClass = ShipComponentClass.DATA;
+        schema.components = new SchemaField({
+            essential: new SchemaField(this.#essentialComponentsSchema()),
         });
         return schema;
     }
@@ -99,13 +94,38 @@ export default class VoidshipModel extends BaseActorModel {
     /** Private helper for creating a crew role schema */
     static #crewRole(rank) {
         return new SchemaField({
-            actor: new ActorReferenceField(),
+            id: new ActorReferenceField(),
             rank: new NumberField({
                 initial: rank,
                 readonly: true,
                 persisted: false
             })
         });
+    }
+
+    static #essentialComponentsSchema() {
+        const essentials = {};
+        for (const key of Object.keys(ShipComponentClass.DATA)) {
+            if (key === ShipComponentClass.keyOf(ShipComponentClass.DATA.supplemental))
+                continue;
+            essentials[key] = this.#shipComponent(key);
+        }
+        return essentials;
+    }
+
+    static #shipComponent(category) {
+        return new SchemaField({
+            id: new ItemReferenceField(),
+            class: new StringField({ initial: category, blank: false, readonly: true, persisted: false}),
+        });
+    }
+
+    static #shipFacings() {
+        const facings = {};
+        for (const key in Object.keys(ShipFacing.DATA)) {
+            facings[key] = requiredInteger();
+        }
+        return facings;
     }
 
     prepareBaseData() {
@@ -117,42 +137,71 @@ export default class VoidshipModel extends BaseActorModel {
 
     prepareDerivedData() {
         super.prepareDerivedData();
-
+        this.#prepareVoidshipComponents();
         this.#computePower();
         this.#computeSpace();
         this.#computePoints();
         this.#computeShipInitiative();
     }
 
-    #computePower() {
-        const items = Array.from(this.parent.items ?? []);
-        const voidEngine = items.find(item => item.system?.class === "voidEngine");
-        const otherItems = items.filter(item => (item.isShipWeapon || item.isShipComponent) && item.system?.class !== "voidEngine");
+    #prepareVoidshipCrew() {
+        for (const [key, data] of Object.entries(this.crew.namedCrew)) {
+            const actor = game.actors.get(data.id) ?? null;
+            this.crew.namedCrew[key].actor = actor;
+        }
+    }
 
+    #prepareVoidshipComponents() {
+        const items = Array.from(this.parent.items ?? []);
+        const shipComponents = ShipComponentClass.DATA;
+        this.components.supplemental = items.filter(item => 
+            item.system instanceof VoidshipComponentModel &&
+            ShipComponentClass.compare(shipComponents.supplemental, item.system.class)
+        );
+        this.components.weapons = items.filter(item => 
+            item.system instanceof VoidshipWeaponModel
+        );
+        const all = []
+        for (const [key, data] of Object.entries(this.components.essential)) {
+            const item = this.parent?.items?.get(data.id) ?? null;
+            this.components.essential[key].item = item;
+            if (item !== null)
+                all.push(item);
+        }
+        for (const item of this.components.supplemental) 
+            all.push(item);
+        for (const item of this.components.weapons)
+            all.push(item);
+        this.components.all = Array.from(new Set(all.filter(item => item)));
+    }
+
+    #computePower() {
+        const items = this.components.all;
+        const voidEngine = this.components.essential.voidEngine.item;
         this.power.max = voidEngine?.system?.power ?? 0;
-        this.power.value = otherItems.reduce((total, item) => total + (item.system?.power || 0), 0);
+        this.power.value = items.filter(item => item !== voidEngine)
+                                .reduce((total, item) => total + item.system.power);
         this.power.avail = this.power.max - this.power.value;
     }
 
     #computeSpace() {
-        const shipItems = Array.from(this.parent.items ?? []).filter(item => item.isShipWeapon || item.isShipComponent);
-        const spaceTaken = shipItems.reduce((total, item) => total + (item.system?.space || 0), 0);
+        const shipItems = this.components.all;
+        const spaceTaken = shipItems.reduce((total, item) => total + item.system.space);
         this.space.value = spaceTaken;
         this.space.avail = this.space.max - spaceTaken;
     }
 
     #computePoints() {
-        const shipItems = Array.from(this.parent.items ?? []).filter(item => item.isShipWeapon || item.isShipComponent);
-        const componentsValue = shipItems.reduce((total, item) => total + (item.system?.shipPoints || 0), 0);
+        const shipItems = this.components.all;
+        const componentsValue = shipItems.reduce((total, item) => total + item.system.shipPoints);
         this.points.components = componentsValue;
         this.points.total = componentsValue + this.points.base;
     }
 
     #computeShipInitiative() {
-        if (!this.parent) return;
-        this.parent.initiative = {
-        base: "1d10",
-        bonus: this.detection / 10,
+        this.initiative = {
+            base: "1d10",
+            bonus: this.detection / 10,
         };
     }
 }
