@@ -22,7 +22,7 @@ export default class PsychicPowerModel extends CharacterItemModel {
         schema.action = new StringField({ blank: true, initial: "" });
         schema.focusPower = new SchemaField({
             difficulty: requiredInteger(),
-            test: "",
+            test: new StringField({ blank: true, initial: "" }),
         });
         schema.range = new StringField({ blank: true, initial: "" });
         schema.sustained = new StringField({ blank: true, initial: "No" });

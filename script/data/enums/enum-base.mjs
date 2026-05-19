@@ -19,7 +19,7 @@ export class EnumBase {
   }
 
   /** UI: localized labels + metadata */
-  static choices() {
+  static options() {
     return Object.fromEntries(
       Object.entries(this.DATA).map(([key, data]) => [
         key,

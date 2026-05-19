@@ -1,5 +1,6 @@
 import { prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll, prepareForceFieldRoll } from "../../common/dialog.js";
 import RogueTraderUtil from "../../common/util.js";
+import * as enums from "../../data/enums/_module.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -461,125 +462,27 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
 
     // Provide reusable option lists for actor templates using selectOptions
     const optionsData = {
-      craftsmanshipOptions: [
-        {value: 'poor', label: game.i18n.localize('CRAFTSMANSHIP.POOR')},
-        {value: 'common', label: game.i18n.localize('CRAFTSMANSHIP.COMMON')},
-        {value: 'good', label: game.i18n.localize('CRAFTSMANSHIP.GOOD')},
-        {value: 'best', label: game.i18n.localize('CRAFTSMANSHIP.BEST')}
-      ],
-      availabilityOptions: [
-        {value: 'ubiquitous', label: game.i18n.localize('AVAILABILITY.UBIQUITOUS')},
-        {value: 'abundant', label: game.i18n.localize('AVAILABILITY.ABUNDANT')},
-        {value: 'plentiful', label: game.i18n.localize('AVAILABILITY.PLENTIFUL')},
-        {value: 'common', label: game.i18n.localize('AVAILABILITY.COMMON')},
-        {value: 'average', label: game.i18n.localize('AVAILABILITY.AVERAGE')},
-        {value: 'scarce', label: game.i18n.localize('AVAILABILITY.SCARCE')},
-        {value: 'rare', label: game.i18n.localize('AVAILABILITY.RARE')},
-        {value: 'very-rare', label: game.i18n.localize('AVAILABILITY.VERY_RARE')},
-        {value: 'extremely-rare', label: game.i18n.localize('AVAILABILITY.EXTREMELY_RARE')},
-        {value: 'near-unique', label: game.i18n.localize('AVAILABILITY.NEAR_UNIQUE')},
-        {value: 'unique', label: game.i18n.localize('AVAILABILITY.UNIQUE')}
-      ],
-      damageTypeOptions: [
-        {value: 'energy', label: game.i18n.localize('DAMAGE_TYPE.ENERGY')},
-        {value: 'impact', label: game.i18n.localize('DAMAGE_TYPE.IMPACT')},
-        {value: 'rending', label: game.i18n.localize('DAMAGE_TYPE.RENDING')},
-        {value: 'explosive', label: game.i18n.localize('DAMAGE_TYPE.EXPLOSIVE')}
-      ],
-      shipWeaponClassOptions: [
-        {value: 'macro', label: game.i18n.localize('SHIP_WEAPON.MACRO')},
-        {value: 'lance', label: game.i18n.localize('SHIP_WEAPON.LANCE')},
-        {value: 'torpedo', label: game.i18n.localize('SHIP_WEAPON.TORPEDO')},
-        {value: 'hangar', label: game.i18n.localize('SHIP_WEAPON.HANGAR')}
-      ],
-      armourTypeOptions: [
-        {value: 'basic', label: game.i18n.localize('ARMOUR_TYPE.BASIC')},
-        {value: 'flak', label: game.i18n.localize('ARMOUR_TYPE.FLAK')},
-        {value: 'mesh', label: game.i18n.localize('ARMOUR_TYPE.MESH')},
-        {value: 'carapace', label: game.i18n.localize('ARMOUR_TYPE.CARAPACE')},
-        {value: 'power', label: game.i18n.localize('ARMOUR_TYPE.POWER')},
-        {value: 'other', label: game.i18n.localize('ARMOUR_TYPE.OTHER')}
-      ],
-      criticalInjuryPartOptions: [
-        {value: 'head', label: game.i18n.localize('ARMOUR.HEAD')},
-        {value: 'leftArm', label: game.i18n.localize('ARMOUR.LEFT_ARM')},
-        {value: 'rightArm', label: game.i18n.localize('ARMOUR.RIGHT_ARM')},
-        {value: 'body', label: game.i18n.localize('ARMOUR.BODY')},
-        {value: 'leftLeg', label: game.i18n.localize('ARMOUR.LEFT_LEG')},
-        {value: 'rightLeg', label: game.i18n.localize('ARMOUR.RIGHT_LEG')}
-      ],
+      craftsmanshipOptions: enums.Craftsmanship.options(),
+      availabilityOptions: enums.Availability.options(),
+      damageTypeOptions: enums.DamageType.options(),
+      shipWeaponClassOptions: enums.ShipWeaponClass.options(),
+      armourTypeOptions: enums.ArmourType.options(),
+      criticalInjuryPartOptions: enums.HitLocations.options(),
       // Crew skill options for ship actor templates
-      crewSkillOptions: [
-        {value: 'incompetent', label: game.i18n.localize('SHIP.CREW_INCOMPETENT')},
-        {value: 'competent', label: game.i18n.localize('SHIP.CREW_COMPETENT')},
-        {value: 'crack', label: game.i18n.localize('SHIP.CREW_CRACK')},
-        {value: 'veteran', label: game.i18n.localize('SHIP.CREW_VETERAN')},
-        {value: 'elite', label: game.i18n.localize('SHIP.CREW_ELITE')}
-      ],
+      crewSkillOptions: enums.CrewSkill.options(),
       // Characteristic advance options
-      characteristicAdvanceOptions: [
-        {value: 0, label: game.i18n.localize('ADVANCE.NONE')},
-        {value: 5, label: game.i18n.localize('ADVANCE.SIMPLE')},
-        {value: 10, label: game.i18n.localize('ADVANCE.INTERMEDIATE')},
-        {value: 15, label: game.i18n.localize('ADVANCE.TRAINED')},
-        {value: 20, label: game.i18n.localize('ADVANCE.PROFICIENT')},
-        {value: 25, label: game.i18n.localize('ADVANCE.EXPERT')}
-      ],
+      characteristicAdvanceOptions: enums.CharacteristicAdvance.options(),
       // NPC type options
-      npcTypeOptions: [
-        { value: 'troop', label: game.i18n.localize('NPC_TYPE.TROOP') },
-        { value: 'master', label: game.i18n.localize('NPC_TYPE.MASTER') },
-        { value: 'elite', label: game.i18n.localize('NPC_TYPE.ELITE') }
-      ],
+      npcTypeOptions: enums.NPCType.options(),
       // Skill/speciality advance options
-      skillAdvanceOptions: [
-        {value: -20, label: game.i18n.localize('ADVANCE.UNTRAINED')},
-        {value: 0, label: game.i18n.localize('ADVANCE.TRAINED')},
-        {value: 10, label: game.i18n.localize('ADVANCE.EXPERT')},
-        {value: 20, label: game.i18n.localize('ADVANCE.VETERAN')}
-      ],
+      skillAdvanceOptions: enums.SkillAdvance.options(),
       // Psychic class options
-      psyClassOptions: [
-        {value: 'bound', label: game.i18n.localize('PSYCHIC_POWER.BOUND')},
-        {value: 'unbound', label: game.i18n.localize('PSYCHIC_POWER.UNBOUND')},
-        {value: 'daemonic', label: game.i18n.localize('PSYCHIC_POWER.DAEMONIC')}
-      ],
-      initiativeOptions: [],
-      governorTypeOptions: [
-        { value: 'administrative', label: game.i18n.localize('COLONY.GOV.ADMINISTRATIVE') },
-        { value: 'faithful', label: game.i18n.localize('COLONY.GOV.FAITHFUL') },
-        { value: 'lawful', label: game.i18n.localize('COLONY.GOV.LAWFUL') },
-        { value: 'accounting', label: game.i18n.localize('COLONY.GOV.ACCOUNTING') },
-        { value: 'local', label: game.i18n.localize('COLONY.GOV.LOCAL') },
-        { value: 'relaxed', label: game.i18n.localize('COLONY.GOV.RELAXED') },
-        { value: 'warlike', label: game.i18n.localize('COLONY.GOV.WARLIKE') }
-      ],
-      colonyTypeOptions: [
-        { value: 'research', label: game.i18n.localize('COLONY.TYPE.RESEARCH') },
-        { value: 'mining', label: game.i18n.localize('COLONY.TYPE.MINING') },
-        { value: 'ecclesiastical', label: game.i18n.localize('COLONY.TYPE.ECCLESIASTICAL') },
-        { value: 'agricultural', label: game.i18n.localize('COLONY.TYPE.AGRICULTURAL') },
-        { value: 'pleasure', label: game.i18n.localize('COLONY.TYPE.PLEASURE') },
-        { value: 'war', label: game.i18n.localize('COLONY.TYPE.WAR') },
-      ],
-      hullClassOptions: [
-        { value: 'Transport', label: 'Transport' },
-        { value: 'Raider', label: 'Raider' },
-        { value: 'Frigate', label: 'Frigate' },
-        { value: 'Light Cruiser', label: 'Light Cruiser' },
-        { value: 'Cruiser', label: 'Cruiser' },
-        { value: 'Battlecruiser', label: 'Battlecruiser' },
-        { value: 'Grand Cruiser', label: 'Grand Cruiser' },
-        { value: 'Battleship', label: 'Battleship' }
-      ],
+      psyClassOptions: enums.PsyClass.options(),
+      initiativeOptions: enums.Characteristics.options(),
+      governorTypeOptions: enums.GovernorType.options(),
+      colonyTypeOptions: enums.ColonyType.options(),
+      hullClassOptions: enums.HullClass.options(),
     };
-
-    // Build initiative characteristic options from the actor's characteristics
-    const initiativeOptions = [];
-    for (const [key, char] of Object.entries(context.system.characteristics || {})) {
-      initiativeOptions.push({ value: key, label: game.i18n.localize(char.label) });
-    }
-    optionsData.initiativeOptions = initiativeOptions;
 
     // Merge options with any existing options and attach to context
     context.options = {

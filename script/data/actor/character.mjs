@@ -28,9 +28,9 @@ export default class CharacterModel extends BaseActorModel {
         schema.aptitudes = new SchemaField({});
         schema.size = requiredInteger({ initial: 4 });
 
-        schema.characteristics = new SchemaField(this.#defineCharacteristics());
+        schema.characteristics = new SchemaField(CharacterModel.#defineCharacteristics());
 
-        schema.skills = new SchemaField(this.#defineSkills());
+        schema.skills = new SchemaField(CharacterModel.#defineSkills());
 
         schema.initiative = new SchemaField({
                 characteristic: new StringField({ blank: false, initial: "agility" }),
@@ -199,8 +199,8 @@ export default class CharacterModel extends BaseActorModel {
 
     #computeSkillData() {
         for (const [key, skill] of Object.entries(this.skills)) {
-            const skillAdvance = SkillAdvance[skill.advance];
-            skill.value = Characteristic.value(skill.characteristic) + skillAdvance.rating;
+            const skillAdvance = SkillAdvance.DATA[skill.advance];
+            skill.value = this.characteristics[skill.characteristic].value + skillAdvance.rating;
             skill.isKnown = !skill.isSpecialist || skillAdvance.rating >= 0;
         }
     }

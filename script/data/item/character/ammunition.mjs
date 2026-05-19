@@ -3,6 +3,8 @@ import { FormulaField } from "../../fields/_module.mjs";
 import { requiredInteger } from "../../helpers.mjs";
 import EquipmentModel from "./equipment.mjs";
 
+const { SchemaField, StringField } = foundry.data.fields;
+
 export default class AmmunitionModel extends EquipmentModel {
     /** @inheritdoc */
     static get metadata() {
