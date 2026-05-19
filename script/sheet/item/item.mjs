@@ -1,4 +1,4 @@
-import {showAddCharacteristicModifierDialog, showAddSkillModifierDialog} from "../common/dialog.js";
+import {showAddCharacteristicModifierDialog, showAddSkillModifierDialog} from "../../common/dialog.js";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;

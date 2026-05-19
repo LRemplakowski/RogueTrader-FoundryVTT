@@ -51,6 +51,11 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     }
   };
 
+  static METADATA = { 
+    types: [],
+    makeDefault: true,
+  }
+
   /**
    * Handle form submission for the actor sheet.
    * @this {RogueTraderSheet}

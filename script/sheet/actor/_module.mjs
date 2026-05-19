@@ -1,4 +1,4 @@
-// Actor sheet classes - exported non-namespaced for bulk registration
+// Actor sheet classes
 export { default as RogueTraderSheet } from "./actor.mjs";
 export { default as ExplorerSheet } from "./explorer.mjs";
 export { default as ColonySheet } from "./colony.mjs";
