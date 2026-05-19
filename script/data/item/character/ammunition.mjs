@@ -4,6 +4,14 @@ import { requiredInteger } from "../../helpers.mjs";
 import EquipmentModel from "./equipment.mjs";
 
 export default class AmmunitionModel extends EquipmentModel {
+    /** @inheritdoc */
+    static get metadata() {
+        return {
+            ...super.metadata,
+            type: "ammunition"
+        };
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
         schema.damage = new SchemaField({

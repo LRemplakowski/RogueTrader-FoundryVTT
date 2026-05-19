@@ -5,6 +5,14 @@ import ColonyItemModel from "./colony-item.mjs";
 const { BooleanField, StringField } = foundry.data.fields;
 
 export default class ColonyUpgradeModel extends ColonyItemModel {
+    /** @inheritdoc */
+    static get metadata() {
+        return {
+            ...super.metadata,
+            type: "colonyUpgrade"
+        };
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
         schema.yearlyLoyalty = requiredInteger();

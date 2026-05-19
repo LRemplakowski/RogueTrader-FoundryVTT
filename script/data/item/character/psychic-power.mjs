@@ -6,6 +6,14 @@ import CharacterItemModel from "./character-item.mjs";
 const { StringField, SchemaField, HTMLField } = foundry.data.fields;
 
 export default class PsychicPowerModel extends CharacterItemModel {
+    /** @inheritdoc */
+    static get metadata() {
+        return {
+            ...super.metadata,
+            type: "psychicPower"
+        };
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
         schema.shortDescription = new StringField({ blank: true, initial: "" });

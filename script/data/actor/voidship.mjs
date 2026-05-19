@@ -10,8 +10,8 @@ export default class VoidshipModel extends BaseActorModel {
     /** @inheritdoc */
     static get metadata() {
         return {
-        ...super.metadata,
-        type: "voidship",
+            ...super.metadata,
+            type: "voidship",
         };
     }
 

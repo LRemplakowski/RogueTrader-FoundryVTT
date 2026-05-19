@@ -7,8 +7,8 @@ export default class VoidshipWeaponModel extends VoidshipItemModel {
     /** @inheritdoc */
     static get metadata() {
         return {
-        ...super.metadata,
-        type: "voidshipWeapon",
+            ...super.metadata,
+            type: "shipWeapon",
         };
     }
 

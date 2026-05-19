@@ -5,6 +5,14 @@ import EquipmentModel from "./equipment.mjs";
 const { BooleanField, SchemaField } = foundry.data.fields;
 
 export default class ArmourModel extends EquipmentModel {
+    /** @inheritdoc */
+    static get metadata() {
+        return {
+            ...super.metadata,
+            type: "armour"
+        };
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
         schema.category = ArmourType.schema();

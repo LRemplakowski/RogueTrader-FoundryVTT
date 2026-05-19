@@ -9,8 +9,8 @@ export default class ColonyModel extends BaseActorModel {
     /** @inheritdoc */
     static get metadata() {
         return {
-        ...super.metadata,
-        type: "colony",
+            ...super.metadata,
+            type: "colony",
         };
     }
 

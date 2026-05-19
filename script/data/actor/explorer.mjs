@@ -6,8 +6,8 @@ export default class ExplorerModel extends CharacterModel {
     /** @inheritdoc */
     static get metadata() {
         return {
-        ...super.metadata,
-        type: "explorer",
+            ...super.metadata,
+            type: "explorer",
         };
     }
 

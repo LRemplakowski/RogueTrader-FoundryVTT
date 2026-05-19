@@ -6,8 +6,8 @@ export default class NPCModel extends CharacterModel {
     /** @inheritdoc */
     static get metadata() {
         return {
-        ...super.metadata,
-        type: "npc",
+            ...super.metadata,
+            type: "npc",
         };
     }
 

@@ -6,6 +6,14 @@ import { FormulaField } from "../../fields/_module.mjs";
 const { StringField, SchemaField } = foundry.data.fields;
 
 export default class WeaponModel extends EquipmentModel {
+    /** @inheritdoc */
+    static get metadata() {
+        return {
+            ...super.metadata,
+            type: "weapon"
+        };
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
         schema.class = WeaponClass.schema();
