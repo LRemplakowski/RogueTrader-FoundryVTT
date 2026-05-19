@@ -21,6 +21,12 @@ export default class ColonySheet extends RogueTraderSheet {
     }
   };
 
+  static METADATA = {
+    types: ["colony"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: V2 Tab System Definition
   // TABS must have 'tabs' as an ARRAY (not object) with 'initial' property
   static TABS = {

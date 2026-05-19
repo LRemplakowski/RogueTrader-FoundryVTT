@@ -11,6 +11,12 @@ export default class NpcSheet extends RogueTraderSheet {
     }
   };
 
+  static METADATA = {
+    types: ["npc"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: V2 Tab System Definition
   // TABS must have 'tabs' as an ARRAY (not object) with 'initial' property
   static TABS = {

@@ -12,6 +12,12 @@ export default class ForceFieldSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["forceField"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

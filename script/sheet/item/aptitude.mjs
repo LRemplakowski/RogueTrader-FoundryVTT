@@ -12,6 +12,12 @@ export default class AptitudeSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["aptitude"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

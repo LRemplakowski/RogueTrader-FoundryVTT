@@ -12,6 +12,12 @@ export default class ColonyUpgradeSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["colonyUpgrade"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

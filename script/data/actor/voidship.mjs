@@ -1,12 +1,20 @@
 import BaseActorModel from "./base-actor.mjs";
-import { requiredInteger } from "../helpers.mjs";
+import { requiredInteger, immutableIntegerField } from "../helpers.mjs";
 import { ActorReferenceField, ItemReferenceField } from "../fields/_module.mjs";
 import { CrewSkill, HullClass, ShipComponentClass, ShipFacing } from "../enums/_module.mjs";
 import { VoidshipItemModel, VoidshipComponentModel, VoidshipWeaponModel } from "../item/_module.mjs";
 
-const { StringField, SchemaField, HtmlField: HTMLField, NumberField } = foundry.data.fields;
+const { StringField, SchemaField, HTMLField, NumberField } = foundry.data.fields;
 
 export default class VoidshipModel extends BaseActorModel {
+    /** @inheritdoc */
+    static get metadata() {
+        return {
+        ...super.metadata,
+        type: "voidship",
+        };
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
         schema.bio.extendFields({
@@ -15,11 +23,11 @@ export default class VoidshipModel extends BaseActorModel {
         });
         schema.crew = new SchemaField({
             count: new SchemaField({
-                base: this.#immutableNumberField(100),
+                base: immutableIntegerField({ initial: 100 }),
                 value: requiredInteger(),
             }),
             morale: new SchemaField({
-                base: this.#immutableNumberField(100),
+                base: immutableIntegerField({ initial: 100 }),
                 value: requiredInteger(),
             }),
             skill: CrewSkill.schema(),

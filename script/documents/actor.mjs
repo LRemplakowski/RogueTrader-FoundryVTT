@@ -1,5 +1,4 @@
-import { BaseDocumentMixin } from "./base-document-mixin.mjs";
-import { CharacterActor } from "./_module.mjs";
+import BaseDocumentMixin from "./base-document-mixin.mjs";
 
 export class RogueTraderActor extends BaseDocumentMixin(foundry.documents.Actor) {
 	static metadata = {
@@ -7,18 +6,6 @@ export class RogueTraderActor extends BaseDocumentMixin(foundry.documents.Actor)
 		label: "Rogue Trader Actor",
 		types: ["explorer", "npc", "ship", "colony"]
 	};
-
-	static subclasses = {
-		character: CharacterActor,
-		npc: CharacterActor,
-		ship: ShipActor,
-		colony: ColonyActor,
-	};
-
-	static create(data, options) {
-		const cls = this._subclasses[data.type] ?? this;
-		return cls.create(data, options);
-	}
 
   async _preCreate(data, options, user) {
     let initData;
@@ -49,35 +36,35 @@ export class RogueTraderActor extends BaseDocumentMixin(foundry.documents.Actor)
   prepareData() {
     super.prepareData();
     // v13: Guard against undefined system before accessing properties
-    if (!this.system) return;
+    // if (!this.system) return;
     
-    if (this.type === 'ship') {
-      this._computePower();
-      this._computeSpace();
-      this._computePoints();
-      this._computeShipInitiative();
-    }
-    else if (this.type === 'colony') {
-      this._computeRequiredGrowth();
-      this._computeColonyUpgrades();
-      this._computeColonyResources();
-      this._computeProfitFactor();
-      this._computeYearlyGains();
-      this._computePlanetarySlots();
-      this._computeGovernorSkill()
-      console.log(this);
-    }
-    else {
-      this._computeCharacteristics();
-      this._computeSkills();
-      this._computeItems();
-      this._computeExperience();
-      if (this.type === 'explorer') {
-        this._computeRank();
-      }
-      this._computeArmour();
-      this._computeMovement();
-    }
+    // if (this.type === 'ship') {
+    //   this._computePower();
+    //   this._computeSpace();
+    //   this._computePoints();
+    //   this._computeShipInitiative();
+    // }
+    // else if (this.type === 'colony') {
+    //   this._computeRequiredGrowth();
+    //   this._computeColonyUpgrades();
+    //   this._computeColonyResources();
+    //   this._computeProfitFactor();
+    //   this._computeYearlyGains();
+    //   this._computePlanetarySlots();
+    //   this._computeGovernorSkill()
+    //   console.log(this);
+    // }
+    // else {
+    //   this._computeCharacteristics();
+    //   this._computeSkills();
+    //   this._computeItems();
+    //   this._computeExperience();
+    //   if (this.type === 'explorer') {
+    //     this._computeRank();
+    //   }
+    //   this._computeArmour();
+    //   this._computeMovement();
+    // }
   }
 
   _computeProfitFactor() {

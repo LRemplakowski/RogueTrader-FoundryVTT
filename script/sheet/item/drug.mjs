@@ -12,6 +12,12 @@ export default class DrugSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["drug"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

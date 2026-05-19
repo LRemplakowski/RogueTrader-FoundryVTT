@@ -12,6 +12,12 @@ export default class CriticalInjurySheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["criticalInjury"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

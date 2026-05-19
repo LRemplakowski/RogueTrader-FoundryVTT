@@ -12,6 +12,12 @@ export default class ToolSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["tool"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

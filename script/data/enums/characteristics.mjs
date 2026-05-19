@@ -1,6 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 
-export default class CreatureCharacteristic extends EnumBase {
+export default class Characteristics extends EnumBase {
     static DEFAULT = "strength";
 
     static DATA = {

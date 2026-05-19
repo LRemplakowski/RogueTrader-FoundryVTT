@@ -12,6 +12,12 @@ export default class ColonyEventSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["colonyEvent"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

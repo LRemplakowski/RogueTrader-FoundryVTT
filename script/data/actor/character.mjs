@@ -1,9 +1,9 @@
-import { BaseActorModel } from "./base-actor.mjs";
+import { default as BaseActorModel } from "./base-actor.mjs";
 import { requiredInteger } from "../helpers.mjs";
-import { PsyClass, CreatureCharacteristic, CreatureSkill, SkillAdvance, CharacteristicAdvance } from "../enums/_module.mjs";
+import { PsyClass, Characteristics, Skills, SkillAdvance, CharacteristicAdvance } from "../enums/_module.mjs";
 import { FormulaField } from "../fields/_module.mjs";
 import HitLocations from "../enums/hit-locations.mjs";
-const { Characteristic } = CreatureCharacteristic.DATA;
+const Characteristic = Characteristics.DATA;
 const {
     StringField,
     SchemaField,
@@ -88,7 +88,7 @@ export default class CharacterModel extends BaseActorModel {
 
     static #skillFieldDefinitions() {
         const fields = {};
-        for (const [skillKey, skillData] of Object.entries(CreatureSkill.DATA)) {
+        for (const [skillKey, skillData] of Object.entries(Skills.DATA)) {
             fields[skillKey] = this.#skillSchema(skillData);
         }
         return fields;
@@ -130,7 +130,7 @@ export default class CharacterModel extends BaseActorModel {
         this.#computeSkillData();
         this.#computeSpeed();
         this.#computeExperience();
-        this.#compueRank();
+        this.#computeRank();
         this.#computeArmour();
     }
 
@@ -167,7 +167,7 @@ export default class CharacterModel extends BaseActorModel {
         this.experience.remaining = this.experience.value - this.experience.totalSpent;
     }
 
-    _computeRank() {
+    #computeRank() {
         const expSpent = this.experience.totalSpent;
         let rank = "";
         if (expSpent < 7000) {

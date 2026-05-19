@@ -12,6 +12,12 @@ export default class WeaponModificationSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["weaponModification"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

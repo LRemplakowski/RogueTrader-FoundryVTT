@@ -12,6 +12,12 @@ export default class ShipComponentSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["shipComponent"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

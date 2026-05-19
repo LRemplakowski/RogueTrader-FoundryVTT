@@ -1,8 +1,8 @@
 import { EnumBase } from "./enum-base.mjs";
-import { CreatureCharacteristic } from "./creature-characteristic.mjs";
-const { Characteristic } = CreatureCharacteristic.DATA;
+import { default as Characteristics } from "./characteristics.mjs";
+const Characteristic = Characteristics.DATA;
 
-export default class CreatureSkill extends EnumBase {
+export default class Skills extends EnumBase {
     static DEFAULT = "awareness";
     
     static DATA = {
@@ -25,9 +25,9 @@ export default class CreatureSkill extends EnumBase {
         ...this.#trade(),
     };
 
-    #charKey(value) { return CreatureCharacteristic.keyOf(value) };
+    static #charKey(value) { return Characteristics.keyOf(value) };
 
-    #basicSkills() {
+    static #basicSkills() {
         return { 
             awareness: {
                 label: "SKILL.BASE.AWARENESS",
@@ -151,7 +151,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #advancedAg() {
+    static #advancedAg() {
         return {
             acrobatics: {
                 label: "SKILL.ACROBATICS",
@@ -184,7 +184,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #advancedInt() {
+    static #advancedInt() {
         return { 
             chemUse: {
                 label: "SKILL.CHEM-USE",
@@ -252,7 +252,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #advancedPer() {
+    static #advancedPer() {
         return {
             psyniscience: {
                 label: "SKILL.PSYNISCIENCE",
@@ -264,7 +264,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #advancedWP() {
+    static #advancedWP() {
         return {
             interrogation: {
                 label: "SKILL.INTERROGATION",
@@ -283,7 +283,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #advancedFel() {
+    static #advancedFel() {
         return { 
             blather: {
                 label: "SKILL.BLATHER",
@@ -309,7 +309,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #ciphers() {
+    static #ciphers() {
         return { 
             ciphers_rogueTraders: {
                 label: "SKILL.ROGUE-TRADERS",
@@ -349,7 +349,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #commonLore() {
+    static #commonLore() {
         return {
             commonLore_adeptaSororitas: {
                 label: "SKILL.ADEPTA-SORORITAS",
@@ -480,7 +480,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #drive() {
+    static #drive() {
         return { 
             drive_groundVehicle: {
                 label: "SKILL.GROUND-VEHICLE",
@@ -506,7 +506,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #forbiddenLore() {
+    static #forbiddenLore() {
         return {
             forbiddenLore_adeptusMechanicus: {
                 label: "SKILL.ADEPTUS-MECHANICUS",
@@ -588,7 +588,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #navigate() {
+    static #navigate() {
         return {
             navigate_surface: {
                 label: "SKILL.SURFACE",
@@ -614,7 +614,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #performer() {
+    static #performer() {
         return {
             performer_dancer: {
                 label: "SKILL.DANCER",
@@ -647,7 +647,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #pilot() {
+    static #pilot() {
         return {
             pilot_personal: {
                 label: "SKILL.PERSONAL",
@@ -673,7 +673,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #scholasticLore() {
+    static #scholasticLore() {
         return {
             scholasticLore_archaic: {
                 label: "SKILL.ARCHAIC",
@@ -790,7 +790,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #secretTongue() {
+    static #secretTongue() {
         return {
             secretTongue_administratum: {
                 label: "SKILL.ADMINISTRATUM",
@@ -844,7 +844,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #speakLanguage() {
+    static #speakLanguage() {
         return {
             speakLanguage_eldar: {
                 label: "SKILL.ELDAR",
@@ -912,7 +912,7 @@ export default class CreatureSkill extends EnumBase {
         }
     }
 
-    #trade() {
+    static #trade() {
         return {
             trade_agri: {
                 label: "SKILL.AGRI",

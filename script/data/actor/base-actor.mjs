@@ -1,6 +1,6 @@
 import RogueTraderSystemModel from "../system-model.mjs";
 
-const { HTMLField } = foundry.data.fields;
+const { SchemaField, HTMLField } = foundry.data.fields;
 
 export default class BaseActorModel extends RogueTraderSystemModel {
     static defineSchema() {

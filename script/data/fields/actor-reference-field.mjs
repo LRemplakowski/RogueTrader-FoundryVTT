@@ -1,5 +1,5 @@
 // script/data/fields/actor-reference-field.mjs
-import { StringField } from "foundry/data/fields.mjs";
+const { StringField } = foundry.data.fields;
 
 export default class ActorReferenceField extends StringField {
   constructor(options = {}) {

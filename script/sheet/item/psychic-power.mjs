@@ -12,6 +12,12 @@ export default class PsychicPowerSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["psychicPower"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

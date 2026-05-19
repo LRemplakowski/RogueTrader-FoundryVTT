@@ -1,4 +1,4 @@
-import { BaseItemModel } from "../base-item.mjs";
+import { default as BaseItemModel } from "../base-item.mjs";
 
 const { SchemaField, ObjectField } = foundry.data.fields;
 

@@ -6,6 +6,14 @@ import BaseActorModel from "./base-actor.mjs";
 const { SchemaField, BooleanField, StringField } = foundry.data.fields;
 
 export default class ColonyModel extends BaseActorModel {
+    /** @inheritdoc */
+    static get metadata() {
+        return {
+        ...super.metadata,
+        type: "colony",
+        };
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
         

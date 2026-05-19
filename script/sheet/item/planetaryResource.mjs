@@ -12,6 +12,12 @@ export default class PlanetaryResourceSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["planetaryResource"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

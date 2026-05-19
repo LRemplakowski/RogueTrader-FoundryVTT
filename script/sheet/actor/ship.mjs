@@ -19,6 +19,12 @@ export default class ShipSheet extends RogueTraderSheet {
     }
   };
 
+  static METADATA = {
+    types: ["voidship"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: V2 Tab System Definition
   // TABS must have 'tabs' as an ARRAY (not object) with 'initial' property
   static TABS = {

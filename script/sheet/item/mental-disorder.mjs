@@ -12,6 +12,12 @@ export default class MentalDisorderSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["mentalDisorder"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

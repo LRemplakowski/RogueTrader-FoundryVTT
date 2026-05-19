@@ -12,6 +12,12 @@ export default class TalentSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["talent"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

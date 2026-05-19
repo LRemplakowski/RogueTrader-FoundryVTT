@@ -1,4 +1,4 @@
-import { CreatureSkill } from "../../enums/_module.mjs";
+import { Skills } from "../../enums/_module.mjs";
 import { requiredInteger } from "../../helpers.mjs";
 import BaseModifier from "./base-modifier.mjs";
 
@@ -11,7 +11,7 @@ export default class SkillModifier extends BaseModifier {
 
     static defineSchema() {
         const schema = super.defineSchema();
-        schema.skill = CreatureSkill.schema();
+        schema.skill = Skills.schema();
         schema.value = requiredInteger();
         return schema;
     }

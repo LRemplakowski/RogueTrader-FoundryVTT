@@ -3,6 +3,14 @@ import CharacterModel from "./character.mjs";
 const { StringField, SchemaField } = foundry.data.fields;
 
 export default class ExplorerModel extends CharacterModel {
+    /** @inheritdoc */
+    static get metadata() {
+        return {
+        ...super.metadata,
+        type: "explorer",
+        };
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
 

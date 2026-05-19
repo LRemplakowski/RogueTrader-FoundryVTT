@@ -34,6 +34,11 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
     }
   };
 
+  static METADATA = { 
+    types: [],
+    makeDefault: true,
+  }
+
   // v13 MIGRATION: PARTS defines the main template structure
   // DocumentSheetV2 automatically renders PARTS and handles form submission
   static PARTS = {

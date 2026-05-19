@@ -12,6 +12,12 @@ export default class TraitSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["trait"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

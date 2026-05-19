@@ -8,7 +8,7 @@
     "verified" : 14,
     "maximum" : 14
   },
-  "templateVersion": 2,
+  "templateVersion": 3,
   "authors": [
     {
       "name": "Nachofunk",
@@ -67,7 +67,7 @@
   ],
   "scripts": [],
   "esmodules": [
-    "script/common/hooks.js"
+    "script/common/hooks.mjs"
   ],
   "styles": [
     "css/rogue-trader.css"
@@ -101,7 +101,7 @@
     "Actor": {
       "explorer": {},
       "npc": {},
-      "ship": {},
+      "voidship": {},
       "colony": {}
     },
     "Item": {

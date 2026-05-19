@@ -12,6 +12,12 @@ export default class GearSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["gear"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   // DocumentSheetV2 automatically renders PARTS and handles form submission
   static PARTS = {

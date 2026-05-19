@@ -12,6 +12,12 @@ export default class CyberneticSheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["cybernetic"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {

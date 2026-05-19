@@ -12,6 +12,12 @@ export default class SpecialAbilitySheet extends RogueTraderItemSheet {
     }
   };
 
+  static METADATA = {
+    types: ["specialAbility"],
+    makeDefault: true,
+  }
+
+
   // v13 MIGRATION: PARTS defines the template structure
   static PARTS = {
     sheet: {
