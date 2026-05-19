@@ -4,6 +4,14 @@ import { requiredInteger } from "../../helpers.mjs";
 import VoidshipItemModel from "./voidship-item.mjs";
 
 export default class VoidshipWeaponModel extends VoidshipItemModel {
+    /** @inheritdoc */
+    static get metadata() {
+        return {
+        ...super.metadata,
+        type: "voidshipWeapon",
+        };
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
         schema.class = ShipWeaponClass.schema();

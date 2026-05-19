@@ -28,19 +28,9 @@ export default class CharacterModel extends BaseActorModel {
         schema.aptitudes = new SchemaField({});
         schema.size = requiredInteger({ initial: 4 });
 
-        schema.characteristics = new SchemaField({
-            weaponSkill: this.#characteristic(Characteristic.weaponSkill),
-            ballisticSkill: this.#characteristic(Characteristic.ballisticSkill),
-            strength: this.#characteristic(Characteristic.strength),
-            toughness: this.#characteristic(Characteristic.toughness),
-            agility: this.#characteristic(Characteristic.agility),
-            intelligence: this.#characteristic(Characteristic.intelligence),
-            perception: this.#characteristic(Characteristic.perception),
-            willpower: this.#characteristic(Characteristic.willpower),
-            fellowship: this.#characteristic(Characteristic.fellowship)
-        });
+        schema.characteristics = new SchemaField(this.#defineCharacteristics());
 
-        schema.skills = new SchemaField(this.#skillFieldDefinitions());
+        schema.skills = new SchemaField(this.#defineSkills());
 
         schema.initiative = new SchemaField({
                 characteristic: new StringField({ blank: false, initial: "agility" }),
@@ -75,7 +65,15 @@ export default class CharacterModel extends BaseActorModel {
         return schema;
     }
 
-    static #characteristic(value) {
+    static #defineCharacteristics() {
+        const definition = {};
+        for (const [key, value] of Object.entries(Characteristics.DATA)) {
+            definition[key] = this.#characteristicSchema(value);
+        }
+        return definition;
+    }
+
+    static #characteristicSchema(value) {
         return new SchemaField({
             label: new StringField({ blank: false, initial: value.label, readonly: true }),
             short: new StringField({ blank: false, initial: value.short, readonly: true }),
@@ -86,7 +84,7 @@ export default class CharacterModel extends BaseActorModel {
         });
     }
 
-    static #skillFieldDefinitions() {
+    static #defineSkills() {
         const fields = {};
         for (const [skillKey, skillData] of Object.entries(Skills.DATA)) {
             fields[skillKey] = this.#skillSchema(skillData);

@@ -5,7 +5,7 @@ const { HTMLField } = foundry.data.fields;
 export default class BaseItemModel extends RogueTraderSystemModel {
     static defineSchema() {
         const schema = {};
-        schema.description = new HtmlField({ blank: true, initial: "" });
+        schema.description = new HTMLField({ blank: true, initial: "" });
         return schema;
     }
 
