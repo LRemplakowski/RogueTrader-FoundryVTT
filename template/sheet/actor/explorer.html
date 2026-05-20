@@ -52,6 +52,7 @@
             {{#each tabs as |tab tabId|}}
                 <button 
                     class="item tab-button {{#if tab.active}}active{{/if}}"
+                    data-action="tab"
                     data-tab="{{tab.id}}"
                     data-group="{{tab.group}}"
                     type="button"

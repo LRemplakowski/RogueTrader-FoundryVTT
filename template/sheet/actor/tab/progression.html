@@ -92,11 +92,11 @@
                     <b class="cost">{{localize "CHARACTERISTIC.COST"}}</b>
                 </div>
                 <div class="items">
-                    {{#each system.characteristics as |characteristic key|}}
+                    {{#each characteristics as |characteristic key|}}
                         <div class="characteristic item flex row">
                             <div class="name">{{localize characteristic.label}}</div>
-                            <select class="advance" name="system.characteristics.{{key}}.advance" data-dtype="Number">
-                                {{{selectOptions ../options.characteristicAdvanceOptions selected=characteristic.advance}}}
+                            <select class="advance" name="system.characteristics.{{key}}.advance" data-dtype="String">
+                                {{{selectOptions ../options.characteristicAdvanceOptions selected=characteristic.advance.value}}}
                             </select>
                             <input class="unnatural" name="system.characteristics.{{key}}.unnatural" type="number" value="{{characteristic.unnatural}}" data-dtype="Number" />
                             <input class="base" name="system.characteristics.{{key}}.base" type="number" value="{{characteristic.base}}" data-dtype="Number" />
@@ -161,34 +161,32 @@
                 <b class="cost">{{localize "SKILL.COST"}}</b>
             </div>
             <div class="items">
-                {{#each system.skills as |skill key|}}
-                    {{#unless skill.isSpecialist}}
-                        <div class="skill item flex row">
-                            <div class="name">{{localize skill.label}}</div>
-                            <select class="advance" name="system.skills.{{key}}.advance" data-dtype="Number">
-                                {{{selectOptions ../options.skillAdvanceOptions selected=skill.advance}}}
+                {{#each skills.base.entries as |skill key|}}
+                    {{log key}}
+                    {{log skill}}
+                    <div class="skill item flex row">
+                        <div class="name">{{skill.label}}</div>
+                        <select class="advance" name="system.skills.{{key}}.advance" data-dtype="String">
+                            {{{selectOptions ../options.skillAdvanceOptions selected=skill.advance.value}}}
+                        </select>
+                        <input class="total" name="system.skills.{{key}}.total" type="number" value="{{skill.total}}" data-dtype="Number" disabled />
+                        <input class="cost" name="system.skills.{{key}}.cost" type="number" value="{{skill.cost}}" data-dtype="Number" />
+                    </div>
+                {{/each}}
+                {{#each skills.advanced as |group|}}
+                    <div class="flex header">
+                        <b class="name">{{group.label}}</b>
+                    </div>
+                    {{#each group.entries as |skill key|}}
+                        <div class="speciality item flex row">
+                            <div class="name">{{skill.label}}</div>
+                            <select class="advance" name="system.skills.{{key}}.advance" data-dtype="String">
+                                {{{selectOptions ../../options.skillAdvanceOptions selected=skill.advance.value}}}
                             </select>
                             <input class="total" name="system.skills.{{key}}.total" type="number" value="{{skill.total}}" data-dtype="Number" disabled />
                             <input class="cost" name="system.skills.{{key}}.cost" type="number" value="{{skill.cost}}" data-dtype="Number" />
                         </div>
-                    {{/unless}}
-                {{/each}}
-                {{#each system.skills as |skill key|}}
-                    {{#if skill.isSpecialist}}
-                        <div class="flex header">
-                            <b class="name">{{localize skill.label}}</b>
-                        </div>
-                        {{#each skill.specialities as |speciality keySpe|}}
-                            <div class="speciality item flex row">
-                                <div class="name">{{localize speciality.label}}</div>
-                                <select class="advance" name="system.skills.{{key}}.specialities.{{keySpe}}.advance" data-dtype="Number">
-                                    {{{selectOptions ../options.skillAdvanceOptions selected=speciality.advance}}}
-                                </select>
-                                <input class="total" name="system.skills.{{key}}.specialities.{{keySpe}}.total" type="number" value="{{speciality.total}}" data-dtype="Number" disabled />
-                                <input class="cost" name="system.skills.{{key}}.specialities.{{keySpe}}.cost" type="number" value="{{speciality.cost}}" data-dtype="Number" />
-                            </div>
-                        {{/each}}
-                    {{/if}}
+                    {{/each}}
                 {{/each}}
             </div>
         </div>

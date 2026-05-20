@@ -24,8 +24,8 @@ export class EnumBase {
       Object.entries(this.DATA).map(([key, data]) => [
         key,
         {
+          ...data,
           label: game.i18n.localize(data.label),
-          ...data
         }
       ])
     );

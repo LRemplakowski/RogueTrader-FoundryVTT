@@ -21,8 +21,12 @@ export default class CharacterSheet extends RogueTraderSheet {
                 skills.advanced[group].entries[key] = {
                     label: game.i18n.localize(skill.label),
                     total: skill.value,
-                    advance: SkillAdvance.DATA[skill.advance].short,
+                    advance: {
+                        value: skill.advance,
+                        short: SkillAdvance.DATA[skill.advance].short,
+                    },
                     isKnown: skill.isKnown,
+                    cost: skill.cost,
                 };
             }
             else {
@@ -35,7 +39,11 @@ export default class CharacterSheet extends RogueTraderSheet {
                 skills.base.entries[key] = {
                     label: game.i18n.localize(skill.label),
                     total: skill.value,
-                    advance: SkillAdvance.DATA[skill.advance].short
+                    advance: {
+                        value: skill.advance,
+                        short: SkillAdvance.DATA[skill.advance].short,
+                    },
+                    cost: skill.cost,
                 };
             }
         }
@@ -50,8 +58,14 @@ export default class CharacterSheet extends RogueTraderSheet {
         for (const [key, char] of Object.entries(charData)) {
             characteristics[key] = {
                 label: game.i18n.localize(char.label),
+                base: char.base,
                 total: char.value,
-                advance: CharacteristicAdvance.DATA[char.advance].short,
+                advance: {
+                    value: char.advance,
+                    short: CharacteristicAdvance.DATA[char.advance].short
+                },
+                unnatural: char.unnatural,
+                cost: char.cost,
                 bonus: char.bonus,
                 isLeft: i < middle,
                 isRight: i >= middle

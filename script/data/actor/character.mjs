@@ -54,12 +54,10 @@ export default class CharacterModel extends BaseActorModel {
         });
 
         schema.psy = new SchemaField({
-            psy: new SchemaField({
-                rating: requiredInteger(),
-                sustained: requiredInteger(),
-                class: PsyClass.schema(),
-                cost: requiredInteger(),
-            })
+            rating: requiredInteger(),
+            sustained: requiredInteger(),
+            class: PsyClass.schema(),
+            cost: requiredInteger(),
         });
 
         return schema;
@@ -139,7 +137,7 @@ export default class CharacterModel extends BaseActorModel {
         this.#computeCharacteristicData();
         this.#computeSkillData();
         this.#computeFatigueAndCapCharacteristics();
-        this.#computeSpeed();
+        this.#computeMovement();
         this.#computeExperience();
         this.#computeRank();
         this.#computeArmour();
@@ -153,12 +151,12 @@ export default class CharacterModel extends BaseActorModel {
         this.experience.spentCharacteristics = 0;
         this.experience.spentSkills = 0;
         this.experience.spentTalents = 0;
-        this.experience.spentPsychicPowers = this.psy.cost;
+        this.experience.spentPsychicPowers = 0 + this.psy.cost;
         for (let characteristic of Object.values(this.characteristics)) {
             this.experience.spentCharacteristics += parseInt(characteristic.cost, 10);
         }
         for (let skill of Object.values(this.skills)) {
-            this.experience.spentSkills = skill.cost;
+            this.experience.spentSkills += skill.cost ?? 0;
         }
         for (let item of this.parent.items) {
             if (item.system instanceof TalentDataModel) {
@@ -223,7 +221,7 @@ export default class CharacterModel extends BaseActorModel {
         const tb = this.characteristics.toughness.bonus;
         const wb = this.characteristics.willpower.bonus;
         this.fatigue.max = tb + wb;
-        for (const [key, value] in Object.entries(this.characteristics)) {
+        for (const [key, value] of Object.entries(this.characteristics)) {
             const charValue = value.value;
             const charBonus = value.bonus;
             if (charBonus < this.fatigue.max) {
@@ -232,11 +230,11 @@ export default class CharacterModel extends BaseActorModel {
         }
     }
 
-    #computeSpeed() { 
+    #computeMovement() { 
         const defaultSize = 4;
         const sizeModifier = this.size - defaultSize;
         const speedBase = this.characteristics.agility.bonus + sizeModifier;
-        this.speed = {
+        this.movement = {
             base: speedBase,
             half: speedBase,
             full: speedBase * 2,
