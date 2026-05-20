@@ -16,7 +16,7 @@
         <div class="item-list">
             <div class="flex header">
                 <b class="name">{{localize "Force Fields"}}</b>
-                <!-- <a class="button item-create" title="Add Critical Injury" data-type="criticalInjury"><i class="fas fa-plus"></i></a> -->
+                
             </div>
             <div class="items">
                 {{#each items.forceFields as |item|}}
@@ -109,7 +109,7 @@
             <input name="system.initiative.base" type="text" value="{{system.initiative.base}}" />
             +
             <select name="system.initiative.characteristic">
-                {{{selectOptions options.initiativeOptions selected=system.initiative.characteristic}}}
+                {{selectOptions options.initiativeOptions selected=system.initiative.characteristic}}
             </select>
         </div>
         <div class="information">
@@ -161,6 +161,7 @@
             <div class="class">
                 <label>{{localize "PSYCHIC_POWER.CLASS"}}</label>
                 <select disabled>
+                    {{log "psy class"}}
                     {{{selectOptions options.psyClassOptions selected=system.psy.class}}}
                 </select>
             </div>

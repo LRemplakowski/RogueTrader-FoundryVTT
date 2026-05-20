@@ -436,6 +436,28 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     }
   }
 
+  _preapareDropdownOptions() {
+    const result = {
+      craftsmanshipOptions: enums.Craftsmanship.options(),
+      availabilityOptions: enums.Availability.options(),
+      damageTypeOptions: enums.DamageType.options(),
+      shipWeaponClassOptions: enums.ShipWeaponClass.options(),
+      armourTypeOptions: enums.ArmourType.options(),
+      criticalInjuryPartOptions: enums.HitLocations.options(),
+      crewSkillOptions: enums.CrewSkill.options(),
+      characteristicOptions: enums.Characteristics.options(),
+      characteristicAdvanceOptions: enums.CharacteristicAdvance.options(),
+      npcTypeOptions: enums.NPCType.options(),
+      skillAdvanceOptions: enums.SkillAdvance.options(),
+      psyClassOptions: enums.PsyClass.options(),
+      initiativeOptions: enums.Characteristics.options(),
+      governorTypeOptions: enums.GovernorType.options(),
+      colonyTypeOptions: enums.ColonyType.options(),
+      hullClassOptions: enums.HullClass.options(),
+    };
+    return result;
+  }
+
   // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
   // This method prepares the context object passed to the Handlebars template
   async _prepareContext(options) {
@@ -461,28 +483,7 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     context.tabs = rawTabs;
 
     // Provide reusable option lists for actor templates using selectOptions
-    const optionsData = {
-      craftsmanshipOptions: enums.Craftsmanship.options(),
-      availabilityOptions: enums.Availability.options(),
-      damageTypeOptions: enums.DamageType.options(),
-      shipWeaponClassOptions: enums.ShipWeaponClass.options(),
-      armourTypeOptions: enums.ArmourType.options(),
-      criticalInjuryPartOptions: enums.HitLocations.options(),
-      // Crew skill options for ship actor templates
-      crewSkillOptions: enums.CrewSkill.options(),
-      // Characteristic advance options
-      characteristicAdvanceOptions: enums.CharacteristicAdvance.options(),
-      // NPC type options
-      npcTypeOptions: enums.NPCType.options(),
-      // Skill/speciality advance options
-      skillAdvanceOptions: enums.SkillAdvance.options(),
-      // Psychic class options
-      psyClassOptions: enums.PsyClass.options(),
-      initiativeOptions: enums.Characteristics.options(),
-      governorTypeOptions: enums.GovernorType.options(),
-      colonyTypeOptions: enums.ColonyType.options(),
-      hullClassOptions: enums.HullClass.options(),
-    };
+    const optionsData = this._preapareDropdownOptions();
 
     // Merge options with any existing options and attach to context
     context.options = {

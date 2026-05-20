@@ -4,12 +4,12 @@ export default class CharacteristicAdvance extends EnumBase {
 	static DEFAULT = "none";
 
 	static DATA = {
-		none:         { rating: 0,   label: "ADVANCE.NONE" },
-		simple:       { rating: 5,   label: "ADVANCE.SIMPLE" },
-		intermediate: { rating: 10,  label: "ADVANCE.INTERMEDIATE" },
-		trained:      { rating: 15,  label: "ADVANCE.TRAINED" },
-		proficient:   { rating: 20,  label: "ADVANCE.PROFICIENT" },
-		expert:       { rating: 25,  label: "ADVANCE.EXPERT" }
+		none:         { rating: 0,   label: "ADVANCE.NONE", short: "N" },
+		simple:       { rating: 5,   label: "ADVANCE.SIMPLE", short: "S" },
+		intermediate: { rating: 10,  label: "ADVANCE.INTERMEDIATE", short: "I" },
+		trained:      { rating: 15,  label: "ADVANCE.TRAINED", short: "T" },
+		proficient:   { rating: 20,  label: "ADVANCE.PROFICIENT", short: "P" },
+		expert:       { rating: 25,  label: "ADVANCE.EXPERT", shorte: "E" }
 	};
 
 	static value(key) {

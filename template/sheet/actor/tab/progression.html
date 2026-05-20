@@ -93,11 +93,10 @@
                 </div>
                 <div class="items">
                     {{#each system.characteristics as |characteristic key|}}
-                        {{log characteristic}}
                         <div class="characteristic item flex row">
                             <div class="name">{{localize characteristic.label}}</div>
                             <select class="advance" name="system.characteristics.{{key}}.advance" data-dtype="Number">
-                                {{{selectOptions options.characteristicAdvanceOptions selected=characteristic.advance}}}
+                                {{{selectOptions ../options.characteristicAdvanceOptions selected=characteristic.advance}}}
                             </select>
                             <input class="unnatural" name="system.characteristics.{{key}}.unnatural" type="number" value="{{characteristic.unnatural}}" data-dtype="Number" />
                             <input class="base" name="system.characteristics.{{key}}.base" type="number" value="{{characteristic.base}}" data-dtype="Number" />
@@ -167,7 +166,7 @@
                         <div class="skill item flex row">
                             <div class="name">{{localize skill.label}}</div>
                             <select class="advance" name="system.skills.{{key}}.advance" data-dtype="Number">
-                                {{{selectOptions options.skillAdvanceOptions selected=skill.advance}}}
+                                {{{selectOptions ../options.skillAdvanceOptions selected=skill.advance}}}
                             </select>
                             <input class="total" name="system.skills.{{key}}.total" type="number" value="{{skill.total}}" data-dtype="Number" disabled />
                             <input class="cost" name="system.skills.{{key}}.cost" type="number" value="{{skill.cost}}" data-dtype="Number" />
@@ -183,7 +182,7 @@
                             <div class="speciality item flex row">
                                 <div class="name">{{localize speciality.label}}</div>
                                 <select class="advance" name="system.skills.{{key}}.specialities.{{keySpe}}.advance" data-dtype="Number">
-                                    {{{selectOptions options.skillAdvanceOptions selected=speciality.advance}}}
+                                    {{{selectOptions ../options.skillAdvanceOptions selected=speciality.advance}}}
                                 </select>
                                 <input class="total" name="system.skills.{{key}}.specialities.{{keySpe}}.total" type="number" value="{{speciality.total}}" data-dtype="Number" disabled />
                                 <input class="cost" name="system.skills.{{key}}.specialities.{{keySpe}}.cost" type="number" value="{{speciality.cost}}" data-dtype="Number" />

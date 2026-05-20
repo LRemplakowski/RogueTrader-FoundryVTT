@@ -30,119 +30,119 @@ export default class Skills extends EnumBase {
     static #basicSkills() {
         return { 
             awareness: {
-                label: "SKILL.BASE.AWARENESS",
+                label: "SKILL.AWARENESS",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.perception)
             },
             barter: {
-                label: "SKILL.BASE.BARTER",
+                label: "SKILL.BARTER",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.fellowship)
             },
             carouse: {
-                label: "SKILL.BASE.CAROUSE",
+                label: "SKILL.CAROUSE",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.toughness)
             },
             climb: {
-                label: "SKILL.BASE.CLIMB",
+                label: "SKILL.CLIMB",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.strength)
             },
             command: {
-                label: "SKILL.BASE.COMMAND",
+                label: "SKILL.COMMAND",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.fellowship)
             },
             concealment: {
-                label: "SKILL.BASE.CONCEALMENT",
+                label: "SKILL.CONCEALMENT",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.agility)
             },
             deceive: {
-                label: "SKILL.BASE.DECEIVE",
+                label: "SKILL.DECEIVE",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.fellowship)
             },
             disguise: {
-                label: "SKILL.BASE.DISGUISE",
+                label: "SKILL.DISGUISE",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.fellowship)
             },
             dodge: {
-                label: "SKILL.BASE.DODGE",
+                label: "SKILL.DODGE",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.agility)
             },
             inquiry: {
-                label: "SKILL.BASE.INQUIRY",
+                label: "SKILL.INQUIRY",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.fellowship)
             },
             intimidate: {
-                label: "SKILL.BASE.INTIMIDATE",
+                label: "SKILL.INTIMIDATE",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.strength)
             },
             logic: {
-                label: "SKILL.BASE.LOGIC",
+                label: "SKILL.LOGIC",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.intelligence)
             },
             scrutiny: {
-                label: "SKILL.BASE.SCRUTINY",
+                label: "SKILL.SCRUTINY",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.perception)
             },
             search: {
-                label: "SKILL.BASE.SEARCH",
+                label: "SKILL.SEARCH",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.perception)
             },
             silentMove: {
-                label: "SKILL.BASE.SILENT-MOVE",
+                label: "SKILL.SILENT-MOVE",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.agility)
             },
             swim: {
-                label: "SKILL.BASE.SWIM",
+                label: "SKILL.SWIM",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",
                 characteristic: this.#charKey(Characteristic.strength)
             },
             techUse: {
-                label: "SKILL.BASE.TECH_USE",
+                label: "SKILL.TECH_USE",
                 isSpecialist: false,
                 group: "base",
                 groupLabel: "SKILL.BASE",

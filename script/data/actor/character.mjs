@@ -111,6 +111,18 @@ export default class CharacterModel extends BaseActorModel {
                 readonly: true, 
                 persisted: false 
             }),
+            group: new StringField({
+                initial: skillData.group,
+                readonly: true,
+                persisted: false,
+                blank: false
+            }),
+            groupLabel: new StringField({
+                initial: skillData.groupLabel,
+                readonly: true,
+                persisted: false,
+                blank: false
+            }),
             advance: SkillAdvance.schema(),
             cost: requiredInteger({ initial: 0 }),
         });
@@ -126,6 +138,7 @@ export default class CharacterModel extends BaseActorModel {
         super.prepareDerivedData();
         this.#computeCharacteristicData();
         this.#computeSkillData();
+        this.#computeFatigueAndCapCharacteristics();
         this.#computeSpeed();
         this.#computeExperience();
         this.#computeRank();
@@ -191,6 +204,7 @@ export default class CharacterModel extends BaseActorModel {
     }
 
     #computeCharacteristicData() {
+        const middle = Object.entries(this.characteristics).length / 2;
         for (const [key, characteristic] of Object.entries(this.characteristics)) {
             characteristic.value = characteristic.base + CharacteristicAdvance.value(characteristic.advance);
             characteristic.bonus = Math.floor(characteristic.value / 10);
@@ -200,8 +214,21 @@ export default class CharacterModel extends BaseActorModel {
     #computeSkillData() {
         for (const [key, skill] of Object.entries(this.skills)) {
             const skillAdvance = SkillAdvance.DATA[skill.advance];
-            skill.value = this.characteristics[skill.characteristic].value + skillAdvance.rating;
             skill.isKnown = !skill.isSpecialist || skillAdvance.rating >= 0;
+            skill.value = this.characteristics[skill.characteristic].value + skillAdvance.rating;
+        }
+    }
+
+    #computeFatigueAndCapCharacteristics() {
+        const tb = this.characteristics.toughness.bonus;
+        const wb = this.characteristics.willpower.bonus;
+        this.fatigue.max = tb + wb;
+        for (const [key, value] in Object.entries(this.characteristics)) {
+            const charValue = value.value;
+            const charBonus = value.bonus;
+            if (charBonus < this.fatigue.max) {
+                value.value = Math.ceil(charValue / 2);
+            }
         }
     }
 
