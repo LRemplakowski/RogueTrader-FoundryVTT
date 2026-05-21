@@ -12,7 +12,6 @@
           <a class="modifier-button button add-char-modifier" data-action="addCharModifier" title="Add Characteristic Modifier" data-type="characteristic"><i class="fas fa-plus"></i></a>
         </div>
         {{#each system.modifiers.characteristic as |charMod|}}
-          {{log charMod}}
           <div class="modifier-item flex row" data-modifier-id="characteristic" data-modifier-key="{{charMod.id}}">
               <a class="flex row modifier-column" id="modifier-char-label-{{charMod.id}}" data-modifier-label="{{charMod.label}}">{{localize charMod.label}}</a>
               <div class="flex row modifier-column">

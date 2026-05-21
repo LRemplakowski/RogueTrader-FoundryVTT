@@ -1193,6 +1193,7 @@ li.folder.collapsed > .folder-header {
   flex-direction: row;
   align-items: center;
   width: 100%;
+  height: 30px;
 }
 .rogue-trader .stats .skills .skill .name {
   flex-basis: 60%;

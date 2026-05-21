@@ -44,8 +44,8 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     }
   };
 
-  // v13 MIGRATION: PARTS defines the main template structure
-  // DocumentSheetV2 automatically renders PARTS and handles form submission
+  /** @typedef {import("@client/applications/api/handlebars-application.mjs").HandlebarsTemplatePart} HandlebarsTemplatePart */
+  /** @type {Record<string, HandlebarsTemplatePart>} */
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/actor.html"
@@ -106,8 +106,10 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
    */
   static async #itemDelete(event, target) {
     event.preventDefault();
-    const div = target.closest(".item");
-    this.document.deleteEmbeddedDocuments("Item", [div.dataset.itemId]);
+    let itemId = target.dataset.itemId;
+    if (!itemId)
+      itemId = target.closest(".item")?.dataset.itemId;
+    this.document.deleteEmbeddedDocuments("Item", [itemId]);
   }
 
   /**
@@ -264,17 +266,20 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     );
   }
 
-  // v13 MIGRATION: ApplicationV2 activation - activateListeners is still needed for non-action event binding
   // This method is called after rendering and must handle all custom event listeners.
   // Call super.activateListeners(html) to ensure parent class event binding occurs first.
   activateListeners(html) {
-    // v13 MIGRATION: CRITICAL - Call super first to ensure ApplicationV2 form binding works
     super.activateListeners(html);
     
     // v13 MIGRATION: Input focus handlers for auto-select
     html.querySelectorAll("input").forEach(el => {
       el.addEventListener("focusin", ev => this._onFocusIn(ev));
     });
+    const btn = this.element.querySelector(
+      `.sheet-tabs [data-action="tab"][data-group="primary"][data-tab="${this.activeTab}"]`
+    );
+    if (btn) btn.click();
+
   }
 
   _getHeaderButtons() {
@@ -458,7 +463,36 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     return result;
   }
 
-  // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
+  /**
+   * Persist the currently active tab across renders.
+   */
+  activeTab = this.constructor.TABS?.primary?.initial;
+
+  /**
+  * Capture tab clicks so the sheet remembers the last selected tab.
+  * AppV2 dispatches tab clicks into _onClickTab; store the id for later restoration.
+  */
+  _onClickTab(event, target) {
+    // Let the base class handle the actual activation logic first
+    super._onClickTab(event, target);
+
+    // Store the selected tab id so it can be restored after re-render
+    if (target?.dataset?.tab) {
+      this.activeTab = target.dataset.tab;
+    }
+  }
+
+  _prepareTabs(key) {
+    const tabs = super._prepareTabs(key);
+    for (const [key, tab] of Object.entries(tabs)) {
+      tab.partial = `systems/rogue-trader/template/sheet/actor/tab/${tab.id}.html`;
+      tab.system = this.document.system;
+      tab.items = this.document.items;
+      tab.actor = this.document;
+    }
+    return tabs;
+  }
+
   // This method prepares the context object passed to the Handlebars template
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
@@ -470,17 +504,8 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     context.system = this.document.system;
     context.items = this.constructItemLists(context);
 
-    const rawTabs = this.constructor.TABS.primary.tabs.map(t => ({
-      ...t,
-      partial: `systems/rogue-trader/template/sheet/actor/tab/${t.id}.html`,
-      active: t.id === this.constructor.TABS.primary.initial,
-      system: context.system,
-      items: context.items,
-      actor: context.actor
-    }));
-
     // Remove any inherited enumerable properties (like "primary")
-    context.tabs = rawTabs;
+    context.tabs = this._prepareTabs("primary");
 
     // Provide reusable option lists for actor templates using selectOptions
     const optionsData = this._preapareDropdownOptions();

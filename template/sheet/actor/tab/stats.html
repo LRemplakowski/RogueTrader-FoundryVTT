@@ -1,14 +1,13 @@
 <div class="flex wrap stats">
-    {{log this}}
     <div class="insanities border">
         <h1>{{localize "TITLE.INSANITY"}}</h1>
         <div class="flex" style="margin-top: 2px">
-            <input class="total" name="system.insanity" type="number" value="{{system.insanity}}" data-dtype="Number" />
+            <input class="total" name="system.insanity" type="number" value="{{system.insanity.value}}" data-dtype="Number" />
             <div class="information">
                 <button class="roll-insanity" data-action="rollInsanity" type="button">
                     <i class="fas fa-dice"></i>
                 </button>
-                <input class="bonus" type="number" value="{{system.insanityBonus}}" data-dtype="Number" disabled />
+                <input class="bonus" type="number" value="{{system.insanity.bonus}}" data-dtype="Number" disabled />
             </div>
         </div>
         <div class="item-list">
@@ -53,12 +52,12 @@
     <div class="corruptions border">
         <h1>{{localize "TITLE.CORRUPTION"}}</h1>
         <div class="flex" style="margin-top: 2px">
-            <input class="total" name="system.corruption" type="number" value="{{system.corruption}}" data-dtype="Number" />
+            <input class="total" name="system.corruption" type="number" value="{{system.corruption.value}}" data-dtype="Number" />
             <div class="information">
                 <button class="roll-corruption" data-action="rollCorruption" type="button">
                     <i class="fas fa-dice"></i>
                 </button>
-                <input class="bonus" type="number" value="{{system.corruptionBonus}}" data-dtype="Number" disabled />
+                <input class="bonus" type="number" value="{{system.corruption.bonus}}" data-dtype="Number" disabled />
             </div>
         </div>
         <div class="item-list">

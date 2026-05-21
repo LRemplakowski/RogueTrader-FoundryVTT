@@ -246,6 +246,34 @@ export default class RogueTraderUtil {
       return actor.characteristics.willpower;
     }
   }
+
+  static getMaxEncumbrance(attributeBonus) {
+    switch (attributeBonus) {
+      case 0:  return 0.9;
+      case 1:  return 2.25;
+      case 2:  return 4.5;
+      case 3:  return 9;
+      case 4:  return 18;
+      case 5:  return 27;
+      case 6:  return 36;
+      case 7:  return 45;
+      case 8:  return 56;
+      case 9:  return 67;
+      case 10: return 78;
+      case 11: return 90;
+      case 12: return 112;
+      case 13: return 225;
+      case 14: return 337;
+      case 15: return 450;
+      case 16: return 675;
+      case 17: return 900;
+      case 18: return 1350;
+      case 19: return 1800;
+      case 20: return 2250;
+      default: return 2250;
+    }
+  }
+
     
 }
 

@@ -161,13 +161,12 @@
             <div class="class">
                 <label>{{localize "PSYCHIC_POWER.CLASS"}}</label>
                 <select disabled>
-                    {{log "psy class"}}
                     {{{selectOptions options.psyClassOptions selected=system.psy.class}}}
                 </select>
             </div>
             <div class="rating">
                 <label>{{localize "PSYCHIC_POWER.RATING"}}</label>
-                <input type="number" value="{{system.psy.currentRating}}" data-dtype="Number" disabled />
+                <input type="number" value="{{system.psy.value}}" data-dtype="Number" disabled />
             </div>
             <div class="sustained">
                 <label>{{localize "PSYCHIC_POWER.SUSTAINED"}}</label>

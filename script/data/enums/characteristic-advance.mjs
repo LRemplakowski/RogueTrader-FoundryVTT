@@ -9,7 +9,7 @@ export default class CharacteristicAdvance extends EnumBase {
 		intermediate: { rating: 10,  label: "ADVANCE.INTERMEDIATE", short: "I" },
 		trained:      { rating: 15,  label: "ADVANCE.TRAINED", short: "T" },
 		proficient:   { rating: 20,  label: "ADVANCE.PROFICIENT", short: "P" },
-		expert:       { rating: 25,  label: "ADVANCE.EXPERT", shorte: "E" }
+		expert:       { rating: 25,  label: "ADVANCE.EXPERT", short: "E" }
 	};
 
 	static value(key) {

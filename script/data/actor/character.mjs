@@ -1,8 +1,9 @@
 import { default as BaseActorModel } from "./base-actor.mjs";
 import { requiredInteger } from "../helpers.mjs";
-import { PsyClass, Characteristics, Skills, SkillAdvance, CharacteristicAdvance } from "../enums/_module.mjs";
+import { PsyClass, Characteristics, Skills, SkillAdvance, CharacteristicAdvance, HitLocations } from "../enums/_module.mjs";
 import { FormulaField } from "../fields/_module.mjs";
-import HitLocations from "../enums/hit-locations.mjs";
+import RogueTraderUtil from "../../common/util.js";
+import { EquipmentModel, TalentModel, PsychicPowerModel, ArmourModel } from "../item/character/_module.mjs";
 const Characteristic = Characteristics.DATA;
 const {
     StringField,
@@ -27,39 +28,31 @@ export default class CharacterModel extends BaseActorModel {
         });
         schema.aptitudes = new SchemaField({});
         schema.size = requiredInteger({ initial: 4 });
-
         schema.characteristics = new SchemaField(CharacterModel.#defineCharacteristics());
-
         schema.skills = new SchemaField(CharacterModel.#defineSkills());
-
         schema.initiative = new SchemaField({
                 characteristic: new StringField({ blank: false, initial: "agility" }),
                 base: new StringField({ blank: false, initial: "1d10" })
         });
-
         schema.wounds = new SchemaField({
             max: requiredInteger(),
             value: requiredInteger(),
             critical: requiredInteger()
         });
-
         schema.fatigue = new SchemaField({
             max: requiredInteger(),
             value: requiredInteger()
         });
-
         schema.fate = new SchemaField({
             max: requiredInteger(),
             value: requiredInteger()
         });
-
         schema.psy = new SchemaField({
             rating: requiredInteger(),
             sustained: requiredInteger(),
             class: PsyClass.schema(),
             cost: requiredInteger(),
         });
-
         return schema;
     }
 
@@ -77,7 +70,9 @@ export default class CharacterModel extends BaseActorModel {
             short: new StringField({ blank: false, initial: value.short, readonly: true }),
             base: requiredInteger(),
             advance: CharacteristicAdvance.schema(),
-            unnatural: requiredInteger(),
+            unnatural: new SchemaField({
+                value: requiredInteger(),
+            }),
             cost: requiredInteger()
         });
     }
@@ -130,13 +125,15 @@ export default class CharacterModel extends BaseActorModel {
         super.prepareBaseData();
         this.insanity.bonus = Math.floor(this.insanity.value / 10);
         this.corruption.bonus = Math.floor(this.corruption.value / 10);
+        this.psy.value = this.psy.rating - (this.psy.sustained > 1 ? this.psy.sustained : 0);
     }
 
     prepareDerivedData() {
         super.prepareDerivedData();
         this.#computeCharacteristicData();
-        this.#computeSkillData();
         this.#computeFatigueAndCapCharacteristics();
+        this.#computeEncumbrance();
+        this.#computeSkillData();
         this.#computeMovement();
         this.#computeExperience();
         this.#computeRank();
@@ -159,9 +156,9 @@ export default class CharacterModel extends BaseActorModel {
             this.experience.spentSkills += skill.cost ?? 0;
         }
         for (let item of this.parent.items) {
-            if (item.system instanceof TalentDataModel) {
+            if (item.system instanceof TalentModel) {
                 this.experience.spentTalents += parseInt(item.system.cost, 10);
-            } else if (item.system instanceof PsychicPowerDataModel) {
+            } else if (item.system instanceof PsychicPowerModel) {
                 this.experience.spentPsychicPowers += parseInt(item.system.cost, 10);
             }
         }
@@ -205,7 +202,8 @@ export default class CharacterModel extends BaseActorModel {
         const middle = Object.entries(this.characteristics).length / 2;
         for (const [key, characteristic] of Object.entries(this.characteristics)) {
             characteristic.value = characteristic.base + CharacteristicAdvance.value(characteristic.advance);
-            characteristic.bonus = Math.floor(characteristic.value / 10);
+            characteristic.bonus = Math.floor(characteristic.value / 10) + characteristic.unnatural.value;
+            characteristic.unnatural.rollBonus = Math.ceil(characteristic.unnatural.value / 2);
         }
     }
 
@@ -221,13 +219,26 @@ export default class CharacterModel extends BaseActorModel {
         const tb = this.characteristics.toughness.bonus;
         const wb = this.characteristics.willpower.bonus;
         this.fatigue.max = tb + wb;
-        for (const [key, value] of Object.entries(this.characteristics)) {
-            const charValue = value.value;
-            const charBonus = value.bonus;
+        for (const [key, char] of Object.entries(this.characteristics)) {
+            const charValue = char.value;
+            const charBonus = char.bonus;
             if (charBonus < this.fatigue.max) {
-                value.value = Math.ceil(charValue / 2);
+                char.value = Math.ceil(charValue / 2);
+                char.bonus = Math.floor(char.value / 10) + char.unnatural.value;
             }
         }
+    }
+
+    #computeEncumbrance() {
+        const sb = this.characteristics.strength.bonus;
+        const tb = this.characteristics.toughness.bonus;
+        const totalWeight = [...this.parent.items.values()]
+                            .filter(item => item.system instanceof EquipmentModel)
+                            .reduce((sum, item) => sum + item.system.weight, 0);
+        this.encumbrance = {
+            max: RogueTraderUtil.getMaxEncumbrance(sb + tb),
+            value: totalWeight,
+        };
     }
 
     #computeMovement() { 
