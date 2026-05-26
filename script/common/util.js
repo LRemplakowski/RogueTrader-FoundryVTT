@@ -1,3 +1,5 @@
+import * as enums from "../data/enums/_module.mjs";
+
 export default class RogueTraderUtil {
 
   static prepareColonyRollData(actor) {
@@ -67,67 +69,6 @@ export default class RogueTraderUtil {
         generated: 0
       }
     };
-    return rollData;
-  }
-  
-  static createCommonAttackRollData(actor, item) {
-      return {
-        name: item.name,      
-        attributeBoni: actor.attributeBoni,
-        ownerId: actor.id,
-        itemId: item.id,      
-        damageBonus: 0,
-        damageType: item.damageType,
-        unnatural: 0,      
-    };
-  }
-  
-  static createWeaponRollData(actor, weapon) {
-    let characteristic = this.getWeaponCharacteristic(actor, weapon);
-    let rateOfFire;
-    if (weapon.class === "melee") {
-      rateOfFire = {burst: characteristic.bonus, full: characteristic.bonus};
-    } else {
-      rateOfFire = {burst: weapon.rateOfFire.burst, full: weapon.rateOfFire.full};
-    }
-    let isMelee = weapon.class === "melee";
-    
-    let rollData = this.createCommonAttackRollData(actor, weapon);
-    rollData.baseTarget = characteristic.total,
-    rollData.unnatural = characteristic.unnatural;
-    rollData.modifier = 0,
-    rollData.attackBonus = weapon.attack,
-    rollData.isMelee = isMelee;
-    rollData.isRange = !isMelee;
-    rollData.clip = weapon.clip;
-    rollData.rateOfFire= rateOfFire;
-    rollData.weaponSpecial = weapon.special;
-    rollData.weaponTraits = this.extractWeaponTraits(weapon.special);
-    rollData.damageFormula = weapon.damage + (isMelee && !weapon.damage.match(/SB/gi) ? "+SB" : "") + (rollData.weaponTraits.force ? "+PR" : "");
-    if (rollData.weaponTraits.warp)
-    {
-      rollData.penetrationFormula = "Ignores armor.";
-    }
-    else
-    {
-      const basePen = weapon.penetration || "0";
-      const forceBonus = rollData.weaponTraits.force ? actor.psy.rating : 0;
-      rollData.penetrationFormula = `${basePen}+${forceBonus}`;
-    }
-    rollData.special= weapon.special;
-    rollData.psy = { value: actor.psy.rating, display: false};
-    return rollData;
-  }
-
-  static createForceFieldRollData(actor, forceField) {
-    let rollData = {
-      name: forceField.name, 
-      ownerId: actor.id,
-      itemId: forceField.id,    
-      protectionRating: parseInt(forceField.protectionRating),
-      overloadChance: parseInt(forceField.overloadChance),
-      description: forceField.description,
-    }
     return rollData;
   }
 
@@ -274,6 +215,15 @@ export default class RogueTraderUtil {
     }
   }
 
-    
+  /**
+   * Compute the characteristic bonus.
+   *
+   * @param {number} value      The characteristic's total value.
+   * @param {number} unnatural  The unnatural bonus applied to the characteristic.
+   * @returns {number}          The computed bonus.
+   */
+  static getCharacteristicBonus(value, unnatural) {
+    return Math.floor(value / 10) + unnatural;
+  }
 }
 

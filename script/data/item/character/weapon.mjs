@@ -38,4 +38,9 @@ export default class WeaponModel extends EquipmentModel {
         schema.attack = requiredInteger({ initial: 0 });
         return schema;
     }
+
+    prepareDerivedData() {
+        super.prepareDerivedData();
+        this.characteristic = WeaponClass.DATA[this.class].characteristic;
+    }
 }

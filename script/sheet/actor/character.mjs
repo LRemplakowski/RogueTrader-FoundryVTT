@@ -1,8 +1,24 @@
 import RogueTraderSheet from "./actor.mjs";
-
+import { prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll, prepareForceFieldRoll } from "../../common/dialog.js";
 import { Skills, SkillAdvance, Characteristics, CharacteristicAdvance } from "../../data/enums/_module.mjs";
-
+import { CharacterRollData } from "../../common/roll-data/_module.mjs";
+import { default as RogueTraderUtil } from "../../common/util.js"
 export default class CharacterSheet extends RogueTraderSheet {
+
+    static get DEFAULT_OPTIONS() {
+        const options = super.DEFAULT_OPTIONS;
+        options.actions = {
+            ...options.actions,
+            rollCharacteristic: CharacterSheet.#rollCharacteristic,
+            rollSkill: CharacterSheet.#rollSkill,
+            rollInsanity: CharacterSheet.#rollInsanity,
+            rollCorruption: CharacterSheet.#rollCorruption,
+            rollWeapon: CharacterSheet.#rollWeapon,
+            rollForceField: CharacterSheet.#rollForceField,
+            rollPsychicPower: CharacterSheet.#rollPsychicPower
+        }
+        return options;
+    }
 
     static PARTS = {
         ...super.PARTS,
@@ -91,6 +107,153 @@ export default class CharacterSheet extends RogueTraderSheet {
         }
     };
 
+    /**
+     * Handle characteristic roll.
+     * @this {RogueTraderSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static async #rollCharacteristic(event, target) {
+        event.preventDefault();
+        const characteristicName = target.dataset.characteristic;
+        const rollData = CharacterRollData.createCharacteristicRollData(this.document, characteristicName);
+        await prepareCommonRoll(rollData);
+    }
+
+    /**
+     * Handle skill roll.
+     * @this {RogueTraderSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static async #rollSkill(event, target) {
+        event.preventDefault();
+        const skillName = target.dataset.skill;
+        const skill = this.document.system.skills[skillName];
+        const valueByChar = {};
+        for (const char of Object.keys(Characteristics.DATA)) {
+            valueByChar[char] = skill.byCharacteristic(char);
+        }
+
+        const rollData = {
+            actor: this.document,
+            skill: skill,
+            name: skill.label,
+            baseTarget: skill.value,
+            modifier: 0,
+            rolledWith: skill.characteristic,
+            characteristics: valueByChar,
+            charOptions: Characteristics.options(),
+            ownerId: this.document.id,
+            unnatural: 0
+        };
+        await prepareCommonRoll(rollData);
+    }
+
+    /**
+     * Handle speciality roll.
+     * @this {RogueTraderSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static async #rollSpeciality(event, target) {
+        event.preventDefault();
+        const div = target.closest(".item");
+        const skillName = div.dataset.skill;
+        const specialityName = target.dataset.speciality;
+        const skill = this.document.skills[skillName];
+        const speciality = skill.specialities[specialityName];
+        const rollData = {
+            name: speciality.label,
+            baseTarget: speciality.total,
+            modifier: 0,
+            ownerId: this.document.id
+        };
+        await prepareCommonRoll(rollData);
+    }
+
+    /**
+     * Handle insanity roll.
+     * @this {RogueTraderSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static async #rollInsanity(event, target) {
+        event.preventDefault();
+        const characteristic = this.document.characteristics.willpower;
+        const rollData = {
+            name: "FEAR.HEADER",
+            baseTarget: characteristic.total,
+            modifier: 0,
+            ownerId: this.document.id
+        };
+        await prepareCommonRoll(rollData);
+    }
+
+    /**
+     * Handle corruption roll.
+     * @this {RogueTraderSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static async #rollCorruption(event, target) {
+        event.preventDefault();
+        const characteristic = this.document.characteristics.willpower;
+        const rollData = {
+            name: "CORRUPTION.HEADER",
+            baseTarget: characteristic.total,
+            modifier: this._getCorruptionModifier(),
+            ownerId: this.document.id
+        };
+        await prepareCommonRoll(rollData);
+    }
+
+    /**
+     * Handle weapon roll.
+     * @this {RogueTraderSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static async #rollWeapon(event, target) {
+        event.preventDefault();
+        const div = target.closest(".item");
+        const weapon = this.document.items.get(div.dataset.itemId);
+        await prepareCombatRoll(
+            CharacterRollData.createWeaponRollData(this.document, weapon), 
+            this.document
+        );
+    }
+
+    /**
+     * Handle force field roll.
+     * @this {RogueTraderSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static async #rollForceField(event, target) {
+        event.preventDefault();
+        const div = target.closest(".item");
+        const forceField = this.document.items.get(div.dataset.itemId);
+        await prepareForceFieldRoll(
+            CharacterRollData.createForceFieldRollData(this.document, forceField),
+            this.document
+        );
+    }
+
+    /**
+     * Handle psychic power roll.
+     * @this {RogueTraderSheet}
+     * @param {PointerEvent} event
+     * @param {HTMLElement} target
+     */
+    static async #rollPsychicPower(event, target) {
+        event.preventDefault();
+        const div = target.closest(".item");
+        const psychicPower = this.document.items.get(div.dataset.itemId);    
+        await preparePsychicPowerRoll(
+            CharacterRollData.createPsychicRollData(this.document, psychicPower)
+        );
+    }
 
     _prepareSkillGroups() {
         const skillData = this.document.system.skills;
@@ -161,6 +324,10 @@ export default class CharacterSheet extends RogueTraderSheet {
             i++;
         }
         return characteristics;
+    }
+
+    _prepareItemGroups() {
+        
     }
 
     async _prepareContext(options) {

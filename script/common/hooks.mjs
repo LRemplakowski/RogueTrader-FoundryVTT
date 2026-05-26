@@ -108,6 +108,7 @@ function registerSettings() {
   registerColonyGrowthModifier();
   registerColonyCalamityTable();
   registerColonyFortuneTable();
+  registerArmougAgilityCapToggle();
 }
 
 function registerWorldVersion() {
@@ -152,4 +153,15 @@ function registerColonyFortuneTable() {
     default: "",
     type: String
   });
+}
+
+function registerArmougAgilityCapToggle() {
+  game.settings.register("rogue-trader", "enableArmourAgilityCap", {
+    name: "Enable Armour Agility Cap",
+    hint: "When enabled, character's Agility is capped based on worn armour's Max Agi value.",
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean,
+  })
 }

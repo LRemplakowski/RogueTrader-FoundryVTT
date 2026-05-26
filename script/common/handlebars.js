@@ -92,10 +92,6 @@ function registerHandlebarsHelpers() {
     return text.replace(markup, "");
   });
 
-  Handlebars.registerHelper("eq", function(a, b) {
-    return a === b;
-  });
-
   Handlebars.registerHelper("enrich", function(string) {
     return foundry.applications.ux.TextEditor.implementation.enrichHTML(string, {async: false});
   });

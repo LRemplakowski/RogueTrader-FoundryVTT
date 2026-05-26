@@ -29,9 +29,27 @@
   --color-failure: red;
   --font-text: "Caslon Antique", serif;
 }
+.application {
+    --color-text-primary: #191813;
+}
 .editable {
   display: flex;
   flex-direction: column;
+}
+.rogue-trader header .header-control {
+    background: inherit;
+    border: inherit;
+    border-radius: inherit;
+    box-shadow: inherit;
+    color: inherit;
+    cursor: inherit;
+    font-family: 'FontAwesome';
+    font-size: inherit;
+    font-weight: inherit;
+    height: inherit;
+    line-height: inherit;
+    padding: inherit;
+    width: inherit;
 }
 .rogue-trader .space10 {
   margin-bottom: 10px;
@@ -1584,6 +1602,10 @@ li.folder.collapsed > .folder-header {
 .rogue-trader .abilities .special-abilities .item-list .button {
   flex-basis: 7%;
   text-align: center;
+  --button-size: auto;
+}
+.button {
+  --button-size: auto;
 }
 .rogue-trader .abilities .talents .item-list .items .talent,
 .rogue-trader .abilities .traits .item-list .items .trait,

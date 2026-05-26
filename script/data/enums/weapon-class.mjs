@@ -1,16 +1,41 @@
+import Characteristics from "./characteristics.mjs";
 import { EnumBase } from "./enum-base.mjs";
 
 export default class WeaponClass extends EnumBase {
   static DEFAULT = "melee";
 
   static DATA = {
-    melee: { label: "WEAPON.MELEE" },
-    thrown: { label: "WEAPON.THROWN" },
-    pistol: { label: "WEAPON.PISTOL" },
-    basic: { label: "WEAPON.BASIC" },
-    heavy: { label: "WEAPON.HEAVY" },
-    launched: { label: "WEAPON.LAUNCHED" },
-    placed: { label: "WEAPON.PLACED" },
-    vehicle: { label: "WEAPON.VEHICLE" }
+    melee: { 
+      label: "WEAPON.MELEE",
+      characteristic: Characteristics.KEYS.weaponSkill,
+    },
+    thrown: { 
+      label: "WEAPON.THROWN",
+      characteristic: Characteristics.KEYS.ballisticSkill, 
+    },
+    pistol: { 
+      label: "WEAPON.PISTOL",
+      characteristic: Characteristics.KEYS.ballisticSkill, 
+    },
+    basic: { 
+      label: "WEAPON.BASIC",
+      characteristic: Characteristics.KEYS.ballisticSkill, 
+    },
+    heavy: { 
+      label: "WEAPON.HEAVY",
+      characteristic: Characteristics.KEYS.ballisticSkill, 
+    },
+    launched: { 
+      label: "WEAPON.LAUNCHED",
+      characteristic: Characteristics.KEYS.ballisticSkill, 
+    },
+    placed: { 
+      label: "WEAPON.PLACED",
+      characteristic: Characteristics.KEYS.ballisticSkill, 
+    },
+    vehicle: { 
+      label: "WEAPON.VEHICLE",
+      characteristic: Characteristics.KEYS.ballisticSkill, 
+    }
   };
 }

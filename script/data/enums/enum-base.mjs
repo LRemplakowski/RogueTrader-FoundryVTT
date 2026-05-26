@@ -3,6 +3,12 @@ const { StringField } = foundry.data.fields;
 export class EnumBase {
   static DATA = {};
 
+  static get KEYS() {
+    return Object.fromEntries(
+      Object.keys(this.DATA).map(k => [k, k])
+    );
+  }
+
   /** Override in subclass */
   static DEFAULT = "";
 

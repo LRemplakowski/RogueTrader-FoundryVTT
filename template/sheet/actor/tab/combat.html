@@ -139,14 +139,14 @@
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>
                             </div>
-                            <button class="roll-weapon" data-action="rollWeapon" type="button">{{item.name}}</button>
+                            <button class="roll-weapon" data-action="rollWeapon" data-item-id="{{item.id}}" type="button">{{item.name}}</button>
                         </div>
                         <div class="class">{{item.WeaponClass}}</div>
                         <div class="range">{{item.explorerRangeBrackets}}</div>
                         <div class="rate-of-fire">{{item.RateOfFire}}</div>
-                        <div class="damage">{{item.damage}}</div>
+                        <div class="damage">{{item.system.damage.formula}}</div>
                         <div class="type">{{item.DamageTypeShort}}</div>
-                        <div class="penetration">{{item.penetration}}</div>
+                        <div class="penetration">{{item.damage.penetration}}</div>
                         <div class="clip">{{item.Clip}}</div>
                         <div class="reload">{{item.reload}}</div>
                         <div class="special">{{item.special}}</div>

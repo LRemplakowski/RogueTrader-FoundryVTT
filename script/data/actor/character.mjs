@@ -2,8 +2,8 @@ import { default as BaseActorModel } from "./base-actor.mjs";
 import { requiredInteger } from "../helpers.mjs";
 import { PsyClass, Characteristics, Skills, SkillAdvance, CharacteristicAdvance, HitLocations } from "../enums/_module.mjs";
 import { FormulaField } from "../fields/_module.mjs";
-import RogueTraderUtil from "../../common/util.js";
-import { EquipmentModel, TalentModel, PsychicPowerModel, ArmourModel } from "../item/character/_module.mjs";
+import Utils from "../../common/util.js";
+import { EquipmentModel, TalentModel, PsychicPowerModel, ArmourModel, CharacterItemModel } from "../item/character/_module.mjs";
 const Characteristic = Characteristics.DATA;
 const {
     StringField,
@@ -59,19 +59,20 @@ export default class CharacterModel extends BaseActorModel {
     static #defineCharacteristics() {
         const definition = {};
         for (const [key, value] of Object.entries(Characteristics.DATA)) {
-            definition[key] = this.#characteristicSchema(value);
+            definition[key] = this.#characteristicSchema(key, value);
         }
         return definition;
     }
 
-    static #characteristicSchema(value) {
+    static #characteristicSchema(key, value) {
         return new SchemaField({
+            key: new StringField({blank: false, initial: key, readonly: true, persisted: false}),
             label: new StringField({ blank: false, initial: value.label, readonly: true }),
             short: new StringField({ blank: false, initial: value.short, readonly: true }),
             base: requiredInteger(),
             advance: CharacteristicAdvance.schema(),
             unnatural: new SchemaField({
-                value: requiredInteger(),
+                base: requiredInteger(),
             }),
             cost: requiredInteger()
         });
@@ -80,13 +81,19 @@ export default class CharacterModel extends BaseActorModel {
     static #defineSkills() {
         const fields = {};
         for (const [skillKey, skillData] of Object.entries(Skills.DATA)) {
-            fields[skillKey] = this.#skillSchema(skillData);
+            fields[skillKey] = this.#skillSchema(skillKey, skillData);
         }
         return fields;
     }
 
-    static #skillSchema(skillData) {
+    static #skillSchema(key, skillData) {
         return new SchemaField({
+            key: new StringField({
+                blank: false,
+                initial: key,
+                readonly: true,
+                persisted: false,
+            }),
             label: new StringField({ 
                 blank: false, 
                 initial: skillData.label,
@@ -130,18 +137,48 @@ export default class CharacterModel extends BaseActorModel {
 
     prepareDerivedData() {
         super.prepareDerivedData();
+        this.#prepareItemMaps();
         this.#computeCharacteristicData();
         this.#computeFatigueAndCapCharacteristics();
+        this.#computeArmour();
+        this.#capAgilityFromArmour();
         this.#computeEncumbrance();
         this.#computeSkillData();
         this.#computeMovement();
         this.#computeExperience();
         this.#computeRank();
-        this.#computeArmour();
+        console.log(this);
     }
 
     #prepareItemMaps() {
+        this.items = {};
+        for (const item of this.parent.items) {
+            const sys = item.system;
+            if (!(sys instanceof CharacterItemModel)) continue;
+            const model = sys.constructor;          // e.g. WeaponModel
+            const key = model.name                  // "WeaponModel"
+                            .replace(/Model$/, "")  // "Weapon"
+                            .toLowerCase();         // "weapon"
+            if (!this.items[key]) this.items[key] = [];
+            this.items[key].push(item);
+        }
+    }
 
+    #capAgilityFromArmour() {
+        let cap = Number.MAX_SAFE_INTEGER;
+        if (game.settings.get("rogue-trader", "enableArmourAgilityCap") === false) return;
+        for (const location of Object.values(this.armour)) {
+            const itemData = location.item?.system;
+            if (!(itemData instanceof ArmourModel)) continue;
+            if (itemData.maxAgility > 0) {
+                cap = item.maxAgility < cap ? itemData.maxAgility : cap;
+            }
+        }
+        const agility = this.characteristics.agility;
+        if (cap < Number.MAX_SAFE_INTEGER && agility.value > cap) {
+            agility.value = cap;
+            agility.bonus = Utils.getCharacteristicBonus(agility.value, agility.unnatural.value);
+        }
     }
 
     #computeExperience() {
@@ -200,10 +237,11 @@ export default class CharacterModel extends BaseActorModel {
 
     #computeCharacteristicData() {
         const middle = Object.entries(this.characteristics).length / 2;
-        for (const [key, characteristic] of Object.entries(this.characteristics)) {
-            characteristic.value = characteristic.base + CharacteristicAdvance.value(characteristic.advance);
-            characteristic.bonus = Math.floor(characteristic.value / 10) + characteristic.unnatural.value;
-            characteristic.unnatural.rollBonus = Math.ceil(characteristic.unnatural.value / 2);
+        for (const [key, char] of Object.entries(this.characteristics)) {
+            char.value = char.base + CharacteristicAdvance.value(char.advance);
+            char.unnatural.value = char.unnatural.base;
+            char.bonus = Utils.getCharacteristicBonus(char.value, char.unnatural.value);
+            char.unnatural.rollBonus = Math.ceil(char.unnatural.value / 2);
         }
     }
 
@@ -212,7 +250,20 @@ export default class CharacterModel extends BaseActorModel {
             const skillAdvance = SkillAdvance.DATA[skill.advance];
             skill.isKnown = !skill.isSpecialist || skillAdvance.rating >= 0;
             skill.value = this.characteristics[skill.characteristic].value + skillAdvance.rating;
+            skill.byCharacteristic = this.#skillValueByCharacteristic.bind(this, skill);
         }
+    }
+
+    /**
+     * Private helper that computes the skill value using a different characteristic.
+     *
+     * @param {object} skill  The skill object
+     * @param {string} char   The characteristic key
+     * @returns {number}
+     */
+    #skillValueByCharacteristic(skill, char) {
+        const adv = SkillAdvance.DATA[skill.advance].rating;
+        return this.characteristics[char].value + adv;
     }
 
     #computeFatigueAndCapCharacteristics() {
@@ -224,7 +275,7 @@ export default class CharacterModel extends BaseActorModel {
             const charBonus = char.bonus;
             if (charBonus < this.fatigue.max) {
                 char.value = Math.ceil(charValue / 2);
-                char.bonus = Math.floor(char.value / 10) + char.unnatural.value;
+                char.bonus = Utils.getCharacteristicBonus(char.value, char.unnatural.value);
             }
         }
     }
@@ -236,7 +287,7 @@ export default class CharacterModel extends BaseActorModel {
                             .filter(item => item.system instanceof EquipmentModel)
                             .reduce((sum, item) => sum + item.system.weight, 0);
         this.encumbrance = {
-            max: RogueTraderUtil.getMaxEncumbrance(sb + tb),
+            max: Utils.getMaxEncumbrance(sb + tb),
             value: totalWeight,
         };
     }

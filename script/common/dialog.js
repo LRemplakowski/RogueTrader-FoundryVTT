@@ -14,12 +14,15 @@ export async function prepareCommonRoll(rollData) {
         icon: '<i class="fas fa-check"></i>',
         label: game.i18n.localize("BUTTON.ROLL"),
         callback: async html => {
+          const system = rollData.actor.system;
+          const charHTML = html.find("[name=characteristic] :selected")[0];
+          const characteristic = system.characteristics[charHTML.value];
           rollData.name = game.i18n.localize(rollData.name);
           rollData.baseTarget = parseInt(html.find("#target")[0].value, 10);
-          rollData.rolledWith = html.find("[name=characteristic] :selected").text();
+          rollData.rolledWith = charHTML.text;
           rollData.modifier = html.find("#modifier")[0].value;
           rollData.isCombatTest = false;
-          rollData.unnatural = rollData.characteristics?.find((char) => char.selected).unnatural ?? 0;
+          rollData.unnatural = characteristic.unnatural.rollBonus;
           await commonRoll(rollData);
         }
       },
@@ -36,7 +39,9 @@ export async function prepareCommonRoll(rollData) {
       const sel = html.find("select[name=characteristic");
       const target = html.find("#target");
       sel.change(ev => {
-        target.val(sel.val());
+        const system = rollData.actor.system;
+        const characteristic = system.characteristics[sel[0].value];
+        target.val(characteristic.value);
       });
     }
   }, {
@@ -165,12 +170,13 @@ export async function prepareConsumeResourcesRoll(rollData, actorRef) {
  */
 export async function prepareCombatRoll(rollData, actorRef) {
     // Provide select option lists for the generic combat dialog
-    rollData.aimOptions = [
+    const options = {}
+    options.aimOptions = [
       { value: '0', label: game.i18n.localize('AIMING.NONE') },
       { value: '10', label: game.i18n.localize('AIMING.HALF') },
       { value: '20', label: game.i18n.localize('AIMING.FULL') }
     ];
-    rollData.meleeAttackOptions = [
+    options.meleeAttackOptions = [
       { value: 'none', label: game.i18n.localize('ATTACK_TYPE.NONE') },
       { value: 'standard', label: game.i18n.localize('ATTACK_TYPE.STANDARD') },
       { value: 'charge', label: game.i18n.localize('ATTACK_TYPE.CHARGE') },
@@ -179,27 +185,27 @@ export async function prepareCombatRoll(rollData, actorRef) {
       { value: 'called_shot', label: game.i18n.localize('ATTACK_TYPE.CALLED_SHOT') },
       { value: 'allOut', label: game.i18n.localize('ATTACK_TYPE.ALLOUT') }
     ];
-    rollData.rangeOptions = [
+    options.rangeOptions = [
       { value: '0', label: game.i18n.localize('RANGE.NONE') },
       { value: '30', label: game.i18n.localize('RANGE.POINT_BLANK') },
       { value: '10', label: game.i18n.localize('RANGE.SHORT') },
       { value: '-10', label: game.i18n.localize('RANGE.LONG') },
       { value: '-30', label: game.i18n.localize('RANGE.EXTREME') }
     ];
-    rollData.rangeAttackOptions = [
+    options.rangeAttackOptions = [
       { value: 'none', label: game.i18n.localize('ATTACK_TYPE.NONE') },
       { value: 'standard', label: game.i18n.localize('ATTACK_TYPE.STANDARD') },
       { value: 'semi_auto', label: game.i18n.localize('ATTACK_TYPE.SEMI_AUTO') },
       { value: 'full_auto', label: game.i18n.localize('ATTACK_TYPE.FULL_AUTO') },
       { value: 'called_shot', label: game.i18n.localize('ATTACK_TYPE.CALLED_SHOT') }
     ];
-    rollData.damageTypeOptions = [
+    options.damageTypeOptions = [
       {value: 'energy', label: game.i18n.localize('DAMAGE_TYPE.ENERGY')},
       {value: 'impact', label: game.i18n.localize('DAMAGE_TYPE.IMPACT')},
       {value: 'rending', label: game.i18n.localize('DAMAGE_TYPE.RENDING')},
       {value: 'explosive', label: game.i18n.localize('DAMAGE_TYPE.EXPLOSIVE')}
     ];
-
+    rollData.options = options;
     const html = await renderTemplate("systems/rogue-trader/template/dialog/combat-roll.html", rollData);
     let dialog = new Dialog({
         title: rollData.name,
