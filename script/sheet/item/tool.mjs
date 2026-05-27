@@ -17,11 +17,16 @@ export default class ToolSheet extends RogueTraderItemSheet {
     makeDefault: true,
   }
 
-
-  // v13 MIGRATION: PARTS defines the template structure
-  static PARTS = {
-    sheet: {
-      template: "systems/rogue-trader/template/sheet/tool.html"
-    }
-  };
+  static get TABS() {
+    const tabs = super.TABS;
+    tabs.primary.tabs.unshift({
+      id: "tool-data",
+      group: "primary",
+      label: "TAB.DATA",
+      icon: "fa-solid fa-chart-bar",
+      cssClass: "tab-data"
+    });
+    tabs.primary.initial = "tool-data";
+    return tabs;
+  }
 }

@@ -31,63 +31,63 @@ export default class ShipSheet extends RogueTraderSheet {
     primary: {
       tabs: [
         {
-          id: "data",
+          id: "ship-data",
           group: "primary",
           label: "TAB.DATA",
           icon: "fa-solid fa-database",
           cssClass: "tab-data"
         },
         {
-          id: "combat",
+          id: "ship-combat",
           group: "primary",
           label: "TAB.COMBAT",
           icon: "fa-solid fa-shield",
           cssClass: "tab-combat"
         },
         {
-          id: "crew",
+          id: "ship-crew",
           group: "primary",
           label: "TAB.CREW",
           icon: "fa-solid fa-people-group",
           cssClass: "tab-crew"
         },
         {
-          id: "essential",
+          id: "ship-essential",
           group: "primary",
           label: "TAB.ESSENTIAL_COMPONENTS",
           icon: "fa-solid fa-cogs",
           cssClass: "tab-essential"
         },
         {
-          id: "supplemental",
+          id: "ship-supplemental",
           group: "primary",
           label: "TAB.SUPPLEMENTAL_COMPONENTS",
           icon: "fa-solid fa-wrench",
           cssClass: "tab-supplemental"
         },
         {
-          id: "weapons",
+          id: "ship-weapons",
           group: "primary",
           label: "TAB.WEAPONS",
           icon: "fa-solid fa-gun",
           cssClass: "tab-weapons"
         },
         {
-          id: "complications",
+          id: "ship-complications",
           group: "primary",
           label: "TAB.COMPLICATIONS",
           icon: "fa-solid fa-exclamation-triangle",
           cssClass: "tab-complications"
         },
         {
-          id: "notes",
+          id: "ship-notes",
           group: "primary",
           label: "TAB.NOTES",
           icon: "fa-solid fa-note-sticky",
           cssClass: "tab-notes"
         }
       ],
-      initial: "data"
+      initial: "ship-data"
     }
   };
 
@@ -154,7 +154,7 @@ export default class ShipSheet extends RogueTraderSheet {
     if (!role) return;
 
     await this.actor.update({
-      [`system.namedCrew.${role}.actor`]: droppedActorId
+      [`system.namedCrew.${role}.id`]: droppedActorId
     });
   }
 
@@ -247,14 +247,6 @@ export default class ShipSheet extends RogueTraderSheet {
         relativeTo: context.document,
       }
     );
-
-    // Adjust partials for ship-specific tabs
-    const shipTabs = ['data', 'crew', 'essential', 'supplemental', 'weapons', 'complications', 'notes'];
-    for (const tab of context.tabs.primary.tabs) {
-      if (shipTabs.includes(tab.id)) {
-        tab.partial = `systems/rogue-trader/template/sheet/actor/tab/ship-${tab.id}.html`;
-      }
-    }
 
     return context;
   }

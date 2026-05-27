@@ -1,27 +1,15 @@
-import RogueTraderItemSheet from "./item.mjs";
+import CharacterItemSheet from "./character-item.mjs";
 
-export default class MutationSheet extends RogueTraderItemSheet {
+export default class MutationSheet extends CharacterItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
     id: "mutation-sheet",
     classes: ["rogue-trader", "sheet", "mutation"],
-    position: {
-      width: 500,
-      height: 400
-    }
   };
 
   static METADATA = {
     types: ["mutation"],
     makeDefault: true,
   }
-
-
-  // v13 MIGRATION: PARTS defines the template structure
-  static PARTS = {
-    sheet: {
-      template: "systems/rogue-trader/template/sheet/mutation.html"
-    }
-  };
 }

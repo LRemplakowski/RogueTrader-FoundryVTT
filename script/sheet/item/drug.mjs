@@ -1,15 +1,11 @@
-import RogueTraderItemSheet from "./item.mjs";
+import CharacterItemSheet from "./character-item.mjs";
 
-export default class DrugSheet extends RogueTraderItemSheet {
+export default class DrugSheet extends CharacterItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
     id: "drug-sheet",
     classes: ["rogue-trader", "sheet", "drug"],
-    position: {
-      width: 500,
-      height: 400
-    }
   };
 
   static METADATA = {
@@ -17,11 +13,16 @@ export default class DrugSheet extends RogueTraderItemSheet {
     makeDefault: true,
   }
 
-
-  // v13 MIGRATION: PARTS defines the template structure
-  static PARTS = {
-    sheet: {
-      template: "systems/rogue-trader/template/sheet/drug.html"
-    }
-  };
+  static get TABS() {
+    const tabs = super.TABS;
+    tabs.primary.tabs.unshift({
+      id: "drug-data",
+      group: "primary",
+      label: "TAB.DATA",
+      icon: "fa-solid fa-chart-bar",
+      cssClass: "tab-data"
+    });
+    tabs.primary.initial = "drug-data";
+    return tabs;
+  }
 }

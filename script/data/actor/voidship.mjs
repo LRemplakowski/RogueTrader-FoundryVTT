@@ -3,8 +3,8 @@ import { requiredInteger, immutableIntegerField } from "../helpers.mjs";
 import { ActorReferenceField, ItemReferenceField } from "../fields/_module.mjs";
 import { CrewSkill, HullClass, ShipComponentClass, ShipFacing } from "../enums/_module.mjs";
 import { VoidshipItemModel, VoidshipComponentModel, VoidshipWeaponModel } from "../item/_module.mjs";
-
-const { StringField, SchemaField, HTMLField, NumberField } = foundry.data.fields;
+import { RogueTraderActor, RogueTraderItem } from "../../documents/_module.mjs";
+const { StringField, SchemaField, HTMLField, NumberField, DocumentTypeField } = foundry.data.fields;
 
 export default class VoidshipModel extends BaseActorModel {
     /** @inheritdoc */
@@ -71,10 +71,6 @@ export default class VoidshipModel extends BaseActorModel {
             turretRating: requiredInteger(),
             shields: requiredInteger(),
             armour: requiredInteger(),
-            hullIntegrity: new SchemaField({
-                max: requiredInteger(),
-                value: requiredInteger(),
-            }),
             space: new SchemaField({
                 max: requiredInteger(),
                 value: requiredInteger(),
@@ -102,7 +98,7 @@ export default class VoidshipModel extends BaseActorModel {
     /** Private helper for creating a crew role schema */
     static #crewRole(rank) {
         return new SchemaField({
-            id: new ActorReferenceField(),
+            id: new DocumentTypeField(RogueTraderActor, { initial: null, nullable: true }),
             rank: new NumberField({
                 initial: rank,
                 readonly: true,
@@ -123,7 +119,7 @@ export default class VoidshipModel extends BaseActorModel {
 
     static #shipComponent(category) {
         return new SchemaField({
-            id: new ItemReferenceField(),
+            id: new DocumentTypeField(RogueTraderItem, { initial: null, nullable: true }),
             class: new StringField({ initial: category, blank: false, readonly: true, persisted: false}),
         });
     }
@@ -186,22 +182,25 @@ export default class VoidshipModel extends BaseActorModel {
     #computePower() {
         const items = this.components.all;
         const voidEngine = this.components.essential.voidEngine.item;
+        this.power ??= {};
         this.power.max = voidEngine?.system?.power ?? 0;
         this.power.value = items.filter(item => item !== voidEngine)
-                                .reduce((total, item) => total + item.system.power);
+                                .reduce((total, item) => total + item.system.power, 0);
         this.power.avail = this.power.max - this.power.value;
     }
 
     #computeSpace() {
         const shipItems = this.components.all;
-        const spaceTaken = shipItems.reduce((total, item) => total + item.system.space);
+        const spaceTaken = shipItems.reduce((total, item) => total + item.system.space, 0);
+        this.space ??= {};
         this.space.value = spaceTaken;
         this.space.avail = this.space.max - spaceTaken;
     }
 
     #computePoints() {
         const shipItems = this.components.all;
-        const componentsValue = shipItems.reduce((total, item) => total + item.system.shipPoints);
+        const componentsValue = shipItems.reduce((total, item) => total + item.system.shipPoints, 0);
+        this.points ??= {};
         this.points.components = componentsValue;
         this.points.total = componentsValue + this.points.base;
     }

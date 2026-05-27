@@ -1,15 +1,11 @@
-import RogueTraderItemSheet from "./item.mjs";
+import CharacterItemSheet from "./character-item.mjs";
 
-export default class GearSheet extends RogueTraderItemSheet {
+export default class GearSheet extends CharacterItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
     id: "gear-sheet",
     classes: ["rogue-trader", "sheet", "gear"],
-    position: {
-      width: 500,
-      height: 400
-    }
   };
 
   static METADATA = {
@@ -17,12 +13,16 @@ export default class GearSheet extends RogueTraderItemSheet {
     makeDefault: true,
   }
 
-
-  // v13 MIGRATION: PARTS defines the template structure
-  // DocumentSheetV2 automatically renders PARTS and handles form submission
-  static PARTS = {
-    sheet: {
-      template: "systems/rogue-trader/template/sheet/gear.html"
-    }
-  };
+  static get TABS() {
+    const tabs = super.TABS;
+    tabs.primary.tabs.unshift({
+      id: "gear-data",
+      group: "primary",
+      label: "TAB.DATA",
+      icon: "fa-solid fa-chart-bar",
+      cssClass: "tab-data"
+    });
+    tabs.primary.initial = "gear-data";
+    return tabs;
+  }
 }

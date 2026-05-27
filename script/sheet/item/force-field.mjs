@@ -1,15 +1,10 @@
-import RogueTraderItemSheet from "./item.mjs";
-
-export default class ForceFieldSheet extends RogueTraderItemSheet {
+import CharacterItemSheet from "./character-item.mjs";
+export default class ForceFieldSheet extends CharacterItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
     id: "force-field-sheet",
     classes: ["rogue-trader", "sheet", "force-field"],
-    position: {
-      width: 500,
-      height: 400
-    }
   };
 
   static METADATA = {
@@ -17,11 +12,16 @@ export default class ForceFieldSheet extends RogueTraderItemSheet {
     makeDefault: true,
   }
 
-
-  // v13 MIGRATION: PARTS defines the template structure
-  static PARTS = {
-    sheet: {
-      template: "systems/rogue-trader/template/sheet/force-field.html"
-    }
-  };
+  static get TABS() {
+    const tabs = super.TABS;
+    tabs.primary.tabs.unshift({
+      id: "force-field-data",
+      group: "primary",
+      label: "TAB.DATA",
+      icon: "fa-solid fa-chart-bar",
+      cssClass: "tab-data"
+    });
+    tabs.primary.initial = "force-field-data";
+    return tabs;
+  }
 }

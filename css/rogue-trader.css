@@ -773,6 +773,9 @@ li.folder.collapsed > .folder-header {
   width: 2em;
   text-align: center;
 }
+.rogue-trader .tabs {
+  justify-content: space-around;
+}
 .rogue-trader .tabs .item {
   padding: 5px;
   font-size: 18px;

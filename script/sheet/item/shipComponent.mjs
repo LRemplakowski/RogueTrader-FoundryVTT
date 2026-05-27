@@ -16,12 +16,4 @@ export default class ShipComponentSheet extends RogueTraderItemSheet {
     types: ["shipComponent"],
     makeDefault: true,
   }
-
-
-  // v13 MIGRATION: PARTS defines the template structure
-  static PARTS = {
-    sheet: {
-      template: "systems/rogue-trader/template/sheet/shipComponent.html"
-    }
-  };
 }

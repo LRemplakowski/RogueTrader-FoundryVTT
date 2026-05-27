@@ -17,11 +17,16 @@ export default class TraitSheet extends RogueTraderItemSheet {
     makeDefault: true,
   }
 
-
-  // v13 MIGRATION: PARTS defines the template structure
-  static PARTS = {
-    sheet: {
-      template: "systems/rogue-trader/template/sheet/trait.html"
-    }
-  };
+  static get TABS() {
+    const tabs = super.TABS;
+    tabs.primary.tabs.unshift({
+      id: "trait-data",
+      group: "primary",
+      label: "TAB.DATA",
+      icon: "fa-solid fa-chart-bar",
+      cssClass: "tab-data"
+    });
+    tabs.primary.initial = "trait-data";
+    return tabs;
+  }
 }
