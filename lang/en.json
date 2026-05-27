@@ -610,6 +610,15 @@
   "WOUND.CURRENT": "Current",
   "WOUND.CRITICAL_DAMAGE": "Critical Damage",
 
+  "HULL_CLASS.TRANSPORT": "Transport",
+  "HULL_CLASS.RAIDER": "Raider",
+  "HULL_CLASS.FRIGATE": "Frigate",
+  "HULL_CLASS.LIGHT_CRUISER": "Light Cruiser",
+  "HULL_CLASS.CRUISER": "Cruiser",
+  "HULL_CLASS.BATTLECRUISER": "Battlecruiser",
+  "HULL_CLASS.GRAND_CRUISER": "Grand Cruiser",
+  "HULL_CLASS.BATTLESHIP": "Battleship",
+
   "SHIP_WEAPON.HEADER": "Weapon",
   "SHIP_WEAPON.CLASS": "Type",
   "SHIP_WEAPON.STRENGTH": "Strength",
