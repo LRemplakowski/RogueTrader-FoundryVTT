@@ -355,6 +355,7 @@ li.folder.collapsed > .folder-header {
 }
 .rogue-trader nav.tabs {
   line-height: 1;
+  gap: unset;
 }
 ::-webkit-scrollbar-thumb {
   background: #1b0f08b8;

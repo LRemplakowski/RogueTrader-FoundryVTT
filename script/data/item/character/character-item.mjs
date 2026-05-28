@@ -1,10 +1,11 @@
+import { CharacteristicModifier, SkillModifier } from "../../pseudo-documents/_module.mjs";
 import { default as BaseItemModel } from "../base-item.mjs";
-
-const { SchemaField, ObjectField } = foundry.data.fields;
+import { PseudoCollectionField } from "../../fields/_module.mjs";
+const { SchemaField, ObjectField, EmbeddedCollectionField } = foundry.data.fields;
 
 export default class CharacterItemModel extends BaseItemModel {
-    static metadata() {
-        const metadata = super.metadata();
+    static get metadata() {
+        const metadata = super.metadata;
         metadata.embedded.characteristicModifier = "system.modifiers.characteristic";
         metadata.embedded.skillModifier = "system.modifiers.skill";
         return metadata;
@@ -13,9 +14,9 @@ export default class CharacterItemModel extends BaseItemModel {
     static defineSchema() {
         const schema = super.defineSchema();
         schema.modifiers = new SchemaField({
-            characteristic: new ObjectField({ initial: {}}),
-            skill: new ObjectField({ initial: {}}),
-            other: new ObjectField({ initial: {}})
+            characteristic: new PseudoCollectionField(CharacteristicModifier),
+            skill: new PseudoCollectionField(SkillModifier),
+            // other: new EmbeddedCollectionField({ initial: []})
         });
         return schema;
     }

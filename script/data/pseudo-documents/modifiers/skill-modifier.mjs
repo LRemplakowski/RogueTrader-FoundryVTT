@@ -3,8 +3,8 @@ import { requiredInteger } from "../../helpers.mjs";
 import BaseModifier from "./base-modifier.mjs";
 
 export default class SkillModifier extends BaseModifier {
-    static metadata() {
-        const metadata = super.metadata();
+    static get metadata() {
+        const metadata = super.metadata;
         metadata.documentName = "skillModifier";
         return metadata;
     }
