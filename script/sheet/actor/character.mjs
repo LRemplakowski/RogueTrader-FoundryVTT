@@ -140,34 +140,12 @@ export default class CharacterSheet extends RogueTraderSheet {
             skill: skill,
             name: skill.label,
             baseTarget: skill.value,
-            modifier: 0,
+            modifier: skill.itemBonus.rollBonus,
             rolledWith: skill.characteristic,
             characteristics: valueByChar,
             charOptions: Characteristics.options(),
             ownerId: this.document.id,
             unnatural: 0
-        };
-        await prepareCommonRoll(rollData);
-    }
-
-    /**
-     * Handle speciality roll.
-     * @this {RogueTraderSheet}
-     * @param {PointerEvent} event
-     * @param {HTMLElement} target
-     */
-    static async #rollSpeciality(event, target) {
-        event.preventDefault();
-        const div = target.closest(".item");
-        const skillName = div.dataset.skill;
-        const specialityName = target.dataset.speciality;
-        const skill = this.document.skills[skillName];
-        const speciality = skill.specialities[specialityName];
-        const rollData = {
-            name: speciality.label,
-            baseTarget: speciality.total,
-            modifier: 0,
-            ownerId: this.document.id
         };
         await prepareCommonRoll(rollData);
     }

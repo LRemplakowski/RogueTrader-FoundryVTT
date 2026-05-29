@@ -1,6 +1,6 @@
-import RogueTraderItemSheet from "./item.mjs";
+import CharacterItemSheet from "./character-item.mjs";
 
-export default class WeaponModificationSheet extends RogueTraderItemSheet {
+export default class WeaponModificationSheet extends CharacterItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
@@ -17,8 +17,8 @@ export default class WeaponModificationSheet extends RogueTraderItemSheet {
     makeDefault: true,
   }
 
-  static get TABS() {
-    const tabs = super.TABS;
+  static {
+    const tabs = foundry.utils.deepClone(super.TABS);
     tabs.primary.tabs.unshift({
       id: "weapon-modification-data",
       group: "primary",
@@ -27,6 +27,6 @@ export default class WeaponModificationSheet extends RogueTraderItemSheet {
       cssClass: "tab-data"
     });
     tabs.primary.initial = "weapon-modification-data";
-    return tabs;
+    this.TABS = tabs;
   }
 }

@@ -68,12 +68,12 @@ export default class CharacterRollData {
 
     static createForceFieldRollData(actor, forceField) {
         let rollData = {
-        name: forceField.name, 
-        ownerId: actor.id,
-        itemId: forceField.id,    
-        protectionRating: parseInt(forceField.protectionRating),
-        overloadChance: parseInt(forceField.overloadChance),
-        description: forceField.description,
+            name: forceField.name, 
+            ownerId: actor.id,
+            itemId: forceField.id,    
+            protectionRating: parseInt(forceField.protectionRating),
+            overloadChance: parseInt(forceField.overloadChance),
+            description: forceField.description,
         }
         return rollData;
     }

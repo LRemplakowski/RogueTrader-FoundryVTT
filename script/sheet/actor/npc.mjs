@@ -45,6 +45,18 @@ export default class NpcSheet extends CharacterSheet {
     return buttons;
   }
 
+  _prepareTabs(key) {
+    const tabs = super._prepareTabs(key);
+    for (const [key, tab] of Object.entries(tabs)) {
+      if (tab.id === 'stats') {
+        tab.partial = 'systems/rogue-trader/template/sheet/actor/tab/npc-stats.html';
+      } else if (tab.id === 'notes') {
+        tab.partial = 'systems/rogue-trader/template/sheet/actor/tab/npc-notes.html';
+      }
+    }
+    return tabs;
+  }
+
   // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
@@ -60,15 +72,6 @@ export default class NpcSheet extends CharacterSheet {
           relativeTo: context.document,
         }
       );
-    }
-
-    // Adjust partials for npc-specific tabs
-    for (const tab of context.tabs.primary.tabs) {
-      if (tab.id === 'stats') {
-        tab.partial = 'systems/rogue-trader/template/sheet/actor/tab/npc-stats.html';
-      } else if (tab.id === 'notes') {
-        tab.partial = 'systems/rogue-trader/template/sheet/actor/tab/npc-notes.html';
-      }
     }
 
     return context;

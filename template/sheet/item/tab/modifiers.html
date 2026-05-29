@@ -3,43 +3,73 @@
     <h1>
       {{localize "TITLE.ITEM_MODIFIERS"}}
     </h1>
-    {{log this}}
     <div class="item-list">
         <!-- Handlebars template to dynamically list characteristic modifiers -->
         <div class="modifier-item flex header row">
           <b class="modifier-column">{{localize "DIALOG.CHARACTERISTIC_NAME"}}</b>
           <b class="modifier-column">{{localize "DIALOG.VALUE_MODIFIER"}}</b>
           <b class="modifier-column">{{localize "DIALOG.UNNATURAL_VALUE"}}</b>
-          <a class="modifier-button button add-char-modifier" data-action="addModifier" title="Add Characteristic Modifier" data-class="CharacteristicModifier"><i class="fas fa-plus"></i></a>
+          <a  class="modifier-button button add-char-modifier" 
+              data-action="addModifier" 
+              title="Add Characteristic Modifier"
+              data-type="characteristic" 
+              data-class="CharacteristicModifier"
+              data-item-id="{{item.uuid}}">
+          <i class="fas fa-plus"></i></a>
         </div>
-        {{#each modifiers.characteristic as |charMod|}}
-          {{log charMod}}
-          <div class="modifier-item flex row" data-modifier-id="characteristic" data-modifier-key="{{charMod.id}}">
-              <a class="flex row modifier-column" >{{charMod.label}}</a>
+        {{#each modifiers.characteristic as |charMod index|}}
+          <div class="modifier-item flex row" data-modifier-id="characteristic" data-index="{{index}}">
+              <select class="flex row modifier-column" name="system.modifiers.characteristic.{{index}}.characteristic">
+                {{{selectOptions ../options.characteristicOptions selected=charMod.characteristic}}}
+              </select>
               <div class="flex row modifier-column">
-                <input name="system.modifiers.characteristic.{{charMod.id}}.characteristicBonus" type="number" value="{{charMod.characteristicBonus}}" data-dtype="Number"/>
+                <input name="system.modifiers.characteristic.{{index}}.valueBonus" type="number" value="{{charMod.valueBonus}}" data-dtype="Number"/>
               </div>
               <div class="flex row modifier-column">
-                <input name="system.modifiers.characteristic.{{charMod.id}}.unnaturalBonus" type="number" value="{{charMod.unnaturalBonus}}" data-dtype="Number"/>
+                <input name="system.modifiers.characteristic.{{index}}.unnaturalBonus" type="number" value="{{charMod.unnaturalBonus}}" data-dtype="Number"/>
               </div>
               <div class="flex row modifier-button button">
-                <a class="item-control item-delete" data-action="deleteModifier" title="Delete Modifier"><i class="fas fa-trash"></i></a>
+                <button type="submit"
+                        class="item-control item-delete"
+                        data-action="deleteModifier"
+                        data-item-id="{{../item.uuid}}"
+                        data-type="characteristic"
+                        data-index="{{index}}"
+                        title="Delete Modifier">
+                  <i class="fas fa-trash"></i>
+                </button>
               </div>
           </div>
         {{/each}}
         <div class="modifier-item flex header row">
           <b class="modifier-column">Skill</b>
           <b class="modifier-column">Value Modifier</b>
-          <a class="modifier-button button add-skill-modifier" data-action="addSkillModifier" title="Add Skill Modifier" data-type="skill"><i class="fas fa-plus"></i></a>
+          <a  class="modifier-button button add-char-modifier" 
+              data-action="addModifier" 
+              title="Add Skill Modifier"
+              data-type="skill" 
+              data-class="SkillModifier"
+              data-item-id="{{item.uuid}}">
+          <i class="fas fa-plus"></i></a>
         </div>
-        {{#each system.modifiers.skill as |skillMod|}}
+        {{#each modifiers.skill as |skillMod index|}}
           <div class="modifier-item flex row" data-modifier-id="skill" data-modifier-key="{{skillMod.id}}">
-            <a class="flex row modifier-column" id="modifier-skill-label-{{skillMod.id}}" data-modifier-label="{{skillMod.label}}">{{localizeMultiple skillMod.label}}</a>
+              <select class="flex row modifier-column" name="system.modifiers.skill.{{index}}.skill">
+                {{{selectOptions ../options.skillsOptions selected=skillMod.skill}}}
+              </select>
             <div class="flex row modifier-column">
-              <input id="modifier-skill-value-{{skillMod.id}}" type="number" value="{{skillMod.skillModifier}}" data-dtype="Number"/>
+              <input name="system.modifiers.skill.{{index}}.rollBonus" type="number" value="{{skillMod.rollBonus}}" data-dtype="Number"/>
             </div>
             <div class="flex row modifier-button button">
-              <a class="item-control item-delete" data-action="deleteModifier" title="Delete Modifier"><i class="fas fa-trash"></i></a>
+              <button type="submit"
+                      class="item-control item-delete"
+                      data-action="deleteModifier"
+                      data-item-id="{{../item.uuid}}"
+                      data-type="skill"
+                      data-index="{{index}}"
+                      title="Delete Modifier">
+                <i class="fas fa-trash"></i>
+              </button>
             </div>
           </div>
         {{/each}}

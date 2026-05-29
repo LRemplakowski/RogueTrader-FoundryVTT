@@ -12,8 +12,8 @@ export default class ForceFieldSheet extends CharacterItemSheet {
     makeDefault: true,
   }
 
-  static get TABS() {
-    const tabs = super.TABS;
+  static {
+    const tabs = foundry.utils.deepClone(super.TABS);
     tabs.primary.tabs.unshift({
       id: "force-field-data",
       group: "primary",
@@ -22,6 +22,6 @@ export default class ForceFieldSheet extends CharacterItemSheet {
       cssClass: "tab-data"
     });
     tabs.primary.initial = "force-field-data";
-    return tabs;
+    this.TABS = tabs;
   }
 }

@@ -4,13 +4,10 @@ import * as enums from "../../data/enums/_module.mjs";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
 
-// v13 MIGRATION: HandlebarsApplicationMixin is REQUIRED for appv2 rendering — do not remove.
-// The mixin provides _renderHTML and _replaceHTML implementations that DocumentSheetV2 needs.
 // ActorSheetV2 provides DocumentSheetV2 base with automatic form submission
 // for inputs with name="system.*" attributes
 export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
-  // Subclasses will override this with their specific configuration
+
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
     id: "rogue-trader-sheet",
@@ -248,6 +245,7 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
 
   _getCorruptionModifier() {
     const corruption = this.document.corruption;
+    
     if (corruption <= 30) {
       return 0;
     } else if (corruption >= 31 && corruption <= 60) {
@@ -284,6 +282,8 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
       availabilityOptions: enums.Availability.options(),
       damageTypeOptions: enums.DamageType.options(),
       shipWeaponClassOptions: enums.ShipWeaponClass.options(),
+      shipFacingOptions: enums.ShipFacing.options(),
+      shipComponentClassOptions: enums.ShipComponentClass.options(),
       armourTypeOptions: enums.ArmourType.options(),
       criticalInjuryPartOptions: enums.HitLocations.options(),
       crewSkillOptions: enums.CrewSkill.options(),
@@ -292,10 +292,16 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
       npcTypeOptions: enums.NPCType.options(),
       skillAdvanceOptions: enums.SkillAdvance.options(),
       psyClassOptions: enums.PsyClass.options(),
+      psyStrengthOptions: enums.PsyStrength.options(),
+      psyZoneOptions: enums.PsyZone.options(),
       initiativeOptions: enums.Characteristics.options(),
       governorTypeOptions: enums.GovernorType.options(),
       colonyTypeOptions: enums.ColonyType.options(),
       hullClassOptions: enums.HullClass.options(),
+      hullClassOptions: enums.HullClass.options(),
+      skillsOptions: enums.Skills.options(),
+      weaponClassOptions: enums.WeaponClass.options(),
+      weaponTypeOptions: enums.WeaponType.options()
     };
     return result;
   }

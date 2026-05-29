@@ -25,6 +25,25 @@ export default class Skills extends EnumBase {
         ...this.#trade(),
     };
 
+        /** UI: localized labels + metadata */
+    static options(useFullLabel = false) {
+        return Object.fromEntries(
+            Object.entries(this.DATA).map(([key, data]) => [
+                key,
+                {
+                ...data,
+                label: Skills.#getLabel(data, useFullLabel),
+                }
+            ])
+        );
+    }
+
+    static #getLabel(skill, useFullLabel) {
+        const skillName = game.i18n.localize(skill.label);
+        const prefix = game.i18n.localize(skill.groupLabel);
+        return useFullLabel && skill.isSpecialist ? `${prefix}: ${skillName}` : skillName;
+    }
+
     static #charKey(value) { return Characteristics.keyOf(value) };
 
     static #basicSkills() {

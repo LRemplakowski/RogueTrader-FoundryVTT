@@ -13,8 +13,8 @@ export default class ArmourSheet extends CharacterItemSheet {
     makeDefault: true,
   }
 
-  static get TABS() {
-    const tabs = super.TABS;
+  static {
+    const tabs = foundry.utils.deepClone(super.TABS);
     tabs.primary.tabs.unshift({
       id: "armour-data",
       group: "primary",
@@ -23,6 +23,6 @@ export default class ArmourSheet extends CharacterItemSheet {
       cssClass: "tab-data"
     });
     tabs.primary.initial = "armour-data";
-    return tabs;
+    this.TABS = tabs;
   }
 }

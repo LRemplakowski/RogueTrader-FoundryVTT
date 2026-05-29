@@ -131,13 +131,33 @@ export default class CharacterModel extends BaseActorModel {
     prepareBaseData() {
         super.prepareBaseData();
         this.insanity.bonus = Math.floor(this.insanity.value / 10);
-        this.corruption.bonus = Math.floor(this.corruption.value / 10);
+        this.#prepareCorruption();
         this.psy.value = this.psy.rating - (this.psy.sustained > 1 ? this.psy.sustained : 0);
+        this.#prepareItemBonusDefaults();
+    }
+
+    #prepareCorruption() {
+        this.corruption.bonus = Math.floor(this.corruption.value / 10);
+        this.corruption.rollModifier = Math.floor((this.corruption.value - 1) / 30) * -10;
+    }
+
+    #prepareItemBonusDefaults() {
+        const characteristics = foundry.utils.deepClone(this.characteristics ?? {});
+        const skills = foundry.utils.deepClone(this.skills ?? {});
+        for (const key of Object.keys(characteristics)) {
+            characteristics[key].itemBonus = { valueBonus: 0, unnaturalBonus: 0 };
+        }
+        for (const key of Object.keys(skills)) {
+            skills[key].itemBonus = { rollBonus: 0 };
+        }
+        this.characteristics = characteristics;
+        this.skills = skills;
     }
 
     prepareDerivedData() {
         super.prepareDerivedData();
         this.#prepareItemMaps();
+        this.#prepareItemModifiers();
         this.#computeCharacteristicData();
         this.#computeFatigueAndCapCharacteristics();
         this.#computeArmour();
@@ -147,7 +167,6 @@ export default class CharacterModel extends BaseActorModel {
         this.#computeMovement();
         this.#computeExperience();
         this.#computeRank();
-        console.log(this);
     }
 
     #prepareItemMaps() {
@@ -164,21 +183,42 @@ export default class CharacterModel extends BaseActorModel {
         }
     }
 
-    #capAgilityFromArmour() {
-        let cap = Number.MAX_SAFE_INTEGER;
-        if (game.settings.get("rogue-trader", "enableArmourAgilityCap") === false) return;
-        for (const location of Object.values(this.armour)) {
-            const itemData = location.item?.system;
-            if (!(itemData instanceof ArmourModel)) continue;
-            if (itemData.maxAgility > 0) {
-                cap = item.maxAgility < cap ? itemData.maxAgility : cap;
+    #prepareItemModifiers() {
+        const characteristics = foundry.utils.deepClone(this.characteristics ?? {});
+        const skills = foundry.utils.deepClone(this.skills ?? {});
+        for (const item of this.parent.items) {
+            const system = item.system;
+            if (!(system instanceof CharacterItemModel)) continue;
+
+            // CHARACTERISTIC modifiers
+            const charMods = Array.isArray(system.modifiers?.characteristic)
+                ? system.modifiers.characteristic
+                : (system.modifiers?.characteristic ? Object.values(system.modifiers.characteristic) : []);
+            for (const mod of charMods) {
+                if (!mod) continue;
+                const key = String(mod.characteristic ?? "").trim();
+                if (!key) continue;
+                if (!Object.prototype.hasOwnProperty.call(characteristics, key)) continue;
+
+                characteristics[key].itemBonus.valueBonus += Number(mod.valueBonus ?? 0);
+                characteristics[key].itemBonus.unnaturalBonus += Number(mod.unnaturalBonus ?? 0);
+            }
+
+            // SKILL modifiers
+            const skillMods = Array.isArray(system.modifiers?.skill)
+                ? system.modifiers.skill
+                : (system.modifiers?.skill ? Object.values(system.modifiers.skill) : []);
+            for (const mod of skillMods) {
+                if (!mod) continue;
+                const key = String(mod.skill ?? "").trim();
+                if (!key) continue;
+                if (!Object.prototype.hasOwnProperty.call(skills, key)) continue;
+
+                skills[key].itemBonus.rollBonus += Number(mod.rollBonus ?? 0);
             }
         }
-        const agility = this.characteristics.agility;
-        if (cap < Number.MAX_SAFE_INTEGER && agility.value > cap) {
-            agility.value = cap;
-            agility.bonus = Utils.getCharacteristicBonus(agility.value, agility.unnatural.value);
-        }
+        this.characteristics = characteristics;
+        this.skills = skills;
     }
 
     #computeExperience() {
@@ -238,10 +278,10 @@ export default class CharacterModel extends BaseActorModel {
     #computeCharacteristicData() {
         const middle = Object.entries(this.characteristics).length / 2;
         for (const [key, char] of Object.entries(this.characteristics)) {
-            char.value = char.base + CharacteristicAdvance.value(char.advance);
-            char.unnatural.value = char.unnatural.base;
-            char.bonus = Utils.getCharacteristicBonus(char.value, char.unnatural.value);
+            char.value = char.base + CharacteristicAdvance.value(char.advance) + char.itemBonus.valueBonus;
+            char.unnatural.value = char.unnatural.base + char.itemBonus.unnaturalBonus;
             char.unnatural.rollBonus = Math.ceil(char.unnatural.value / 2);
+            char.bonus = Utils.getCharacteristicBonus(char.value, char.unnatural.value);
         }
     }
 
@@ -351,6 +391,23 @@ export default class CharacterModel extends BaseActorModel {
             armour[loc].total += maxArmour[loc];
         }
         this.armour = armour;
+    }
+
+    #capAgilityFromArmour() {
+        let cap = Number.MAX_SAFE_INTEGER;
+        if (game.settings.get("rogue-trader", "enableArmourAgilityCap") === false) return;
+        for (const location of Object.values(this.armour)) {
+            const itemData = location.item?.system;
+            if (!(itemData instanceof ArmourModel)) continue;
+            if (itemData.maxAgility > 0) {
+                cap = item.maxAgility < cap ? itemData.maxAgility : cap;
+            }
+        }
+        const agility = this.characteristics.agility;
+        if (cap < Number.MAX_SAFE_INTEGER && agility.value > cap) {
+            agility.value = cap;
+            agility.bonus = Utils.getCharacteristicBonus(agility.value, agility.unnatural.value);
+        }
     }
 
 }

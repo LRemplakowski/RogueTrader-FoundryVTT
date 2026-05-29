@@ -1,3 +1,5 @@
+import { BaseModifier, CharacteristicModifier, SkillModifier } from "../data/pseudo-documents/_module.mjs";
+
 /**
  * Minimal ModelCollection for your pseudodocuments.
  * No subtypes, no documentConfig, no TYPES.
@@ -16,8 +18,13 @@ export default class ModelCollection extends foundry.utils.Collection {
 			documentName: { value: documentName, writable: false },
 			parent: { value: parent, writable: false },
 			_source: { value: sourceData ?? {}, writable: false },
-			documentClass: { value: null, writable: true } // set later by field
+			documentClass: { value: ModelCollection.#documentClasses[documentName], writable: false } 
 		});
+	}
+
+	static #documentClasses = {
+		characteristicModifier: CharacteristicModifier,
+		skillModifier: SkillModifier,
 	}
 
 	/* -------------------------------------------------- */
@@ -40,24 +47,26 @@ export default class ModelCollection extends foundry.utils.Collection {
 		this._initialized = false;
 
 		for (const data of Object.values(this._source)) {
-		this.#initializeDocument(data, options);
+			this.#initializeDocument(data, options);
 		}
 
 		this._initialized = true;
 	}
 
 	#initializeDocument(data, options) {
-		const id = data._id ?? (data._id = foundry.utils.randomID());
-
-		let doc = this.get(id);
+		let doc = this.get(data._id);
 		if (doc) {
-		doc._initialize?.(options);
-		return doc;
+			doc._initialize(options);
+			return doc;
+		}
+		if (!data._id) {
+			data._id = foundry.utils.randomID();
+			console.warn(`PseudoDocument was constructed without an _id. Replaced with id '${data._id}'.`);
 		}
 
 		const Cls = this.documentClass;
 		doc = new Cls(data, { parent: this.parent });
-		super.set(id, doc);
+		super.set(doc.id, doc);
 
 		return doc;
 	}

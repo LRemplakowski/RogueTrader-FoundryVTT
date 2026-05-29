@@ -1,5 +1,5 @@
 import {showAddCharacteristicModifierDialog, showAddSkillModifierDialog} from "../../common/dialog.js";
-
+import * as enums from "../../data/enums/_module.mjs";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 
@@ -102,6 +102,37 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 		event.currentTarget.select();
 	}
 
+	_preapareDropdownOptions() {
+		const result = {
+			craftsmanshipOptions: enums.Craftsmanship.options(),
+			availabilityOptions: enums.Availability.options(),
+			damageTypeOptions: enums.DamageType.options(),
+			shipWeaponClassOptions: enums.ShipWeaponClass.options(),
+			shipFacingOptions: enums.ShipFacing.options(),
+			shipComponentClassOptions: enums.ShipComponentClass.options(),
+			armourTypeOptions: enums.ArmourType.options(),
+			criticalInjuryPartOptions: enums.HitLocations.options(),
+			crewSkillOptions: enums.CrewSkill.options(),
+			characteristicOptions: enums.Characteristics.options(),
+			characteristicAdvanceOptions: enums.CharacteristicAdvance.options(),
+			npcTypeOptions: enums.NPCType.options(),
+			skillAdvanceOptions: enums.SkillAdvance.options(),
+			psyClassOptions: enums.PsyClass.options(),
+			psyStrengthOptions: enums.PsyStrength.options(),
+			psyZoneOptions: enums.PsyZone.options(),
+			initiativeOptions: enums.Characteristics.options(),
+			governorTypeOptions: enums.GovernorType.options(),
+			colonyTypeOptions: enums.ColonyType.options(),
+			hullClassOptions: enums.HullClass.options(),
+			hullClassOptions: enums.HullClass.options(),
+			skillsOptions: enums.Skills.options(true),
+			weaponClassOptions: enums.WeaponClass.options(),
+			weaponTypeOptions: enums.WeaponType.options()
+		};
+		return result;
+	}
+
+
 	/**
 	 * Persist the currently active tab across renders.
 	 */
@@ -153,99 +184,7 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 		);
 
 		// Provide reusable option lists for templates using selectOptions
-		const optionsData = {
-			weaponClassOptions: [
-				{value: 'melee', label: game.i18n.localize('WEAPON.MELEE')},
-				{value: 'thrown', label: game.i18n.localize('WEAPON.THROWN')},
-				{value: 'pistol', label: game.i18n.localize('WEAPON.PISTOL')},
-				{value: 'basic', label: game.i18n.localize('WEAPON.BASIC')},
-				{value: 'heavy', label: game.i18n.localize('WEAPON.HEAVY')},
-				{value: 'launched', label: game.i18n.localize('WEAPON.LAUNCHED')},
-				{value: 'placed', label: game.i18n.localize('WEAPON.PLACED')},
-				{value: 'vehicle', label: game.i18n.localize('WEAPON.VEHICLE')}
-			],
-			weaponTypeOptions: [
-				{value: 'las', label: game.i18n.localize('WEAPON.LAS')},
-				{value: 'solidprojectile', label: game.i18n.localize('WEAPON.SOLIDPROJECTILE')},
-				{value: 'bolt', label: game.i18n.localize('WEAPON.BOLT')},
-				{value: 'melta', label: game.i18n.localize('WEAPON.MELTA')},
-				{value: 'plasma', label: game.i18n.localize('WEAPON.PLASMA')},
-				{value: 'flame', label: game.i18n.localize('WEAPON.FLAME')},
-				{value: 'lowtech', label: game.i18n.localize('WEAPON.LOWTECH')},
-				{value: 'launcher', label: game.i18n.localize('WEAPON.LAUNCHER')},
-				{value: 'explosive', label: game.i18n.localize('WEAPON.EXPLOSIVE')},
-				{value: 'exotic', label: game.i18n.localize('WEAPON.EXOTIC')},
-				{value: 'chain', label: game.i18n.localize('WEAPON.CHAIN')},
-				{value: 'power', label: game.i18n.localize('WEAPON.POWER')},
-				{value: 'shock', label: game.i18n.localize('WEAPON.SHOCK')},
-				{value: 'force', label: game.i18n.localize('WEAPON.FORCE')}
-			],
-			damageTypeOptions: [
-				{value: 'energy', label: game.i18n.localize('DAMAGE_TYPE.ENERGY')},
-				{value: 'impact', label: game.i18n.localize('DAMAGE_TYPE.IMPACT')},
-				{value: 'rending', label: game.i18n.localize('DAMAGE_TYPE.RENDING')},
-				{value: 'explosive', label: game.i18n.localize('DAMAGE_TYPE.EXPLOSIVE')}
-			],
-			craftsmanshipOptions: [
-				{value: 'poor', label: game.i18n.localize('CRAFTSMANSHIP.POOR')},
-				{value: 'common', label: game.i18n.localize('CRAFTSMANSHIP.COMMON')},
-				{value: 'good', label: game.i18n.localize('CRAFTSMANSHIP.GOOD')},
-				{value: 'best', label: game.i18n.localize('CRAFTSMANSHIP.BEST')}
-			],
-			availabilityOptions: [
-				{value: 'ubiquitous', label: game.i18n.localize('AVAILABILITY.UBIQUITOUS')},
-				{value: 'abundant', label: game.i18n.localize('AVAILABILITY.ABUNDANT')},
-				{value: 'plentiful', label: game.i18n.localize('AVAILABILITY.PLENTIFUL')},
-				{value: 'common', label: game.i18n.localize('AVAILABILITY.COMMON')},
-				{value: 'average', label: game.i18n.localize('AVAILABILITY.AVERAGE')},
-				{value: 'scarce', label: game.i18n.localize('AVAILABILITY.SCARCE')},
-				{value: 'rare', label: game.i18n.localize('AVAILABILITY.RARE')},
-				{value: 'very-rare', label: game.i18n.localize('AVAILABILITY.VERY_RARE')},
-				{value: 'extremely-rare', label: game.i18n.localize('AVAILABILITY.EXTREMELY_RARE')},
-				{value: 'near-unique', label: game.i18n.localize('AVAILABILITY.NEAR_UNIQUE')},
-				{value: 'unique', label: game.i18n.localize('AVAILABILITY.UNIQUE')}
-			],
-			damageZoneOptions: [
-				{value: 'none', label: game.i18n.localize('ATTACK_TYPE.NONE')},
-				{value: 'bolt', label: game.i18n.localize('PSYCHIC_POWER.BOLT')},
-				{value: 'barrage', label: game.i18n.localize('PSYCHIC_POWER.BARRAGE')},
-				{value: 'storm', label: game.i18n.localize('PSYCHIC_POWER.STORM')},
-				{value: 'blast', label: game.i18n.localize('PSYCHIC_POWER.BLAST')}
-			],
-			shipWeaponClassOptions: [
-				{value: 'macro', label: game.i18n.localize('SHIP_WEAPON.MACRO')},
-				{value: 'lance', label: game.i18n.localize('SHIP_WEAPON.LANCE')},
-				{value: 'torpedo', label: game.i18n.localize('SHIP_WEAPON.TORPEDO')},
-				{value: 'hangar', label: game.i18n.localize('SHIP_WEAPON.HANGAR')}
-			],
-			armourTypeOptions: [
-				{value: 'basic', label: game.i18n.localize('ARMOUR_TYPE.BASIC')},
-				{value: 'flak', label: game.i18n.localize('ARMOUR_TYPE.FLAK')},
-				{value: 'mesh', label: game.i18n.localize('ARMOUR_TYPE.MESH')},
-				{value: 'carapace', label: game.i18n.localize('ARMOUR_TYPE.CARAPACE')},
-				{value: 'power', label: game.i18n.localize('ARMOUR_TYPE.POWER')},
-				{value: 'other', label: game.i18n.localize('ARMOUR_TYPE.OTHER')}
-			],
-			criticalInjuryPartOptions: [
-				{value: 'head', label: game.i18n.localize('ARMOUR.HEAD')},
-				{value: 'leftArm', label: game.i18n.localize('ARMOUR.LEFT_ARM')},
-				{value: 'rightArm', label: game.i18n.localize('ARMOUR.RIGHT_ARM')},
-				{value: 'body', label: game.i18n.localize('ARMOUR.BODY')},
-				{value: 'leftLeg', label: game.i18n.localize('ARMOUR.LEFT_LEG')},
-				{value: 'rightLeg', label: game.i18n.localize('ARMOUR.RIGHT_LEG')}
-			],
-			shipComponentClassOptions: [
-				{value: 'voidEngine', label: game.i18n.localize('SHIP_ITEM.VOID_ENGINE')},
-				{value: 'warpEngine', label: game.i18n.localize('SHIP_ITEM.WARP_ENGINE')},
-				{value: 'gellarField', label: game.i18n.localize('SHIP_ITEM.GELLAR_FIELD')},
-				{value: 'voidShield', label: game.i18n.localize('SHIP_ITEM.VOID_SHIELD')},
-				{value: 'bridge', label: game.i18n.localize('SHIP_ITEM.BRIDGE')},
-				{value: 'lifeSupport', label: game.i18n.localize('SHIP_ITEM.LIFE_SUPPORT')},
-				{value: 'crewQuarters', label: game.i18n.localize('SHIP_ITEM.CREW_QUARTERS')},
-				{value: 'augurArray', label: game.i18n.localize('SHIP_ITEM.AUGUR_ARRAY')},
-				{value: 'supplemental', label: game.i18n.localize('SHIP_ITEM.SUPPLEMENTAL')}
-			]
-		};
+		const optionsData = this._preapareDropdownOptions();
 
 		// Return context including options for selectOptions helper
 		context.options = {

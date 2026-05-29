@@ -13,8 +13,8 @@ export default class DrugSheet extends CharacterItemSheet {
     makeDefault: true,
   }
 
-  static get TABS() {
-    const tabs = super.TABS;
+  static {
+    const tabs = foundry.utils.deepClone(super.TABS);
     tabs.primary.tabs.unshift({
       id: "drug-data",
       group: "primary",
@@ -23,6 +23,6 @@ export default class DrugSheet extends CharacterItemSheet {
       cssClass: "tab-data"
     });
     tabs.primary.initial = "drug-data";
-    return tabs;
+    this.TABS = tabs;
   }
 }

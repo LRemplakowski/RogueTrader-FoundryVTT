@@ -3,6 +3,11 @@ import { requiredInteger } from "../../helpers.mjs";
 import BaseModifier from "./base-modifier.mjs";
 
 export default class CharacteristicModifier extends BaseModifier {
+
+    static get TYPE() {
+        return "CharacteristicModifier";
+    }
+
     static get metadata() {
         const metadata = super.metadata;
         metadata.documentName = "characteristicModifier";

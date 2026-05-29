@@ -1,72 +1,98 @@
-import { ModelCollection } from "../../utils/_module.mjs";
+import LazyTypedSchemaField from "./lazy-typed-schema-field.mjs";
+import ModelCollection from "../../utils/model-collection.mjs";
+import PseudoDocument from "../pseudo-documents/pseudo-document.mjs";
 
 /**
- * A field that represents a collection of pseudodocuments.
- * Works with your simplified ModelCollection and pseudodocument classes.
+ * @import { DataFieldContext, DataFieldOptions } from "@common/data/_types.mjs";
  */
-export default class PseudoCollectionField extends foundry.data.fields.ObjectField {
 
+/**
+ * A collection that houses pseudo-documents.
+ */
+export default class CollectionField extends foundry.data.fields.TypedObjectField {
   /**
-   * @param {typeof PseudoDocument} modelClass  The pseudodocument class.
-   * @param {object} [options]
+   * @param {typeof PseudoDocument} model    The value type of each entry in this object.
+   * @param {DataFieldOptions} [options]          Options which configure the behavior of the field.
+   * @param {DataFieldContext} [context]          Additional context which describes the field.
    */
-  constructor(modelClass, options = {}) {
-    super(options);
-
-    if (typeof modelClass !== "function") {
-      throw new Error("PseudoCollectionField requires a pseudodocument class.");
+  constructor(model, options = {}, context = {}) {
+    if (!foundry.utils.isSubclass(model, PseudoDocument)) {
+      throw new Error("A CollectionField can only be instantiated with a PseudoDocument subclass.");
     }
-
-    // Store the pseudodocument class on the instance
-    Object.defineProperty(this, "documentClass", {
-      value: modelClass,
-      writable: false
-    });
+    // Guard: TYPE must be a non-empty, non-whitespace string
+    if (typeof model.TYPE !== "string" || model.TYPE.trim().length === 0) {
+      throw new Error(`PseudoDocument subclass ${model.name} must define a non-empty static TYPE string.`);
+    }
+    const field = new LazyTypedSchemaField(CollectionField.#types(model));
+    options.validateKey ||= (key => foundry.data.validators.isValidId(key));
+    super(field, options, context);
+    this.#documentClass = model;
   }
+
+  static #types(model) {
+    const type = model.TYPE;
+    const result = {};
+    result[type] = model;
+    return result;
+  }
+
+
+  /* -------------------------------------------------- */
 
   /** @inheritdoc */
   static hierarchical = true;
 
+  /* -------------------------------------------------- */
+
   /**
-   * The collection implementation to use.
+   * The Collection implementation to use when initializing the collection.
+   * @type {typeof ModelCollection}
    */
   static get implementation() {
     return ModelCollection;
   }
 
+  /* -------------------------------------------------- */
+
   /**
-   * Initialize the collection.
-   * Called by Foundry when constructing the DataModel.
+   * The pseudo-document class.
+   * @type {typeof PseudoDocument}
    */
+  #documentClass;
+
+  /* -------------------------------------------------- */
+
+  /**
+   * The pseudo-document class.
+   * @type {typeof PseudoDocument}
+   */
+  get documentClass() {
+    return this.#documentClass;
+  }
+
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
   initialize(value, model, options = {}) {
     const name = this.documentClass.metadata.documentName;
-
-    // Retrieve the collection created by your mixin
     const collection = model.parent.pseudoCollections[name];
-
-    // Tell the collection which pseudodocument class to instantiate
-    collection.documentClass = this.documentClass;
-
-    // Initialize the collection with the parent DataModel
     collection.initialize(model, options);
-
     return collection;
   }
 
-  /**
-   * Handle updates to nested data.
-   * This is the minimal version needed for your system.
-   */
+  /* -------------------------------------------------- */
+
+  /** @inheritdoc */
   _updateCommit(source, key, value, diff, options) {
     let src = source[key];
 
-    // Handle null/undefined transitions
+    // Special Cases: * -> undefined, * -> null, undefined -> *, null -> *
     if (!src || !value) {
       source[key] = value;
       return;
     }
 
-    // Apply diff to source while preserving object references
+    // Reconstruct the source array, retaining object references
     for (let [id, d] of Object.entries(diff)) {
       if (foundry.utils.isDeletionKey(id)) {
         if (id.startsWith("-")) {
@@ -78,14 +104,12 @@ export default class PseudoCollectionField extends foundry.data.fields.ObjectFie
         delete source[key][id];
         continue;
       }
-
       const prior = src[id];
       if (prior) {
         this.element._updateCommit(src, id, value[id], d, options);
         src[id] = prior;
-      } else {
-        src[id] = d;
       }
+      else src[id] = d;
     }
   }
 }

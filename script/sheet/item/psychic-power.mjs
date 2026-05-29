@@ -13,8 +13,8 @@ export default class PsychicPowerSheet extends CharacterItemSheet {
     makeDefault: true,
   }
 
-  static get TABS() {
-    const tabs = super.TABS;
+  static {
+    const tabs = foundry.utils.deepClone(super.TABS);
     tabs.primary.tabs.unshift({
       id: "psychic-power-data",
       group: "primary",
@@ -30,6 +30,6 @@ export default class PsychicPowerSheet extends CharacterItemSheet {
       cssClass: "tab-notes"
     });
     tabs.primary.initial = "psychic-power-data";
-    return tabs;
+    this.TABS = tabs;
   }
 }

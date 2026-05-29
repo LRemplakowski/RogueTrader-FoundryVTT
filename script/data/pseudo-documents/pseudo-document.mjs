@@ -1,4 +1,10 @@
+const { DocumentIdField, StringField, FilePathField, IntegerSortField, DocumentTypeField } = foundry.data.fields;
+
 export default class PseudoDocument extends foundry.abstract.DataModel {
+
+  static get TYPE() {
+    return "";
+  }
 
   static get metadata() {
     return {
@@ -9,9 +15,12 @@ export default class PseudoDocument extends foundry.abstract.DataModel {
 
   static defineSchema() {
     return {
-      _id: new foundry.data.fields.DocumentIdField({
+      _id: new DocumentIdField({
         initial: () => foundry.utils.randomID()
-      })
+      }),
+      name: new StringField({ required: true }),
+      img: new FilePathField({ categories: ["IMAGE"] }),
+      sort: new IntegerSortField(),
     };
   }
 
@@ -95,7 +104,8 @@ export default class PseudoDocument extends foundry.abstract.DataModel {
     if (!parent) throw new Error("Parent required.");
 
     const id = foundry.utils.randomID();
-    const fieldPath = parent.constructor.metadata.embedded[this.metadata.documentName];
+    const model = parent.system;
+    const fieldPath = model.constructor.metadata.embedded[this.metadata.documentName];
 
     const update = {
       [`${fieldPath}.${id}`]: { ...data, _id: id }
