@@ -79,19 +79,6 @@ export default class ExplorerSheet extends CharacterSheet {
   // This provides data-specific enrichment for the Explorer sheet
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    console.log(CharacterSheet.PARTS);
-    // Enrich biography field
-    if (context.system?.bio?.notes) {
-      context.system.bio.biographyHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        context.system.bio.notes,
-        {
-          secrets: context.document.isOwner,
-          rollData: context.rollData,
-          async: true,
-          relativeTo: context.document,
-        }
-      );
-    }
     return context;
   }
 }

@@ -44,6 +44,7 @@
     </div>
     <div class="notes-editor border">
         <h1>{{localize "TITLE.NOTES"}}</h1>
-        {{editor system.bio.biographyHTML target="system.bio.notes" engine="prosemirror" button=true editable=true}}
+        {{log this}}
+        {{editor notesHTML target="system.bio.notes" engine="prosemirror" button=true editable=true}}
     </div>
 </div>

@@ -3,7 +3,7 @@
         <div class="header border">
             <div class="flex row">
                 <div class="avatar">
-                    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+                    <img class="profile-img" src="{{actor.img}}" data-action="editImage" data-edit="img" title="{{actor.name}}" />
                 </div>
                 <div class="flex column grow">
                     <div class="name header-row">
@@ -41,7 +41,7 @@
                             <label>{{localize "FATIGUE"}}</label>
                             <input name="system.fatigue.value" type="number" value="{{system.fatigue.value}}" data-dtype="Number" />
                             /
-                            <input name="system.fatigue.max" type="number" value="{{system.fatigue.max}}" data-dtype="Number" />
+                            <input name="system.fatigue.max" type="number" value="{{system.fatigue.max}}" data-dtype="Number" disabled />
                         </div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                     data-group="{{tab.group}}"
                     {{#if tab.active}}aria-selected="true"{{/if}}
                 >
-                    {{> (lookup tab "partial")}}
+                    {{> (lookup tab "partial") ..}}
                 </section>
             {{/each}}
         </div>

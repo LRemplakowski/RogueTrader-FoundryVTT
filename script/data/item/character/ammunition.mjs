@@ -24,6 +24,7 @@ export default class AmmunitionModel extends EquipmentModel {
         schema.attack = requiredInteger();
         schema.special = new StringField({ blank: true, initial: "" });
         schema.weapon = new StringField({ blank: true, initial: ""});
+        schema.quantity = requiredInteger();
         return schema;
     }
 }

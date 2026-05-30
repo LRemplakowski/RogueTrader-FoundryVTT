@@ -3,7 +3,7 @@
         <div class="header border">
             <div class="flex row">
                 <div class="avatar">
-                    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+                    <img class="profile" src="{{actor.img}}" data-action="editImage" data-edit="img" title="{{actor.name}}" />
                 </div>
                 <div class="flex column" style="flex: 1; margin: 5px;">
                     <div class="flex row justify-space-around">
@@ -58,7 +58,7 @@
                     data-group="{{tab.group}}"
                     {{#if tab.active}}aria-selected="true"{{/if}}
                 >
-                    {{> (lookup tab "partial")}}
+                    {{> (lookup tab "partial") ..}}
                 </section>
             {{/each}}
         </div>

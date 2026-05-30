@@ -2,7 +2,8 @@
     <div class="notes-editor border" style="height: 674px;">
         <h1>{{localize "TITLE.NOTES"}}</h1>
         <div style="height: 100%; width: 100%">
-            {{editor system.bio.biographyHTML target="system.bio.notes" engine="prosemirror" button=true editable=true}}
+            {{formInput system.schema.fields.bio.fields.notes value=system.bio.notes documentUUID=document.uuid}}
+            <!-- {{editor notesHTML target="system.bio.notes" engine="prosemirror" button=true editable=true}} -->
         </div>
     </div>
 </div>

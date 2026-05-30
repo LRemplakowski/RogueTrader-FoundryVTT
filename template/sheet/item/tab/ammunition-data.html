@@ -13,18 +13,18 @@
     <div class="stats-row">
         <div class="stat damage">
             <label>{{localize "AMMUNITION.DAMAGE"}}</label>
-            <input name="system.effect.damage.modifier" type="text" value="{{system.effect.damage.modifier}}" />
-            <select name="system.effect.damage.type">
-                {{{selectOptions options.damageTypeOptions selected=system.effect.damage.type}}}
+            <input name="system.damage.modifier" type="text" value="{{system.damage.modifier}}" />
+            <select name="system.damage.type">
+                {{{selectOptions options.damageTypeOptions selected=system.damage.type}}}
             </select>
         </div>
         <div class="stat penetration">
             <label>{{localize "AMMUNITION.PENETRATION"}}</label>
-            <input name="system.effect.penetration" type="text" value="{{system.effect.penetration}}" />
+            <input name="system.penetration" type="text" value="{{system.penetration}}" />
         </div>
         <div class="stat attack">
             <label>{{localize "AMMUNITION.ATTACK"}}</label>
-            <input name="system.effect.attack.modifier" type="number" value="{{system.effect.attack.modifier}}" data-dtype="Number" />
+            <input name="system.attack" type="number" value="{{system.attack}}" data-dtype="Number" />
         </div>
     </div>
     <div class="stats-row">
@@ -48,7 +48,7 @@
     <div class="stats-row">
         <div class="stat special">
             <label>{{localize "AMMUNITION.SPECIAL"}}</label>
-            <input name="system.effect.special" type="text" value="{{system.effect.special}}" />
+            <input name="system.special" type="text" value="{{system.special}}" />
         </div>
     </div>
 </div>

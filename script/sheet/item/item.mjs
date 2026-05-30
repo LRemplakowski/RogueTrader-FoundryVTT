@@ -72,19 +72,6 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 		await this.document.update(formData.object);
 	}
 
-	// v13 MIGRATION: ApplicationV2 activation - activateListeners is still needed for non-action event binding
-	// This method is called after rendering and handles subscription-based change events.
-	// Call super.activateListeners(html) to ensure parent class event binding occurs first.
-	activateListeners(html) {
-		// v13 MIGRATION: CRITICAL - Call super first to ensure ApplicationV2 form binding works
-		super.activateListeners(html);
-		
-		// v13 MIGRATION: Input focus handlers for auto-select
-		html.querySelectorAll("input").forEach(el => {
-			el.addEventListener("focusin", ev => this._onFocusIn(ev));
-		});
-	}
-
 	_getHeaderButtons() {
 		let buttons = super._getHeaderButtons();
 		buttons = [
@@ -96,10 +83,6 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 			}
 		].concat(buttons);
 		return buttons;
-	}
-
-	_onFocusIn(event) {
-		event.currentTarget.select();
 	}
 
 	_preapareDropdownOptions() {
@@ -165,10 +148,8 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 	/** @inheritdoc */
 	async _prepareContext(options) {
 		const context = await super._prepareContext(options);
-		
 		// Add 'item' alias for template backward compatibility (templates expect item.name, item.img, etc)
 		context.item = this.document;
-		
 		const systemData = context.document.system;
 		context.title = game.i18n.localize(this.constructor?.PARTS?.sheet.label);
 		context.tabs = this._prepareTabs("primary");
@@ -179,13 +160,11 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 				secrets: context.document.isOwner,
 				rollData: context.rollData,
 				async: true,
-				relativeTo: context.document,
+				relativeTo: this.document,
 			}
 		);
-
 		// Provide reusable option lists for templates using selectOptions
 		const optionsData = this._preapareDropdownOptions();
-
 		// Return context including options for selectOptions helper
 		context.options = {
 			...(context.options || {}),

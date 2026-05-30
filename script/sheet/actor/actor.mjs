@@ -14,7 +14,7 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     classes: ["rogue-trader", "sheet", "actor"],
     tag: "form",
     form: {
-      handler: RogueTraderSheet.#onSubmitForm,
+      handler: RogueTraderSheet._onSubmitForm,
       closeOnSubmit: false,
       submitOnChange: true
     },
@@ -23,7 +23,7 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     },
     position: {
       width: 720,
-      height: 881
+      height: 905
     },
     actions: {
       itemCreate: RogueTraderSheet.#itemCreate,
@@ -52,10 +52,33 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
    * @param {HTMLFormElement} form
    * @param {FormDataExtended} formData
    */
-  static async #onSubmitForm(event, form, formData) {
+  static async _onSubmitForm(event, form, formData) {
     event.preventDefault();
-    await this.document.update(formData.object);
+    const data = formData.object;
+    const itemUpdates = [];
+    // Handle updating embedded items from actor sheet input fields
+    for (const [key, value] of Object.entries(data)) {
+      if (!key.startsWith("items.")) continue;
+      // key: "items.<id>.system.cost"
+      const [, id, ...pathParts] = key.split(".");
+      const path = pathParts.join(".");   // "system.cost"
+      const item = this.document.items.get(id);
+      if (!item) continue;
+      // Find or create update object for this item
+      let update = itemUpdates.find(u => u._id === id);
+      if (!update) {
+        update = { _id: id };
+        itemUpdates.push(update);
+      }
+      foundry.utils.setProperty(update, path, value);
+      delete data[key];
+    }
+    await this.document.update(data);
+    if (itemUpdates.length) {
+      await this.document.updateEmbeddedDocuments("Item", itemUpdates);
+    }
   }
+
 
   /**
    * Handle item creation.
@@ -100,20 +123,25 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     this.document.deleteEmbeddedDocuments("Item", [itemId]);
   }
 
-  // This method is called after rendering and must handle all custom event listeners.
-  // Call super.activateListeners(html) to ensure parent class event binding occurs first.
-  activateListeners(html) {
-    super.activateListeners(html);
-    
-    // v13 MIGRATION: Input focus handlers for auto-select
-    html.querySelectorAll("input").forEach(el => {
-      el.addEventListener("focusin", ev => this._onFocusIn(ev));
-    });
-    const btn = this.element.querySelector(
-      `.sheet-tabs [data-action="tab"][data-group="primary"][data-tab="${this.activeTab}"]`
-    );
-    if (btn) btn.click();
-
+  async _updateObject(event, formData) {
+    const expanded = foundry.utils.expandObject(formData);
+    const itemUpdates = [];
+    if (expanded.items) {
+      for (const [key, data] of Object.entries(expanded.items)) {
+        const item = await fromUuid(key);
+        if (!item || item.parent !== this.document) continue;
+        itemUpdates.push({
+          _id: item.id,
+          ...data
+        });
+      }
+      delete expanded.items;
+    }
+    if (itemUpdates.length) {
+      await this.actor.updateEmbeddedDocuments("Item", itemUpdates);
+    }
+    const flattened = foundry.utils.flattenObject(expanded);
+    return super._updateObject(event, flattened);
   }
 
   _getHeaderButtons() {
@@ -177,105 +205,6 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     }
   }
 
-  _getModifiers(modType) {
-    let result = {}
-    for (let list in this.document.items) {
-      switch (modType) {
-        case 'characteristic':
-          for (let itemType in this.document.items[list]) {
-            let items = this.document.items[list][itemType];
-            for (let item in items) {
-              let itemModifiers = items[item].modifiers;
-              for (let charMod in itemModifiers.characteristic) {
-                if (result[charMod]) {
-                  result[charMod].valueMod += itemModifiers.characteristic[charMod].valueMod;
-                  result[charMod].unnaturalMod += itemModifiers.characteristic[charMod].unnaturalMod;
-                }
-                else {
-                  result[charMod] = {
-                    valueMod: itemModifiers.characteristic[charMod].valueMod,
-                    unnaturalMod: itemModifiers.characteristic[charMod].unnaturalMod
-                  };
-                }
-              }
-            }
-          }
-          break;
-        case 'skill':
-          for (let itemType in this.document.items[list]) {
-            let items = this.document.items[list][itemType];
-            for (let item in items) {
-              let itemModifiers = items[item].modifiers;
-              for (let skillMod in itemModifiers.skill) {
-                if (result[skillMod]) {
-                  result[skillMod].valueMod += itemModifiers.skill[skillMod].valueMod;
-                }
-                else {
-                  result[skillMod] = {
-                    valueMod: itemModifiers.skill[skillMod].valueMod,
-                  };
-                }
-              }
-            }
-          }
-          break;
-        case 'other':
-          break;
-      }
-    }
-  }
-
-  _extractNumberedTrait(regex, traits) {
-    let rfMatch = traits.match(regex);
-    if (rfMatch) {
-      regex = /\d+/gi;
-      return parseInt(rfMatch[0].match(regex)[0]);
-    }
-    return undefined;
-  }
-
-  _hasNamedTrait(regex, traits) {
-    let rfMatch = traits.match(regex);
-    if (rfMatch) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  _getCorruptionModifier() {
-    const corruption = this.document.corruption;
-    
-    if (corruption <= 30) {
-      return 0;
-    } else if (corruption >= 31 && corruption <= 60) {
-      return -10;
-    } else if (corruption >= 61 && corruption <= 90) {
-      return -20;
-    } else if (corruption >= 91) {
-      return -30;
-    }
-  }
-
-  _getWeaponCharacteristic(weapon) {
-    if (weapon.class === "melee") {
-      return this.document.characteristics.weaponSkill;
-    } else {
-      return this.document.characteristics.ballisticSkill;
-    }
-  }
-
-  _getFocusPowerTarget(psychicPower) {
-    const normalizeName = psychicPower.focusPower.test.toLowerCase();
-    if (this.document.characteristics.hasOwnProperty(normalizeName)) {
-      return this.document.characteristics[normalizeName];
-    } else if (this.document.skills.hasOwnProperty(normalizeName)) {
-      return this.document.skills[normalizeName];
-    } else {
-      return this.document.characteristics.willpower;
-    }
-  }
-
   _preapareDropdownOptions() {
     const result = {
       craftsmanshipOptions: enums.Craftsmanship.options(),
@@ -316,9 +245,7 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
   * AppV2 dispatches tab clicks into _onClickTab; store the id for later restoration.
   */
   _onClickTab(event, target) {
-    // Let the base class handle the actual activation logic first
     super._onClickTab(event, target);
-
     // Store the selected tab id so it can be restored after re-render
     if (target?.dataset?.tab) {
       this.activeTab = target.dataset.tab;
@@ -339,18 +266,19 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
   // This method prepares the context object passed to the Handlebars template
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    
-    // Add 'actor' alias for template backward compatibility (templates expect actor.name, actor.img, etc)
     context.actor = this.document;
-    
-    // Add system data for template access
     context.system = this.document.system;
     context.items = this.constructItemLists(context);
-
-    // Remove any inherited enumerable properties (like "primary")
     context.tabs = this._prepareTabs("primary");
-
-    // Provide reusable option lists for actor templates using selectOptions
+    context.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      context.system.bio.notes,
+      {
+        secrets: context.document.isOwner,
+        rollData: context.rollData,
+        async: true,
+        relativeTo: context.document,
+      }
+    );
     const optionsData = this._preapareDropdownOptions();
 
     // Merge options with any existing options and attach to context

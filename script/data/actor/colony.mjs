@@ -1,9 +1,9 @@
 import { ColonyType, GovernorType } from "../enums/_module.mjs";
-import { ActorReferenceField } from "../fields/_module.mjs";
+import { RogueTraderActor } from "../../documents/actor.mjs";
 import { requiredInteger } from "../helpers.mjs";
 import BaseActorModel from "./base-actor.mjs";
 
-const { SchemaField, BooleanField, StringField } = foundry.data.fields;
+const { SchemaField, BooleanField, StringField, ForeignDocumentField } = foundry.data.fields;
 
 export default class ColonyModel extends BaseActorModel {
     /** @inheritdoc */
@@ -15,10 +15,9 @@ export default class ColonyModel extends BaseActorModel {
     }
 
     static defineSchema() {
-        const schema = super.defineSchema();
-        
+        const schema = super.defineSchema(); 
         schema.governor = new SchemaField({
-            id: new ActorReferenceField(),
+            id: new ForeignDocumentField(RogueTraderActor),
             governorType: GovernorType.schema(),
             skillBonus: requiredInteger(),
             advancedTraining: new BooleanField(),
@@ -50,5 +49,12 @@ export default class ColonyModel extends BaseActorModel {
         });
 
         return schema;
+    }
+
+    prepareBaseData() {
+        super.prepareBaseData();
+        console.log("Colony");
+        console.log(this);
+
     }
 }

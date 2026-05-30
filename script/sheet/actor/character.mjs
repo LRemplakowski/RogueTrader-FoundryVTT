@@ -158,10 +158,10 @@ export default class CharacterSheet extends RogueTraderSheet {
      */
     static async #rollInsanity(event, target) {
         event.preventDefault();
-        const characteristic = this.document.characteristics.willpower;
+        const characteristic = this.document.system.characteristics.willpower;
         const rollData = {
             name: "FEAR.HEADER",
-            baseTarget: characteristic.total,
+            baseTarget: characteristic.value,
             modifier: 0,
             ownerId: this.document.id
         };
@@ -176,11 +176,13 @@ export default class CharacterSheet extends RogueTraderSheet {
      */
     static async #rollCorruption(event, target) {
         event.preventDefault();
-        const characteristic = this.document.characteristics.willpower;
+        const system = this.document.system;
+        const characteristic = system.characteristics.willpower;
+        const corruption = system.corruption;
         const rollData = {
             name: "CORRUPTION.HEADER",
-            baseTarget: characteristic.total,
-            modifier: this._getCorruptionModifier(),
+            baseTarget: characteristic.value,
+            modifier: corruption.rollModifier,
             ownerId: this.document.id
         };
         await prepareCommonRoll(rollData);
@@ -293,7 +295,7 @@ export default class CharacterSheet extends RogueTraderSheet {
                     value: char.advance,
                     short: CharacteristicAdvance.DATA[char.advance].short
                 },
-                unnatural: char.unnatural.value,
+                unnatural: char.unnatural.base,
                 cost: char.cost,
                 bonus: char.bonus,
                 isLeft: i < middle,

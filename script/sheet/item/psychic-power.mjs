@@ -32,4 +32,19 @@ export default class PsychicPowerSheet extends CharacterItemSheet {
     tabs.primary.initial = "psychic-power-data";
     this.TABS = tabs;
   }
+
+  /** @inheritdoc */
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
+    context.effectHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+			context.document.effect,
+			{
+				secrets: context.document.isOwner,
+				rollData: context.rollData,
+				async: true,
+				relativeTo: this.document,
+			}
+		);
+    return context;
+  }
 }

@@ -138,7 +138,9 @@ export default class CharacterModel extends BaseActorModel {
 
     #prepareCorruption() {
         this.corruption.bonus = Math.floor(this.corruption.value / 10);
-        this.corruption.rollModifier = Math.floor((this.corruption.value - 1) / 30) * -10;
+        let corruptionMultiplier = Math.floor((this.corruption.value - 1) / 30);
+        corruptionMultiplier = Math.max(corruptionMultiplier, 0);
+        this.corruption.rollModifier = corruptionMultiplier * -10;
     }
 
     #prepareItemBonusDefaults() {
@@ -400,7 +402,7 @@ export default class CharacterModel extends BaseActorModel {
             const itemData = location.item?.system;
             if (!(itemData instanceof ArmourModel)) continue;
             if (itemData.maxAgility > 0) {
-                cap = item.maxAgility < cap ? itemData.maxAgility : cap;
+                cap = itemData.maxAgility < cap ? itemData.maxAgility : cap;
             }
         }
         const agility = this.characteristics.agility;
