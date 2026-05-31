@@ -6,6 +6,7 @@ import { commonRoll, combatRoll } from "./roll.js";
 import RtMacroUtil from "./macro.js";
 import * as data from "../data/_module.mjs";
 import * as sheet from "../sheet/_module.mjs";
+import { ValidateSchemaVersion, UpdateWorldSchemaVersion, MigrateWorld } from "../../utils/migration.mjs";
 
 // Import Helpers
 import * as chat from "./chat.js";
@@ -75,7 +76,10 @@ Hooks.once("setup", () => {
 
 Hooks.once("ready", () => {
   console.log("READY HOOK");
-  migrateWorld();
+  if (!ValidateSchemaVersion()) {
+    // MigrateWorld();
+    UpdateWorldSchemaVersion();
+  }
   const ChatMessageClass = CONFIG.ChatMessage.documentClass || game.messages.documentClass;
   if (ChatMessageClass && ChatMessageClass.prototype) {
     ChatMessageClass.prototype.getRollData = function() {

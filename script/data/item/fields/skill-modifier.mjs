@@ -6,7 +6,7 @@ const { SchemaField } = foundry.data.fields;
 export default class SkillModifier {
     static schemaDefinition() { 
         return new SchemaField({
-            skill: Skills.schema(),
+            propertyKey: Skills.schema(),
             rollBonus: requiredInteger(),
         });
     }

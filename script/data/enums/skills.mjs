@@ -38,6 +38,18 @@ export default class Skills extends EnumBase {
         );
     }
 
+    static bySkillGroup() {
+        const groups = {};
+        for (const [key, data] of Object.entries(this.DATA)) {
+            const group = data.group;
+            if (!groups[group]) {
+                groups[group] = {};
+            }
+            groups[group][key] = key;
+        }
+        return groups;
+    }
+
     static #getLabel(skill, useFullLabel) {
         const skillName = game.i18n.localize(skill.label);
         const prefix = game.i18n.localize(skill.groupLabel);

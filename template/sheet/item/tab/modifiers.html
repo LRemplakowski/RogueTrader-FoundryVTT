@@ -19,8 +19,8 @@
         </div>
         {{#each modifiers.characteristic as |charMod index|}}
           <div class="modifier-item flex row" data-modifier-id="characteristic" data-index="{{index}}">
-              <select class="flex row modifier-column" name="system.modifiers.characteristic.{{index}}.characteristic">
-                {{{selectOptions ../options.characteristicOptions selected=charMod.characteristic}}}
+              <select class="flex row modifier-column" name="system.modifiers.characteristic.{{index}}.propertyKey">
+                {{{selectOptions ../options.characteristicOptions selected=charMod.propertyKey}}}
               </select>
               <div class="flex row modifier-column">
                 <input name="system.modifiers.characteristic.{{index}}.valueBonus" type="number" value="{{charMod.valueBonus}}" data-dtype="Number"/>
@@ -53,9 +53,9 @@
           <i class="fas fa-plus"></i></a>
         </div>
         {{#each modifiers.skill as |skillMod index|}}
-          <div class="modifier-item flex row" data-modifier-id="skill" data-modifier-key="{{skillMod.id}}">
+          <div class="modifier-item flex row" data-modifier-id="skill" data-modifier-key="{{index}}">
               <select class="flex row modifier-column" name="system.modifiers.skill.{{index}}.skill">
-                {{{selectOptions ../options.skillsOptions selected=skillMod.skill}}}
+                {{{selectOptions ../options.skillsOptions selected=skillMod.propertyKey}}}
               </select>
             <div class="flex row modifier-column">
               <input name="system.modifiers.skill.{{index}}.rollBonus" type="number" value="{{skillMod.rollBonus}}" data-dtype="Number"/>

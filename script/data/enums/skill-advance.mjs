@@ -13,4 +13,21 @@ export default class SkillAdvance extends EnumBase {
 	static value(key) {
 		return this.DATA[key]?.rating ?? this.DATA[this.DEFAULT].rating;
 	}
+
+	static ratingStringToKey(rating) {
+		const keys = SkillAdvance.KEYS;
+		if (SkillAdvance.KEYS[rating])
+			return rating;
+		switch (rating) {
+			case -20:
+			case "-20": return keys.untrained;
+			case 0:
+			case "0": return keys.trained;
+			case 10:
+			case "10": return keys.expert;
+			case 20:
+			case "20": return keys.veteran;
+			default: return SkillAdvance.DEFAULT;
+		}
+	}
 }

@@ -4,6 +4,7 @@ import { PsyClass, Characteristics, Skills, SkillAdvance, CharacteristicAdvance,
 import { FormulaField } from "../fields/_module.mjs";
 import Utils from "../../common/util.js";
 import { EquipmentModel, TalentModel, PsychicPowerModel, ArmourModel, CharacterItemModel } from "../item/character/_module.mjs";
+import { ValidateSchemaVersion } from "../../../utils/migration.mjs";
 const Characteristic = Characteristics.DATA;
 const {
     StringField,
@@ -12,8 +13,59 @@ const {
     BooleanField,
     ArrayField
 } = foundry.data.fields;
-
+const Migration = foundry.abstract.Document;
+const Properties = foundry.utils;
 export default class CharacterModel extends BaseActorModel {
+    static migrateData(source) {
+        if (!source) return super.migrateData(source);
+        if (ValidateSchemaVersion()) return super.migrateData(source);
+        if (source.characteristics) {
+            for (const [key, value] of Object.entries(source.characteristics)) {
+                const charPath = `characteristics.${key}`;
+                const advancePath = `${charPath}.advance`;
+                Properties.setProperty(source, advancePath, CharacteristicAdvance.ratingStringToKey(value.advance));
+            }
+        }
+        if (source.skills) {
+            for (const [key, value] of Object.entries(source.skills)) {
+                CharacterModel.#migrateSkill(source, key, value);
+            }
+        }
+        return super.migrateData(source);
+    }
+
+    static #migrateSkill(source, skillKey, skill) {
+        if (skill.isSpecialist) {
+            // We need to flatten specialities
+            if (skill.specialities) {
+                for (const [specKey, spec] of Object.entries(skill.specialities)) {
+                    if (skillKey.startsWith('adv')) {
+                        // Advanced X skills can be mapped directly
+                        Properties.setProperty(source, `skills.${specKey}.cost`, spec.cost);
+                        Properties.setProperty(source, `skills.${specKey}.advance`, SkillAdvance.ratingStringToKey(spec.advance));
+                    }
+                    else {
+                        const newKey = `${skillKey}_${specKey}`;
+                        Properties.setProperty(source, `skills.${newKey}.cost`, spec.cost);
+                        Properties.setProperty(source, `skills.${newKey}.advance`, SkillAdvance.ratingStringToKey(spec.advance));
+                    }
+                }
+                Properties.deleteProperty(source, `skills.${skillKey}.specialities`);
+            }
+            if (skill.characteristics) {
+                Properties.deleteProperty(source, `skills.${skillKey}.characteristics`);
+            }
+        }
+        else {
+            // Non-specialist skill need only advance value fix
+            if (skill.characteristics)
+                Properties.deleteProperty(source, `skills.${skillKey}.characteristics`);
+            if (skill.specialities)
+                Properties.deleteProperty(source, `skills.${skillKey}.specialities`);
+            Properties.setProperty(source, `skills.${skillKey}.advance`, SkillAdvance.ratingStringToKey(skill.advance));
+        }
+    }
+
     static defineSchema() {
         const schema = super.defineSchema();
 
@@ -198,7 +250,7 @@ export default class CharacterModel extends BaseActorModel {
                 : (system.modifiers?.characteristic ? Object.values(system.modifiers.characteristic) : []);
             for (const mod of charMods) {
                 if (!mod) continue;
-                const key = String(mod.characteristic ?? "").trim();
+                const key = String(mod.propertyKey ?? "").trim();
                 if (!key) continue;
                 if (!Object.prototype.hasOwnProperty.call(characteristics, key)) continue;
 
@@ -212,7 +264,7 @@ export default class CharacterModel extends BaseActorModel {
                 : (system.modifiers?.skill ? Object.values(system.modifiers.skill) : []);
             for (const mod of skillMods) {
                 if (!mod) continue;
-                const key = String(mod.skill ?? "").trim();
+                const key = String(mod.propertyKey ?? "").trim();
                 if (!key) continue;
                 if (!Object.prototype.hasOwnProperty.call(skills, key)) continue;
 
@@ -315,7 +367,7 @@ export default class CharacterModel extends BaseActorModel {
         for (const [key, char] of Object.entries(this.characteristics)) {
             const charValue = char.value;
             const charBonus = char.bonus;
-            if (charBonus < this.fatigue.max) {
+            if (charBonus < this.fatigue.value) {
                 char.value = Math.ceil(charValue / 2);
                 char.bonus = Utils.getCharacteristicBonus(char.value, char.unnatural.value);
             }

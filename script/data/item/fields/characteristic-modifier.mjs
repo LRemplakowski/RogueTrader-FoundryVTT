@@ -6,7 +6,7 @@ const { SchemaField } = foundry.data.fields;
 export default class CharacteristicModifier {
     static schemaDefinition() { 
         return new SchemaField({
-            characteristic: Characteristics.schema(),
+            propertyKey: Characteristics.schema(),
             valueBonus: requiredInteger(),
             unnaturalBonus: requiredInteger(),
         });

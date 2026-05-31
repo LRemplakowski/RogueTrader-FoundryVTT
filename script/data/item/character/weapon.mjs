@@ -2,10 +2,24 @@ import EquipmentModel from "./equipment.mjs";
 import { WeaponClass, WeaponType, DamageType } from "../../enums/_module.mjs";
 import { requiredInteger } from "../../helpers.mjs";
 import { FormulaField } from "../../fields/_module.mjs";
+import { ValidateSchemaVersion } from "../../../../utils/migration.mjs";
 
 const { StringField, SchemaField } = foundry.data.fields;
 
+import { ValidateSchemaVersion } from "../../../../utils/migration.mjs";
+const Migration = foundry.abstract.Document;
+const Properties = foundry.utils;
+
 export default class WeaponModel extends EquipmentModel {
+    static migrateData(source) {
+        if (!source) return super.migrateData(source);
+        if (ValidateSchemaVersion()) return super.migrateData(source);
+        Migration._addDataFieldMigration(source, `damage`, `damage.formula`);
+        Migration._addDataFieldMigration(source, `penetration`, `damage.penetration`);
+        Migration._addDataFieldMigration(source, `damageType`, `damage.type`);
+        return super.migrateData(source);
+    }
+
     /** @inheritdoc */
     static get metadata() {
         return {
