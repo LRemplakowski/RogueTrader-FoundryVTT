@@ -5,7 +5,21 @@ import EquipmentModel from "./equipment.mjs";
 
 const { SchemaField, StringField } = foundry.data.fields;
 
+const Migration = foundry.abstract.Document;
+const Properties = foundry.utils;
 export default class AmmunitionModel extends EquipmentModel {
+    /** @inheritdoc */
+    static migrateData(source) {
+        if (!source) return super.migrateData(source);
+        
+        Migration._addDataFieldMigration(source, `effect.damage`, `damage`);
+        Migration._addDataFieldMigration(source, `effect.special`, `special`);
+        Migration._addDataFieldMigration(source, `effect.penetration`, `penetration`);
+        Migration._addDataFieldMigration(source, `effect.attack`, `attack`);
+        Properties.deleteProperty(source, `effect`);
+        return super.migrateData(source);
+    }
+
     /** @inheritdoc */
     static get metadata() {
         return {
@@ -14,6 +28,7 @@ export default class AmmunitionModel extends EquipmentModel {
         };
     }
 
+    /** @inheritdoc */
     static defineSchema() {
         const schema = super.defineSchema();
         schema.damage = new SchemaField({

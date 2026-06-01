@@ -5,7 +5,7 @@ import CharacterItemModel from "./character-item.mjs";
 
 const { StringField, SchemaField, HTMLField } = foundry.data.fields;
 
-export default class PsychicPowerModel extends CharacterItemModel {
+export default class PsychicPowerModel extends CharacterItemModel {    
     /** @inheritdoc */
     static get metadata() {
         return {
@@ -14,6 +14,7 @@ export default class PsychicPowerModel extends CharacterItemModel {
         };
     }
 
+    /** @inheritdoc */
     static defineSchema() {
         const schema = super.defineSchema();
         schema.shortDescription = new StringField({ blank: true, initial: "" });
@@ -21,7 +22,7 @@ export default class PsychicPowerModel extends CharacterItemModel {
         schema.prerequisite = new StringField({ blank: true, initial: "" });
         schema.action = new StringField({ blank: true, initial: "" });
         schema.focusPower = new SchemaField({
-            difficulty: requiredInteger(),
+            difficulty: requiredInteger({ min: Number.MIN_SAFE_INTEGER }),
             test: new StringField({ blank: true, initial: "" }),
         });
         schema.range = new StringField({ blank: true, initial: "" });
@@ -31,7 +32,7 @@ export default class PsychicPowerModel extends CharacterItemModel {
         schema.damage = new SchemaField({
             zone: PsyZone.schema(),
             type: DamageType.schema(),
-            formula: new FormulaField({ initial: "1d10" }),
+            formula: new StringField({ initial: "1d10" }),
             penetration: requiredInteger(),
             special: new StringField({ blank: true, initial: "" }),
         });

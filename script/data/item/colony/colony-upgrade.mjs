@@ -15,9 +15,9 @@ export default class ColonyUpgradeModel extends ColonyItemModel {
 
     static defineSchema() {
         const schema = super.defineSchema();
-        schema.yearlyLoyalty = requiredInteger();
-        schema.yearlyProsperity = requiredInteger();
-        schema.yearlySecurity = requiredInteger();
+        schema.yearlyLoyalty = requiredInteger({ min: Number.MIN_SAFE_INTEGER });
+        schema.yearlyProsperity = requiredInteger({ min: Number.MIN_SAFE_INTEGER });
+        schema.yearlySecurity = requiredInteger({ min: Number.MIN_SAFE_INTEGER });
         schema.usesUpgradeSlot = new BooleanField({ initial: true });
         schema.bonusSlots = requiredInteger();
         schema.special = new StringField({ blank: true, initial: "" });

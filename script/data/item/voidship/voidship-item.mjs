@@ -10,7 +10,7 @@ export default class VoidshipItemModel extends BaseItemModel {
         schema.craftsmanship = Craftsmanship.schema();
         schema.availability = Availability.schema();
         schema.weight = requiredInteger();
-        schema.hullTypes = new StringField({});
+        schema.hullTypes = new StringField();
         schema.power = requiredInteger();
         schema.space = requiredInteger();
         schema.shipPoints = requiredInteger();

@@ -4,6 +4,14 @@ const { StringField, BooleanField } = foundry.data.fields;
 
 export default class WeaponModificationModel extends EquipmentModel {
     /** @inheritdoc */
+    static migrateData(source) {
+        if (!source) return super.migrateData(source);
+        if (typeof source.installed !== "boolean") 
+            Properties.setProperty(source, `installed`, source.installed === "installed");         
+        return super.migrateData(source);
+    }
+    
+    /** @inheritdoc */
     static get metadata() {
         return {
             ...super.metadata,
@@ -11,6 +19,7 @@ export default class WeaponModificationModel extends EquipmentModel {
         };
     }
 
+    /** @inheritdoc */
     static defineSchema() {
         const schema = super.defineSchema();
         schema.upgrades = new StringField({ blank: true, initial: "" });

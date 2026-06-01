@@ -9,14 +9,10 @@ const Properties = foundry.utils;
 
 export default class CharacterItemModel extends BaseItemModel {
     static migrateData(source) {
-        if (!source) return super.migrateData(source);
-        if (ValidateSchemaVersion()) return super.migrateData(source);
-        if (source.characteristic)
-            Properties.deleteProperty(source, `source.characteristic`)
-        if (source.skill)
-            Properties.deleteProperty(source, `source.skill`)
-        if (source.other)
-            Properties.deleteProperty(source, `source.other`)
+        if (!source) return super.migrateData(source); 
+        Properties.deleteProperty(source, `source.characteristic`)
+        Properties.deleteProperty(source, `source.skill`)
+        Properties.deleteProperty(source, `source.other`)
         if (source.modifiers && source.modifiers.characteristic) {
             for (const [key, charMod] of Object.entries(source.modifiers.characteristic)) {
                 const propertyPath = `source.modifiers.characteritic.${key}`;

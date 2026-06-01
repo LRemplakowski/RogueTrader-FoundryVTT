@@ -11,6 +11,7 @@ export default class ExplorerModel extends CharacterModel {
         };
     }
 
+    /** @inheritdoc */
     static defineSchema() {
         const schema = super.defineSchema();
 

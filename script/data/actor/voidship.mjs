@@ -4,9 +4,69 @@ import { ActorReferenceField, ItemReferenceField } from "../fields/_module.mjs";
 import { CrewSkill, HullClass, ShipComponentClass, ShipFacing } from "../enums/_module.mjs";
 import { VoidshipItemModel, VoidshipComponentModel, VoidshipWeaponModel } from "../item/_module.mjs";
 import { RogueTraderActor, RogueTraderItem } from "../../documents/_module.mjs";
-const { StringField, SchemaField, HTMLField, NumberField, DocumentTypeField } = foundry.data.fields;
+import { ValidateSchemaVersion } from "../../../utils/migration.mjs";
+import { toCamelCase } from "../../utils/string-utility.mjs";
+const { StringField, SchemaField, HTMLField, NumberField, ForeignDocumentField, DocumentUUIDField } = foundry.data.fields;
 
+const Migration = foundry.abstract.Document;
+const Properties = foundry.utils;
 export default class VoidshipModel extends BaseActorModel {
+    static migrateData(source) {
+        if (!source) return super.migrateData(source);
+        
+        if (source.initiative) {
+            Properties.deleteProperty(source, `initiative`);
+        }
+        VoidshipModel.#migrateCrewData(source);
+        VoidshipModel.#migrateHullData(source);
+        VoidshipModel.#migrateEngineeringData(source);
+        VoidshipModel.#migrateBioData(source);
+        return super.migrateData(source);
+    }
+
+    static #migrateCrewData(source) {
+        if (source.namedCrew) {
+            for (const [key, crewMember] of Object.entries(source.namedCrew)) {
+                const oldPath = `namedCrew.${key}`;
+                const newPath = `crew.namedCrew.${key}.id`;
+                Migration._addDataFieldMigration(source, oldPath, newPath);
+            }
+            Properties.deleteProperty(source, `namedCrew`);
+        }
+        Migration._addDataFieldMigration(source, `crewMorale`, `crew.morale`);
+        Migration._addDataFieldMigration(source, `crewCount`, `crew.count`);
+        Migration._addDataFieldMigration(source, `crewSkill`, `crew.skill`);
+    }
+
+    static #migrateHullData(source) {
+        Migration._addDataFieldMigration(source, `hullClass`, `hull.class`, toCamelCase)
+        Migration._addDataFieldMigration(source, `hullName`, `hull.name`);
+    }
+
+    static #migrateEngineeringData(source) {
+        const newPath = (key) => `engineering.${key}`;
+        Migration._addDataFieldMigration(source, `speed`, newPath(`speed`));
+        // Fixed naming typo here
+        Migration._addDataFieldMigration(source, `manoeuvrability`, `engineering.maneuverability`);
+        Migration._addDataFieldMigration(source, `detection`, newPath(`detection`));
+        Migration._addDataFieldMigration(source, `turretRating`, newPath(`turretRating`));
+        Migration._addDataFieldMigration(source, `shields`, newPath(`shields`));
+        Migration._addDataFieldMigration(source, `armour`, newPath(`armour`));
+        Migration._addDataFieldMigration(source, `space`, newPath(`space`));
+        Migration._addDataFieldMigration(source, `power`, newPath(`power`));
+        Migration._addDataFieldMigration(source, `points`, newPath(`points`));
+        Migration._addDataFieldMigration(source, `weaponCapacity`, newPath(`weaponCapacity`));
+    }
+
+    static #migrateBioData(source) {
+        Migration._addDataFieldMigration(source, `complications`, `bio.complications`);
+        Migration._addDataFieldMigration(source, `pastHistory`, `bio.pastHistory`);
+        if (soruce.complicationsHTML)
+            Properties.deleteProperty(source, `pastHistoryHTML`);
+        if (source.pastHistoryHTML)
+            Properties.deleteProperty(source, `complicationsHTML`);
+    }
+
     /** @inheritdoc */
     static get metadata() {
         return {
@@ -23,11 +83,11 @@ export default class VoidshipModel extends BaseActorModel {
         });
         schema.crew = new SchemaField({
             count: new SchemaField({
-                base: immutableIntegerField({ initial: 100 }),
+                max: requiredInteger({ initial: 100 }),
                 value: requiredInteger(),
             }),
             morale: new SchemaField({
-                base: immutableIntegerField({ initial: 100 }),
+                max: requiredInteger({ initial: 100 }),
                 value: requiredInteger(),
             }),
             skill: CrewSkill.schema(),
@@ -60,7 +120,7 @@ export default class VoidshipModel extends BaseActorModel {
             class: HullClass.schema(),
             name: new StringField({ blank: true }),
             integrity: new SchemaField({
-                base: requiredInteger(),
+                max: requiredInteger(),
                 value: requiredInteger(),
             }),
         });
@@ -86,11 +146,11 @@ export default class VoidshipModel extends BaseActorModel {
                 components: requiredInteger(),
                 total: requiredInteger(),
             }),
-            weaponCapacity: new SchemaField(this.#shipFacings()),
+            weaponCapacity: new SchemaField(VoidshipModel.#shipFacings()),
         });
         const componentClass = ShipComponentClass.DATA;
         schema.components = new SchemaField({
-            essential: new SchemaField(this.#essentialComponentsSchema()),
+            essential: new SchemaField(VoidshipModel.#essentialComponentsSchema()),
         });
         return schema;
     }
@@ -98,7 +158,7 @@ export default class VoidshipModel extends BaseActorModel {
     /** Private helper for creating a crew role schema */
     static #crewRole(rank) {
         return new SchemaField({
-            id: new DocumentTypeField(RogueTraderActor, { initial: null, nullable: true }),
+            id: new ForeignDocumentField(RogueTraderActor),
             rank: new NumberField({
                 initial: rank,
                 readonly: true,
@@ -112,14 +172,14 @@ export default class VoidshipModel extends BaseActorModel {
         for (const key of Object.keys(ShipComponentClass.DATA)) {
             if (key === ShipComponentClass.keyOf(ShipComponentClass.DATA.supplemental))
                 continue;
-            essentials[key] = this.#shipComponent(key);
+            essentials[key] = VoidshipModel.#shipComponent(key);
         }
         return essentials;
     }
 
     static #shipComponent(category) {
         return new SchemaField({
-            id: new DocumentTypeField(RogueTraderItem, { initial: null, nullable: true }),
+            uuid: new DocumentUUIDField(),
             class: new StringField({ initial: category, blank: false, readonly: true, persisted: false}),
         });
     }
@@ -134,9 +194,6 @@ export default class VoidshipModel extends BaseActorModel {
 
     prepareBaseData() {
         super.prepareBaseData();
-        this.hull.integrity.max = this.hull.integrity.base;
-        this.crew.morale.max = this.crew.morale.base;
-        this.crew.count.max = this.crew.count.base;
     }
 
     prepareDerivedData() {
@@ -158,25 +215,26 @@ export default class VoidshipModel extends BaseActorModel {
     #prepareVoidshipComponents() {
         const items = Array.from(this.parent.items ?? []);
         const shipComponents = ShipComponentClass.DATA;
-        this.components.supplemental = items.filter(item => 
-            item.system instanceof VoidshipComponentModel &&
-            ShipComponentClass.compare(shipComponents.supplemental, item.system.class)
-        );
-        this.components.weapons = items.filter(item => 
-            item.system instanceof VoidshipWeaponModel
-        );
-        const all = []
-        for (const [key, data] of Object.entries(this.components.essential)) {
-            const item = this.parent?.items?.get(data.id) ?? null;
-            this.components.essential[key].item = item;
-            if (item !== null)
-                all.push(item);
+        const isWeapon = (item) => item.system instanceof VoidshipWeaponModel;
+        const isEssential = (item) => {
+            return item.system instanceof VoidshipComponentModel &&
+                ShipComponentClass.compare(shipComponents.essential, item.system.class)
         }
-        for (const item of this.components.supplemental) 
-            all.push(item);
-        for (const item of this.components.weapons)
-            all.push(item);
-        this.components.all = Array.from(new Set(all.filter(item => item)));
+        for (const [key, item] of Object.entries(this.parent.items ?? [])) {
+            if (!isEssential(item)) continue;
+            const data = item.system;
+            const existing = this.components.essential[data.class];
+            if (existing && existing.uuid !== item.uuid) {
+                console.warn(`Multiple essential components of class ${data.class} found on ship ${this.parent.name}. This is not allowed and may cause issues.`, { existing, duplicate: item });
+                continue;
+            }
+            this.components.essential[data.class].uuid = item.uuid;
+        }
+        // Everything that's not a weapon or essential component goes here
+        this.components.supplemental = items.filter(item => 
+            !isWeapon(item) && !isEssential(item)
+        );
+        this.components.weapons = items.filter(item => isWeapon(item));
     }
 
     #computePower() {

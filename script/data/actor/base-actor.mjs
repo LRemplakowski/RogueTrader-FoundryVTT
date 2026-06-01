@@ -2,14 +2,17 @@ import { ValidateSchemaVersion } from "../../../utils/migration.mjs";
 import RogueTraderSystemModel from "../system-model.mjs";
 
 const { SchemaField, HTMLField } = foundry.data.fields;
-
+const Properties = foundry.utils;
 export default class BaseActorModel extends RogueTraderSystemModel {
+    /** @inheritdoc */
     static migrateData(source) {
         console.log(source);
-        if (source.aptitudes) delete source.aptitudes;
+        if (source.aptitudes) Properties.deleteProperty(source, `aptitudes`);
+        if (source.notesHTML) Properties.deleteProperty(source, `notesHTML`);
         return super.migrateData(source);
     }
 
+    /** @inheritdoc */
     static defineSchema() {
         const schema = {};
         schema.bio = new SchemaField({
@@ -23,7 +26,7 @@ export default class BaseActorModel extends RogueTraderSystemModel {
     /** @inheritdoc */
     static LOCALIZATION_PREFIXES = ["ROGUE_TRADER.Actor.base"];
 
-		/** @inheritdoc */
+    /** @inheritdoc */
 	prepareBaseData() {
 		super.prepareBaseData();
 	}

@@ -16,14 +16,14 @@ const {
 const Migration = foundry.abstract.Document;
 const Properties = foundry.utils;
 export default class CharacterModel extends BaseActorModel {
+    /** @inheritdoc */
     static migrateData(source) {
         if (!source) return super.migrateData(source);
-        if (ValidateSchemaVersion()) return super.migrateData(source);
+        
         if (source.characteristics) {
             for (const [key, value] of Object.entries(source.characteristics)) {
-                const charPath = `characteristics.${key}`;
-                const advancePath = `${charPath}.advance`;
-                Properties.setProperty(source, advancePath, CharacteristicAdvance.ratingStringToKey(value.advance));
+                const advancePath = `characteristics.${key}.advance`;
+                Properties.setProperty(source, advancePath, CharacteristicAdvance.ratingToKey(value.advance));
             }
         }
         if (source.skills) {
@@ -31,6 +31,8 @@ export default class CharacterModel extends BaseActorModel {
                 CharacterModel.#migrateSkill(source, key, value);
             }
         }
+        Migration._addDataFieldMigration(source, `corruption`, `corruption.value`);
+        Migration._addDataFieldMigration(source, `insanity`, `insanity.value`);
         return super.migrateData(source);
     }
 
@@ -42,12 +44,12 @@ export default class CharacterModel extends BaseActorModel {
                     if (skillKey.startsWith('adv')) {
                         // Advanced X skills can be mapped directly
                         Properties.setProperty(source, `skills.${specKey}.cost`, spec.cost);
-                        Properties.setProperty(source, `skills.${specKey}.advance`, SkillAdvance.ratingStringToKey(spec.advance));
+                        Properties.setProperty(source, `skills.${specKey}.advance`, SkillAdvance.ratingToKey(spec.advance));
                     }
                     else {
                         const newKey = `${skillKey}_${specKey}`;
                         Properties.setProperty(source, `skills.${newKey}.cost`, spec.cost);
-                        Properties.setProperty(source, `skills.${newKey}.advance`, SkillAdvance.ratingStringToKey(spec.advance));
+                        Properties.setProperty(source, `skills.${newKey}.advance`, SkillAdvance.ratingToKey(spec.advance));
                     }
                 }
                 Properties.deleteProperty(source, `skills.${skillKey}.specialities`);
@@ -62,13 +64,13 @@ export default class CharacterModel extends BaseActorModel {
                 Properties.deleteProperty(source, `skills.${skillKey}.characteristics`);
             if (skill.specialities)
                 Properties.deleteProperty(source, `skills.${skillKey}.specialities`);
-            Properties.setProperty(source, `skills.${skillKey}.advance`, SkillAdvance.ratingStringToKey(skill.advance));
+            Properties.setProperty(source, `skills.${skillKey}.advance`, SkillAdvance.ratingToKey(skill.advance));
         }
     }
 
+    /** @inheritdoc */
     static defineSchema() {
         const schema = super.defineSchema();
-
         schema.experience = new SchemaField({
             value: requiredInteger()
         });
@@ -180,6 +182,7 @@ export default class CharacterModel extends BaseActorModel {
         });
     }
 
+    /** @inheritdoc */
     prepareBaseData() {
         super.prepareBaseData();
         this.insanity.bonus = Math.floor(this.insanity.value / 10);
@@ -208,6 +211,7 @@ export default class CharacterModel extends BaseActorModel {
         this.skills = skills;
     }
 
+    /** @inheritdoc */
     prepareDerivedData() {
         super.prepareDerivedData();
         this.#prepareItemMaps();

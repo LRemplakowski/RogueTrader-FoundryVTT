@@ -16,9 +16,10 @@ export default class CharacteristicAdvance extends EnumBase {
 		return this.DATA[key]?.rating ?? this.DATA[this.DEFAULT].rating;
 	}
 
-	static ratingStringToKey(rating) {
+	static ratingToKey(rating) {
 		const keys = CharacteristicAdvance.KEYS;
-		if (CharacteristicAdvance.KEYS[rating])
+		// Check if this is already a correct key
+		if (keys[rating])
 			return rating;
 		switch (rating) {
 			case 0 :
