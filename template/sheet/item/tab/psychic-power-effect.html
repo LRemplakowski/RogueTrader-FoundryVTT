@@ -1,6 +1,15 @@
 <div class="notes-editor border">
     <h1>{{localize "TITLE.EFFECT"}}</h1>
     <div style="height: 160px; width: 100%">
-        {{editor enrichment.system.effect target="system.effect" engine="prosemirror" button=true owner=owner editable=editable}}
+        {{#if editable}}
+            <prose-mirror
+                name="system.effect"
+                value="{{system.effect}}"
+                data-document-uuid="{{item.uuid}}">
+                {{{ effectHTML }}}
+            </prose-mirror>
+        {{else}}
+            {{{ effectHTML }}}
+        {{/if}}
     </div>
 </div>

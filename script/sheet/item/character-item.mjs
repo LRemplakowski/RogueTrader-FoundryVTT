@@ -2,13 +2,14 @@ import RogueTraderItemSheet from "./item.mjs";
 import * as modifiers from "../../data/item/fields/_module.mjs";
 
 export default class CharacterItemSheet extends RogueTraderItemSheet {
-  static {
-    const options = foundry.utils.deepClone(super.DEFAULT_OPTIONS);
-    options.actions ??= {};
-		options.actions.addModifier = CharacterItemSheet.#addModifier;
-    options.actions.deleteModifier = CharacterItemSheet.#deleteModifier;
-    this.DEFAULT_OPTIONS = options;
+  static DEFAULT_OPTIONS = {
+    actions: {
+      addModifier: CharacterItemSheet.#addModifier,
+      deleteModifier: CharacterItemSheet.#deleteModifier,
+    }
+  }
 
+  static {
     const tabs = foundry.utils.deepClone(super.TABS);
     tabs.primary.tabs.push({
       id: "modifiers",

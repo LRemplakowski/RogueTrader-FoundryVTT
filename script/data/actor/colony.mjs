@@ -13,8 +13,8 @@ export default class ColonyModel extends BaseActorModel {
     static migrateData(source) {
         if (!source) return super.migrateData(source);
         
-        if (system.resources) Properties.deleteProperty(source, `resources`);
-        if (system.upgrades) Properties.deleteProperty(source, `upgrades`);
+        if (source.resources) Properties.deleteProperty(source, `resources`);
+        if (source.upgrades) Properties.deleteProperty(source, `upgrades`);
         ColonyModel.#migrateGovernorData(source);
         return super.migrateData(source);
     }
@@ -82,6 +82,7 @@ export default class ColonyModel extends BaseActorModel {
     prepareDerivedData() {
         super.prepareDerivedData();
         this.#prepareItemsLists();
+        this.#prepareGovernorReference();
         this.#computeSlots();
         this.#computeYearlyGains();   
         console.log("Colony");
@@ -102,8 +103,12 @@ export default class ColonyModel extends BaseActorModel {
         this.upgrades = upgrades;
     }
 
+    #prepareGovernorReference() {
+
+    }
+
     #computeSlots() {
-        const base = this.system.development.baseSlots;
+        const base = this.development.baseSlots;
         const fromUpgrades = this.upgrades.reduce((total, upgrade) => total + upgrade.system.bonusSlots, 0);
         const occupied = this.upgrades.reduce((total, upgrade) => total + upgrade.system.usesUpgradeSlot ? 1 : 0, 0);
         this.slotsTotal = base + fromUpgrades;
@@ -121,7 +126,7 @@ export default class ColonyModel extends BaseActorModel {
             gains.prosperity += upgrade.system.yearlyProsperity;
             gains.security += upgrade.system.yearlySecurity;
         }
-        const colonyModifier = ColonyType.DATA[this.system.colonyType].yearlyGainsModifier;
+        const colonyModifier = ColonyType.DATA[this.colonyType].yearlyGainsModifier;
         gains.loyalty += colonyModifier.loyalty;
         gains.prosperity += colonyModifier.prosperity;
         gains.security += colonyModifier.security;

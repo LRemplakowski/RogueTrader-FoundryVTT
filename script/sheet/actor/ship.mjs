@@ -95,7 +95,8 @@ export default class ShipSheet extends RogueTraderSheet {
   // DocumentSheetV2 automatically renders PARTS and handles form submission
   static PARTS = {
     sheet: {
-      template: "systems/rogue-trader/template/sheet/actor/ship.html"
+      template: "systems/rogue-trader/template/sheet/actor/ship.html",
+      scrollable: [''],
     }
   };
 

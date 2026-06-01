@@ -2,8 +2,17 @@
     <div class="notes-editor border" style="height: 674px;">
         <h1>{{localize "TITLE.NOTES"}}</h1>
         <div style="height: 100%; width: 100%">
-            {{formInput system.schema.fields.bio.fields.notes value=system.bio.notes documentUUID=document.uuid}}
-            <!-- {{editor notesHTML target="system.bio.notes" engine="prosemirror" button=true editable=true}} -->
+            {{#if editable}}
+                <prose-mirror
+                    name="system.bio.notes"
+                    value="{{system.bio.notes}}"
+                    data-document-uuid="{{actor.uuid}}"
+                    toggled>
+                    {{{ notesHTML }}}
+                </prose-mirror>
+            {{else}}
+                {{{ notesHTML }}}
+            {{/if}}
         </div>
     </div>
 </div>

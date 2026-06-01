@@ -2,6 +2,8 @@ import EquipmentModel from "./equipment.mjs";
 
 const { BooleanField } = foundry.data.fields;
 
+const Migration = foundry.abstract.Document;
+const Properties = foundry.utils;
 export default class CyberneticModel extends EquipmentModel {
     /** @inheritdoc */
     static migrateData(source) {

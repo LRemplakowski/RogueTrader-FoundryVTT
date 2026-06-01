@@ -2,7 +2,7 @@ import { Availability, Craftsmanship } from "../../enums/_module.mjs";
 import { requiredInteger } from "../../helpers.mjs";
 import CharacterItemModel from "./character-item.mjs";
 const { NumberField } = foundry.data.fields;
-import { ValidateSchemaVersion } from "../../../../utils/migration.mjs";
+
 const Migration = foundry.abstract.Document;
 const Properties = foundry.utils;
 

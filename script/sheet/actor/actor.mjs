@@ -36,7 +36,8 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
   /** @type {Record<string, HandlebarsTemplatePart>} */
   static PARTS = {
     sheet: {
-      template: "systems/rogue-trader/template/sheet/actor/actor.html"
+      template: "systems/rogue-trader/template/sheet/actor/actor.html",
+      scrollable: [''],
     }
   };
 

@@ -62,7 +62,8 @@ export default class ColonySheet extends RogueTraderSheet {
   // DocumentSheetV2 automatically renders PARTS and handles form submission
   static PARTS = {
     sheet: {
-      template: "systems/rogue-trader/template/sheet/actor/colony.html"
+      template: "systems/rogue-trader/template/sheet/actor/colony.html",
+      scrollable: [''],
     }
   };
 

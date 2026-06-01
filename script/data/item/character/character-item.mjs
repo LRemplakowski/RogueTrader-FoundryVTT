@@ -3,7 +3,7 @@ import { default as BaseItemModel } from "../base-item.mjs";
 import { PseudoCollectionField } from "../../fields/_module.mjs";
 const { SchemaField, ObjectField, EmbeddedCollectionField, ArrayField } = foundry.data.fields;
 
-import { ValidateSchemaVersion } from "../../../../utils/migration.mjs";
+
 const Migration = foundry.abstract.Document;
 const Properties = foundry.utils;
 

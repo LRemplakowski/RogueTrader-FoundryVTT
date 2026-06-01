@@ -31,8 +31,12 @@ export default class CharacterModel extends BaseActorModel {
                 CharacterModel.#migrateSkill(source, key, value);
             }
         }
-        Migration._addDataFieldMigration(source, `corruption`, `corruption.value`);
-        Migration._addDataFieldMigration(source, `insanity`, `insanity.value`);
+        if (source.corruption && typeof source.corruption === "number" || typeof source.corruption === "string") {
+            Properties.setProperty(source, `corruption`, { value: source.corruption });
+        }
+        if (source.insanity && typeof source.insanity === "number" || typeof source.insanity === "string") {
+            Properties.setProperty(source, `insanity`, { value: source.insanity });
+        }
         return super.migrateData(source);
     }
 

@@ -33,26 +33,6 @@ export class RogueTraderActor extends BaseDocumentMixin(foundry.documents.Actor)
     this.updateSource(initData);
   }
 
-  _computeItems() {
-    let encumbrance = 0;
-    for (let item of this.items) {
-
-      if (item.weight) {
-        encumbrance = encumbrance + item.weight;
-      }
-    }
-    this._computeEncumbrance(encumbrance);
-  }
-
-  _findCharacteristic(short) {
-    for (let characteristic of Object.values(this.characteristics)) {
-      if (characteristic.short === short) {
-        return characteristic;
-      }
-    }
-    return { total: 0 };
-  }
-
   /**
    * Apply wounds to the actor, takes into account the armour value
    * and the area of the hit.
@@ -242,7 +222,7 @@ export class RogueTraderActor extends BaseDocumentMixin(foundry.documents.Actor)
   get colonyProfitFactor() { return this.system.stats.profitFactor || 0; }
 
   get governor() {
-    return game.actors.get(this.system.governor.actor);
+    return this.system.governor.actor;
   }
 
   get governorTypeBonus() {

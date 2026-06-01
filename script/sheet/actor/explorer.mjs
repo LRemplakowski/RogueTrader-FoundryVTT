@@ -22,7 +22,8 @@ export default class ExplorerSheet extends CharacterSheet {
   // DocumentSheetV2 automatically renders PARTS and handles form submission
   static PARTS = {
     sheet: {
-      template: "systems/rogue-trader/template/sheet/actor/explorer.html"
+      template: "systems/rogue-trader/template/sheet/actor/explorer.html",
+      scrollable: [''],
     }
   };
 

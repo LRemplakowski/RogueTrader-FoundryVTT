@@ -11,7 +11,6 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 	// v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property instead of defaultOptions getter
 	// Subclasses will override this with their specific template and configuration
 	static DEFAULT_OPTIONS = {
-		...super.DEFAULT_OPTIONS,
 		id: "rogue-trader-item-sheet",
 		classes: ["rogue-trader", "sheet", "item"],
 		tag: "form",

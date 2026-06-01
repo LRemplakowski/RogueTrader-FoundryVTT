@@ -20,7 +20,8 @@ export default class NpcSheet extends CharacterSheet {
   // DocumentSheetV2 automatically handles form submission with name="system.*" fields
   static PARTS = {
     sheet: {
-      template: "systems/rogue-trader/template/sheet/actor/npc.html"
+      template: "systems/rogue-trader/template/sheet/actor/npc.html",
+      scrollable: [''],
     }
   };
 

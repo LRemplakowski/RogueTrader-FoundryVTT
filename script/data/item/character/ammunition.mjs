@@ -11,11 +11,10 @@ export default class AmmunitionModel extends EquipmentModel {
     /** @inheritdoc */
     static migrateData(source) {
         if (!source) return super.migrateData(source);
-        
         Migration._addDataFieldMigration(source, `effect.damage`, `damage`);
         Migration._addDataFieldMigration(source, `effect.special`, `special`);
         Migration._addDataFieldMigration(source, `effect.penetration`, `penetration`);
-        Migration._addDataFieldMigration(source, `effect.attack`, `attack`);
+        Migration._addDataFieldMigration(source, `effect.attack.modifier`, `attack`);
         Properties.deleteProperty(source, `effect`);
         return super.migrateData(source);
     }
