@@ -730,7 +730,6 @@ async function _sendResourceBurnToChat(rollData) {
   let speaker = ChatMessage.getSpeaker();
   let chatData = {
     user: game.user.id,
-    type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     rollMode: game.settings.get("core", "rollMode"),
     speaker: speaker,
     flags: {
@@ -768,7 +767,6 @@ async function _sendNoEventToChat() {
   let speaker = ChatMessage.getSpeaker();
   let chatData = {
     user: game.user.id,
-    type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     rollMode: game.settings.get("core", "rollMode"),
     speaker: speaker
   };
@@ -785,9 +783,9 @@ async function _sendNoEventToChat() {
 
 async function _sendGrowthToChat(rollData) {
   let speaker = ChatMessage.getSpeaker();
+  console.log(CONST);
   let chatData = {
     user: game.user.id,
-    type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     rollMode: game.settings.get("core", "rollMode"),
     speaker: speaker,
     flags: {

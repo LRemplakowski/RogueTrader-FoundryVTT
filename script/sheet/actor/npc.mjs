@@ -21,6 +21,7 @@ export default class NpcSheet extends CharacterSheet {
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/npc.html",
+      classes: ['character-content', 'actor-sheet'],
       scrollable: [''],
     }
   };

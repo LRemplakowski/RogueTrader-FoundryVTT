@@ -86,25 +86,25 @@
         <h1 class="space5">Operations</h1>
         <div class="colony-rolls">
             <div class="flex row header roll-button">
-                <a class="button roll-growth" type="roll" data-roll="colonyGrowth" title="Roll Yearly Growth">
+                <a class="button roll-growth" type="roll" data-action="rollGrowth" title="Roll Yearly Growth">
                     <i class="fas fa-dice"></i>
                     <span>{{localize "COLONY.ROLL.COLONY_GROWTH"}}</span>
                 </a>
             </div>
             <div class="flex row roll-button">
-                <a class="button roll-events" type="roll" title="Roll Colony Events">
+                <a class="button roll-events" type="roll" data-action="rollEvents" title="Roll Colony Events">
                     <i class="fas fa-dice"></i>
                     <span>{{localize "COLONY.ROLL.COLONY_EVENTS"}}</span>
                 </a>
             </div>
             <div class="flex row roll-button">
-                <a class="button roll-resources" type="roll" title="Roll Consume Resources">
+                <a class="button roll-resources" type="roll" data-action="rollResources" title="Roll Consume Resources">
                     <i class="fas fa-dice"></i>
                     <span>{{localize "COLONY.ROLL.CONSUME_RESOURCES"}}</span>
                 </a>
             </div>
             <div class="flex row roll-button">
-                <a class="button roll-governor" type="roll" title="Roll Governor Skill">
+                <a class="button roll-governor" type="roll" data-action="rollGovernor" title="Roll Governor Skill">
                     <i class="fas fa-dice"></i>
                     <span>{{localize "COLONY.ROLL.GOVERNOR_SKILL"}}</span>
                 </a>
@@ -157,7 +157,7 @@
                     <h2>Growth</h2>
                     <div class="flex row justify-space-around space5">
                         <label>Required Growth</label>
-                        <div class="flex min-content">
+                        <div class="flex">
                             <input class="total" name="required-growth" type="number" value="{{system.stats.requiredGrowth}}" data-dtype="Number" disabled />
                         </div>
                     </div>

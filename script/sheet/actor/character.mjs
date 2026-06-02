@@ -5,10 +5,12 @@ import { CharacterRollData } from "../../common/roll-data/_module.mjs";
 import { default as RogueTraderUtil } from "../../common/util.js"
 export default class CharacterSheet extends RogueTraderSheet {
 
-    static get DEFAULT_OPTIONS() {
-        const options = super.DEFAULT_OPTIONS;
-        options.actions = {
-            ...options.actions,
+    static DEFAULT_OPTIONS = {
+        position: {
+            width: 720,
+            height: 916
+        },
+        actions: {
             rollCharacteristic: CharacterSheet.#rollCharacteristic,
             rollSkill: CharacterSheet.#rollSkill,
             rollInsanity: CharacterSheet.#rollInsanity,
@@ -17,7 +19,6 @@ export default class CharacterSheet extends RogueTraderSheet {
             rollForceField: CharacterSheet.#rollForceField,
             rollPsychicPower: CharacterSheet.#rollPsychicPower
         }
-        return options;
     }
 
     static PARTS = {
@@ -25,29 +26,8 @@ export default class CharacterSheet extends RogueTraderSheet {
         tabs: {
             // Foundry-provided generic template
             template: 'templates/generic/tab-navigation.hbs',
-            // classes: ['sysclass'], // Optionally add extra classes to the part for extra customization
+            // classes: ['sysclass'] // Optionally add extra classes to the part for extra customization
         },
-        stats: {
-            template: "systems/rogue-trader/template/sheet/actor/tab/stats.html"
-        },
-        combat: {
-            template: "systems/rogue-trader/template/sheet/actor/tab/combat.html"
-        },
-        abilities: {
-            template: "systems/rogue-trader/template/sheet/actor/tab/abilities.html"
-        },
-        psychicPowers: {
-            template: "systems/rogue-trader/template/sheet/actor/tab/psychic-powers.html"
-        },
-        gear: {
-            template: "systems/rogue-trader/template/sheet/actor/tab/gear.html"
-        },
-        progression: {
-            template: "systems/rogue-trader/template/sheet/actor/tab/progression.html"
-        },
-        notes: {
-            template: "systems/rogue-trader/template/sheet/actor/tab/notes.html"
-        }
     }
 
     static TABS = {
@@ -100,7 +80,7 @@ export default class CharacterSheet extends RogueTraderSheet {
                     group: "primary",
                     label: "TAB.NOTES",
                     icon: "fa-solid fa-note-sticky",
-                    cssClass: "tab-notes"
+                    cssClass: "flex tab-notes"
                 }
             ],
             initial: "stats"

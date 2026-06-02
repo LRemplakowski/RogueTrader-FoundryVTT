@@ -96,6 +96,7 @@ export default class ShipSheet extends RogueTraderSheet {
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/ship.html",
+      classes: ['voidship-content', 'actor-sheet'],
       scrollable: [''],
     }
   };
@@ -232,15 +233,6 @@ export default class ShipSheet extends RogueTraderSheet {
     );
     context.system.complicationsHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       context.system.complications,
-      {
-        secrets: context.document.isOwner,
-        rollData: context.rollData,
-        async: true,
-        relativeTo: context.document,
-      }
-    );
-    context.system.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-      context.system.notes,
       {
         secrets: context.document.isOwner,
         rollData: context.rollData,

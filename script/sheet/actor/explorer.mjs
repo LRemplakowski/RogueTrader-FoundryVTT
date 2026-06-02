@@ -23,6 +23,7 @@ export default class ExplorerSheet extends CharacterSheet {
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/explorer.html",
+      classes: ['character-content', 'actor-sheet'],
       scrollable: [''],
     }
   };

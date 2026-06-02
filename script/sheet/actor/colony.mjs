@@ -4,13 +4,12 @@ import RogueTraderUtil from "../../common/util.js";
 import RogueTraderSheet from "./actor.mjs";
 
 export default class ColonySheet extends RogueTraderSheet {
-  // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
     ...super.DEFAULT_OPTIONS,
     id: "colony-sheet",
     classes: ["rogue-trader", "sheet", "actor", "colony"],
     position: {
-      width: 750,
+      width: 760,
       height: 920
     },
     actions: {
@@ -44,14 +43,14 @@ export default class ColonySheet extends RogueTraderSheet {
           group: "primary",
           label: "TAB.UPGRADES",
           icon: "fa-solid fa-arrow-up",
-          cssClass: "tab-upgrades"
+          cssClass: "flex tab-upgrades"
         },
         {
           id: "colony-notes",
           group: "primary",
           label: "TAB.NOTES",
           icon: "fa-solid fa-note-sticky",
-          cssClass: "tab-notes"
+          cssClass: "flex tab-notes"
         }
       ],
       initial: "colony-core"
@@ -63,8 +62,9 @@ export default class ColonySheet extends RogueTraderSheet {
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/colony.html",
+      classes: ['colony-content', 'actor-sheet'],
       scrollable: [''],
-    }
+    },
   };
 
   /**
