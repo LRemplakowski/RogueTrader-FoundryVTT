@@ -3,7 +3,7 @@ import { EnumBase } from "./enum-base.mjs";
 export default class ColonyType extends EnumBase {
   static DEFAULT = "research";
 
-  static DATA = {
+  static DATA = Object.freeze({
     research: { 
       label: "COLONY.TYPE.RESEARCH",
       yearlyGainsModifier: {
@@ -52,5 +52,5 @@ export default class ColonyType extends EnumBase {
         loyalty: 0,
       }
     }
-  };
+  });
 }

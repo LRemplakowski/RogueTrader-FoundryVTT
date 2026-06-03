@@ -18,7 +18,7 @@ function preloadHandlebarsTemplates() {
     "systems/rogue-trader/template/sheet/actor/explorer.html",
     "systems/rogue-trader/template/sheet/actor/npc.html",
     "systems/rogue-trader/template/sheet/actor/limited-sheet.html",
-    "systems/rogue-trader/template/sheet/actor/ship.html",
+    "systems/rogue-trader/template/sheet/actor/voidship.html",
     "systems/rogue-trader/template/sheet/actor/colony.html",
 
     "systems/rogue-trader/template/sheet/actor/tab/abilities.html",
@@ -57,8 +57,6 @@ function preloadHandlebarsTemplates() {
     "systems/rogue-trader/template/dialog/add-characteristic-modifier.html",
     "systems/rogue-trader/template/dialog/add-skill-modifier.html",
     "systems/rogue-trader/template/dialog/psychic-power-roll.html",
-    "systems/rogue-trader/template/sheet/item/shipWeapon.html",
-    "systems/rogue-trader/template/sheet/item/shipComponent.html",
 
     // ITEM PARTS
     "systems/rogue-trader/template/sheet/item/item.html",
@@ -78,6 +76,8 @@ function preloadHandlebarsTemplates() {
     "systems/rogue-trader/template/sheet/item/tab/trait-data.html",
     "systems/rogue-trader/template/sheet/item/tab/weapon-data.html",
     "systems/rogue-trader/template/sheet/item/tab/weapon-modification-data.html",
+    "systems/rogue-trader/template/sheet/item/tab/ship-weapon-data.html",
+    "systems/rogue-trader/template/sheet/item/tab/ship-component-data.html",
   ];
   // v13: Use global loadTemplates() function instead of foundry.utils.loadTemplates
   return foundry.applications.handlebars.loadTemplates(templatePaths);

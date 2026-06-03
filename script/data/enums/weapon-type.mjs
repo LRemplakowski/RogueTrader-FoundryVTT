@@ -3,7 +3,7 @@ import { EnumBase } from "./enum-base.mjs";
 export default class WeaponType extends EnumBase {
   static DEFAULT = "las";
 
-  static DATA = {
+  static DATA = Object.freeze({
     las: { label: "WEAPON.LAS" },
     solidprojectile: { label: "WEAPON.SOLIDPROJECTILE" },
     bolt: { label: "WEAPON.BOLT" },
@@ -18,5 +18,5 @@ export default class WeaponType extends EnumBase {
     power: { label: "WEAPON.POWER" },
     shock: { label: "WEAPON.SHOCK" },
     force: { label: "WEAPON.FORCE" }
-  };
+  });
 }

@@ -101,7 +101,7 @@
     "Actor": {
       "explorer": {},
       "npc": {},
-      "voidship": {},
+      "ship": {},
       "colony": {}
     },
     "Item": {

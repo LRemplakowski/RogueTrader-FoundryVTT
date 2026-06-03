@@ -1,4 +1,4 @@
-import RogueTraderUtil from "../common/util.js";
+import RogueTraderUtil from "../common/util.mjs";
 import BaseDocumentMixin from "./base-document-mixin.mjs";
 
 export class RogueTraderItem extends BaseDocumentMixin(foundry.documents.Item) {
@@ -15,7 +15,8 @@ export class RogueTraderItem extends BaseDocumentMixin(foundry.documents.Item) {
   };
 
   async sendToChat() {
-    const item = new CONFIG.Item.documentClass(this.data._source);
+    const item = this;
+    console.log(this);
     const html = await renderTemplate("systems/rogue-trader/template/chat/item.html", {item, data: item.system});
     const chatData = {
       user: game.user.id,

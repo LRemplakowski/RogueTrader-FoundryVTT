@@ -116,7 +116,7 @@ async function _rollShipDamage(rollData) {
     formula = _replaceSymbols(formula, rollData);
   }
   let penetration = 0;
-  if (rollData.attackType.name === "Lance") {
+  if (rollData.ignoreArmor) {
     penetration = game.i18n.localize("CHAT.PENETRATION_IGNORE_ARMOR");
   }
   rollData.salvoTotal = 0;

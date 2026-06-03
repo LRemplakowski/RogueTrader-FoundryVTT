@@ -4,7 +4,7 @@ import { EnumBase } from "./enum-base.mjs";
 export default class WeaponClass extends EnumBase {
   static DEFAULT = "melee";
 
-  static DATA = {
+  static DATA = Object.freeze({
     melee: { 
       label: "WEAPON.MELEE",
       characteristic: Characteristics.KEYS.weaponSkill,
@@ -37,5 +37,5 @@ export default class WeaponClass extends EnumBase {
       label: "WEAPON.VEHICLE",
       characteristic: Characteristics.KEYS.ballisticSkill, 
     }
-  };
+  });
 }

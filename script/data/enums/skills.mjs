@@ -5,7 +5,7 @@ const Characteristic = Characteristics.DATA;
 export default class Skills extends EnumBase {
     static DEFAULT = "awareness";
     
-    static DATA = {
+    static DATA = Object.freeze({
         ...this.#basicSkills(),
         ...this.#advancedAg(),
         ...this.#advancedInt(),
@@ -23,7 +23,7 @@ export default class Skills extends EnumBase {
         ...this.#secretTongue(),
         ...this.#speakLanguage(),
         ...this.#trade(),
-    };
+    });
 
         /** UI: localized labels + metadata */
     static options(useFullLabel = false) {

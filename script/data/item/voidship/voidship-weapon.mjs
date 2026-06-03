@@ -5,7 +5,16 @@ import VoidshipItemModel from "./voidship-item.mjs";
 
 const { StringField } = foundry.data.fields;
 
+const Migration = foundry.abstract.Document;
+const Properties = foundry.utils;
 export default class VoidshipWeaponModel extends VoidshipItemModel {
+    static migrateData(source) {
+        if (!source) return super.migrateData(source);
+        if (source.side === "star")
+            Properties.setProperty(source, "side", ShipFacing.STARBOARD);
+        return super.migrateData(source);
+    }
+    
     /** @inheritdoc */
     static get metadata() {
         return {
@@ -24,5 +33,12 @@ export default class VoidshipWeaponModel extends VoidshipItemModel {
         schema.side = ShipFacing.schema();
         schema.rof = requiredInteger({ initial: 1, min: 1 })
         return schema;
+    }
+
+    prepareBaseData() {
+        super.prepareBaseData();
+        const weaponClassData = ShipWeaponClass.DATA[this.class];
+        this.ignoreArmour = weaponClassData.ignoreArmour;
+        this.ignoreShields = false;
     }
 }

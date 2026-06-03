@@ -1,5 +1,4 @@
-import RogueTraderUtil from "../../common/util.js";
-import * as enums from "../../data/enums/_module.mjs";
+import RogueTraderUtil from "../../common/util.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -206,36 +205,6 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     }
   }
 
-  _preapareDropdownOptions() {
-    const result = {
-      craftsmanshipOptions: enums.Craftsmanship.options(),
-      availabilityOptions: enums.Availability.options(),
-      damageTypeOptions: enums.DamageType.options(),
-      shipWeaponClassOptions: enums.ShipWeaponClass.options(),
-      shipFacingOptions: enums.ShipFacing.options(),
-      shipComponentClassOptions: enums.ShipComponentClass.options(),
-      armourTypeOptions: enums.ArmourType.options(),
-      criticalInjuryPartOptions: enums.HitLocations.options(),
-      crewSkillOptions: enums.CrewSkill.options(),
-      characteristicOptions: enums.Characteristics.options(),
-      characteristicAdvanceOptions: enums.CharacteristicAdvance.options(),
-      npcTypeOptions: enums.NPCType.options(),
-      skillAdvanceOptions: enums.SkillAdvance.options(),
-      psyClassOptions: enums.PsyClass.options(),
-      psyStrengthOptions: enums.PsyStrength.options(),
-      psyZoneOptions: enums.PsyZone.options(),
-      initiativeOptions: enums.Characteristics.options(),
-      governorTypeOptions: enums.GovernorType.options(),
-      colonyTypeOptions: enums.ColonyType.options(),
-      hullClassOptions: enums.HullClass.options(),
-      hullClassOptions: enums.HullClass.options(),
-      skillsOptions: enums.Skills.options(),
-      weaponClassOptions: enums.WeaponClass.options(),
-      weaponTypeOptions: enums.WeaponType.options()
-    };
-    return result;
-  }
-
   /**
    * Persist the currently active tab across renders.
    */
@@ -280,7 +249,7 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
         relativeTo: context.document,
       }
     );
-    const optionsData = this._preapareDropdownOptions();
+    const optionsData = RogueTraderUtil.preapareDropdownOptions();
 
     // Merge options with any existing options and attach to context
     context.options = {
@@ -338,15 +307,6 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
         itemsByClass[componentClass] = items.shipComponents.find(cp => cp.system.class === componentClass);
       }
       items.supplemental = items.shipComponents.filter(cp => cp.system.class === "supplemental");    
-      // Access the items using the respective keys
-      items.voidEngine = itemsByClass["voidEngine"];
-      items.warpEngine = itemsByClass["warpEngine"];
-      items.gellarField = itemsByClass["gellarField"];
-      items.voidShield = itemsByClass["voidShield"];
-      items.bridge = itemsByClass["bridge"];
-      items.lifeSupport = itemsByClass["lifeSupport"];
-      items.crewQuarters = itemsByClass["crewQuarters"];
-      items.augurArrays = itemsByClass["augurArrays"];
       this._sortItemLists(items)
       return items;
   }

@@ -2,7 +2,7 @@ import RogueTraderSheet from "./actor.mjs";
 import { prepareCommonRoll, prepareCombatRoll, preparePsychicPowerRoll, prepareForceFieldRoll } from "../../common/dialog.js";
 import { Skills, SkillAdvance, Characteristics, CharacteristicAdvance } from "../../data/enums/_module.mjs";
 import { CharacterRollData } from "../../common/roll-data/_module.mjs";
-import { default as RogueTraderUtil } from "../../common/util.js"
+import RogueTraderUtil from "../../common/util.mjs"
 export default class CharacterSheet extends RogueTraderSheet {
 
     static DEFAULT_OPTIONS = {

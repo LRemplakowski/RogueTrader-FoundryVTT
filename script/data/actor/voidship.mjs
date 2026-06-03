@@ -13,7 +13,6 @@ const Properties = foundry.utils;
 export default class VoidshipModel extends BaseActorModel {
     static migrateData(source) {
         if (!source) return super.migrateData(source);
-        
         if (source.initiative) {
             Properties.deleteProperty(source, `initiative`);
         }
@@ -39,15 +38,16 @@ export default class VoidshipModel extends BaseActorModel {
     }
 
     static #migrateHullData(source) {
-        Migration._addDataFieldMigration(source, `hullClass`, `hull.class`, toCamelCase)
+        Migration._addDataFieldMigration(source, `hullClass`, `hull.class`, (data) => toCamelCase(data.hullClass));
         Migration._addDataFieldMigration(source, `hullName`, `hull.name`);
+        Migration._addDataFieldMigration(source, `hullIntegrity`, `hull.integrity`);
     }
 
     static #migrateEngineeringData(source) {
         const newPath = (key) => `engineering.${key}`;
         Migration._addDataFieldMigration(source, `speed`, newPath(`speed`));
         // Fixed naming typo here
-        Migration._addDataFieldMigration(source, `manoeuvrability`, `engineering.maneuverability`);
+        Migration._addDataFieldMigration(source, `manoeuvrability`, newPath(`maneuverability`));
         Migration._addDataFieldMigration(source, `detection`, newPath(`detection`));
         Migration._addDataFieldMigration(source, `turretRating`, newPath(`turretRating`));
         Migration._addDataFieldMigration(source, `shields`, newPath(`shields`));
@@ -61,7 +61,7 @@ export default class VoidshipModel extends BaseActorModel {
     static #migrateBioData(source) {
         Migration._addDataFieldMigration(source, `complications`, `bio.complications`);
         Migration._addDataFieldMigration(source, `pastHistory`, `bio.pastHistory`);
-        if (soruce.complicationsHTML)
+        if (source.complicationsHTML)
             Properties.deleteProperty(source, `pastHistoryHTML`);
         if (source.pastHistoryHTML)
             Properties.deleteProperty(source, `complicationsHTML`);
@@ -71,7 +71,7 @@ export default class VoidshipModel extends BaseActorModel {
     static get metadata() {
         return {
             ...super.metadata,
-            type: "voidship",
+            type: "ship",
         };
     }
 
@@ -186,7 +186,7 @@ export default class VoidshipModel extends BaseActorModel {
 
     static #shipFacings() {
         const facings = {};
-        for (const key in Object.keys(ShipFacing.DATA)) {
+        for (const key of Object.keys(ShipFacing.DATA)) {
             facings[key] = requiredInteger();
         }
         return facings;
@@ -198,6 +198,7 @@ export default class VoidshipModel extends BaseActorModel {
 
     prepareDerivedData() {
         super.prepareDerivedData();
+        this.#prepareVoidshipCrew();
         this.#prepareVoidshipComponents();
         this.#computePower();
         this.#computeSpace();
@@ -208,7 +209,11 @@ export default class VoidshipModel extends BaseActorModel {
     #prepareVoidshipCrew() {
         for (const [key, data] of Object.entries(this.crew.namedCrew)) {
             const actor = game.actors.get(data.id) ?? null;
-            this.crew.namedCrew[key].actor = actor;
+            const crewMemberData = this.crew.namedCrew[key];
+            crewMemberData.actor = actor;
+            crewMemberData.name = actor?.name ?? "Not Assigned";
+            crewMemberData.img = actor?.img ?? "icons/svg/mystery-man.svg";
+            crewMemberData.characteristics = actor?.system?.characteristics ?? {};
         }
     }
 
@@ -238,26 +243,28 @@ export default class VoidshipModel extends BaseActorModel {
     }
 
     #computePower() {
-        const items = this.components.all;
+        const items = this.parent.items ?? [];
         const voidEngine = this.components.essential.voidEngine.item;
         this.power ??= {};
         this.power.max = voidEngine?.system?.power ?? 0;
-        this.power.value = items.filter(item => item !== voidEngine)
+        this.power.value = items.filter(item => item !== voidEngine && item.system instanceof VoidshipItemModel)
                                 .reduce((total, item) => total + item.system.power, 0);
         this.power.avail = this.power.max - this.power.value;
     }
 
     #computeSpace() {
-        const shipItems = this.components.all;
-        const spaceTaken = shipItems.reduce((total, item) => total + item.system.space, 0);
+        const items = this.parent.items ?? [];
+        const spaceTaken = items.filter(item => item.system instanceof VoidshipItemModel)
+                                .reduce((total, item) => total + item.system.space, 0);
         this.space ??= {};
         this.space.value = spaceTaken;
         this.space.avail = this.space.max - spaceTaken;
     }
 
     #computePoints() {
-        const shipItems = this.components.all;
-        const componentsValue = shipItems.reduce((total, item) => total + item.system.shipPoints, 0);
+        const items = this.parent.items ?? [];
+        const componentsValue = items.filter(item => item.system instanceof VoidshipItemModel)
+                                     .reduce((total, item) => total + item.system.shipPoints, 0);
         this.points ??= {};
         this.points.components = componentsValue;
         this.points.total = componentsValue + this.points.base;
@@ -268,5 +275,17 @@ export default class VoidshipModel extends BaseActorModel {
             base: "1d10",
             bonus: this.detection / 10,
         };
+    }
+
+    #prepareCrewData() {
+        const namedCrew = this.crew.namedCrew;
+        for (const [key, crewData] of Object.entries(namedCrew)) {
+            const actor = game.actors.get(crewData.id) ?? null;
+            namedCrew[key].actor = actor;
+            if (actor) {
+                namedCrew[key].name = actor.name;
+                namedCrew[key].img = actor.img;
+            }
+        }
     }
 }

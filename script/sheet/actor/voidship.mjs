@@ -1,26 +1,25 @@
 import {prepareCommonRoll, prepareShipCombatRoll, preparePsychicPowerRoll} from "../../common/dialog.js";
-import RogueTraderUtil from "../../common/util.js";
+import RogueTraderUtil from "../../common/util.mjs";
 import RogueTraderSheet from "./actor.mjs";
 
-export default class ShipSheet extends RogueTraderSheet {
+export default class VoidshipSheet extends RogueTraderSheet {
   side = "";
 
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
-    ...super.DEFAULT_OPTIONS,
     id: "ship-sheet",
-    classes: ["rogue-trader", "sheet", "actor", "ship"],
+    classes: ["rogue-trader", "sheet", "actor", "voidship"],
     position: {
       width: 775,
       height: 835
     },
     actions: {
-      rollShipWeapon: ShipSheet.#rollShipWeapon
+      rollShipWeapon: VoidshipSheet.#rollShipWeapon
     }
   };
 
   static METADATA = {
-    types: ["voidship"],
+    types: ["ship"],
     makeDefault: true,
   }
 
@@ -35,56 +34,56 @@ export default class ShipSheet extends RogueTraderSheet {
           group: "primary",
           label: "TAB.DATA",
           icon: "fa-solid fa-database",
-          cssClass: "tab-data"
+          cssClass: "flex tab-data"
         },
         {
           id: "ship-combat",
           group: "primary",
           label: "TAB.COMBAT",
           icon: "fa-solid fa-shield",
-          cssClass: "tab-combat"
+          cssClass: "flex tab-combat"
         },
         {
           id: "ship-crew",
           group: "primary",
           label: "TAB.CREW",
           icon: "fa-solid fa-people-group",
-          cssClass: "tab-crew"
+          cssClass: "flex tab-crew"
         },
         {
           id: "ship-essential",
           group: "primary",
           label: "TAB.ESSENTIAL_COMPONENTS",
           icon: "fa-solid fa-cogs",
-          cssClass: "tab-essential"
+          cssClass: "flex tab-essential"
         },
         {
           id: "ship-supplemental",
           group: "primary",
           label: "TAB.SUPPLEMENTAL_COMPONENTS",
           icon: "fa-solid fa-wrench",
-          cssClass: "tab-supplemental"
+          cssClass: "flex tab-supplemental"
         },
         {
           id: "ship-weapons",
           group: "primary",
           label: "TAB.WEAPONS",
           icon: "fa-solid fa-gun",
-          cssClass: "tab-weapons"
+          cssClass: "flex tab-weapons"
         },
         {
           id: "ship-complications",
           group: "primary",
           label: "TAB.COMPLICATIONS",
           icon: "fa-solid fa-exclamation-triangle",
-          cssClass: "tab-complications"
+          cssClass: "flex tab-complications"
         },
         {
           id: "ship-notes",
           group: "primary",
           label: "TAB.NOTES",
           icon: "fa-solid fa-note-sticky",
-          cssClass: "tab-notes"
+          cssClass: "flex tab-notes"
         }
       ],
       initial: "ship-data"
@@ -95,7 +94,7 @@ export default class ShipSheet extends RogueTraderSheet {
   // DocumentSheetV2 automatically renders PARTS and handles form submission
   static PARTS = {
     sheet: {
-      template: "systems/rogue-trader/template/sheet/actor/ship.html",
+      template: "systems/rogue-trader/template/sheet/actor/voidship.html",
       classes: ['voidship-content', 'actor-sheet'],
       scrollable: [''],
     }
@@ -103,14 +102,18 @@ export default class ShipSheet extends RogueTraderSheet {
 
   /**
    * Handle ship weapon roll.
-   * @this {ShipSheet}
+   * @this {VoidshipSheet}
    * @param {PointerEvent} event
    * @param {HTMLElement} target
    */
   static async #rollShipWeapon(event, target) {
     event.preventDefault();
-    const div = target.closest(".item");
-    const weapon = this.document.items.get(div.dataset.itemId);
+    const uuid = target.dataset.itemUuid;
+    if (!foundry.utils.parseUuid(uuid)) {
+      ui.notifications.error(`Error when generating roll! Invalid item UUID: ${uuid}`);
+      return;
+    }
+    const weapon = await fromUuid(uuid);
     await prepareShipCombatRoll(
       RogueTraderUtil.createShipWeaponRollData(this.document, weapon), 
       this.document

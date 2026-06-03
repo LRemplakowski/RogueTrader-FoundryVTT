@@ -1,6 +1,37 @@
 import * as enums from "../data/enums/_module.mjs";
 
 export default class RogueTraderUtil {
+  static preapareDropdownOptions() {
+    // TODO: Convert this to iterator over enums
+    const result = {
+      craftsmanshipOptions: enums.Craftsmanship.options(),
+      availabilityOptions: enums.Availability.options(),
+      damageTypeOptions: enums.DamageType.options(),
+      shipWeaponClassOptions: enums.ShipWeaponClass.options(),
+      shipFacingOptions: enums.ShipFacing.options(),
+      shipComponentClassOptions: enums.ShipComponentClass.options(),
+      armourTypeOptions: enums.ArmourType.options(),
+      criticalInjuryPartOptions: enums.HitLocations.options(),
+      crewSkillOptions: enums.CrewSkill.options(),
+      characteristicOptions: enums.Characteristics.options(),
+      characteristicAdvanceOptions: enums.CharacteristicAdvance.options(),
+      npcTypeOptions: enums.NPCType.options(),
+      skillAdvanceOptions: enums.SkillAdvance.options(),
+      psyClassOptions: enums.PsyClass.options(),
+      psyStrengthOptions: enums.PsyStrength.options(),
+      psyZoneOptions: enums.PsyZone.options(),
+      initiativeOptions: enums.Characteristics.options(),
+      governorTypeOptions: enums.GovernorType.options(),
+      colonyTypeOptions: enums.ColonyType.options(),
+      hullClassOptions: enums.HullClass.options(),
+      hullClassOptions: enums.HullClass.options(),
+      skillsOptions: enums.Skills.options(),
+      weaponClassOptions: enums.WeaponClass.options(),
+      weaponTypeOptions: enums.WeaponType.options()
+    };
+    return result;
+  }
+
 
   static prepareColonyRollData(actor) {
     const rollData = {
@@ -82,21 +113,24 @@ export default class RogueTraderUtil {
 
   static createShipWeaponRollData(actor, weapon) {
     let rollData = this.createCommonShipRollData(actor, weapon)
-    if (actor.masterOrdnance)
-      rollData.baseTarget = actor.masterOrdnance.characteristics.ballisticSkill;
+    const actorData = actor.system;
+    const weaponData = weapon.system;
+    const masterOrdnance = actorData.crew.namedCrew.masterOrdnance;
+    if (masterOrdnance.actor)
+      rollData.baseTarget = masterOrdnance.characteristics[enums.Characteristics.KEYS.ballisticSkill].value;
     else
-      rollData.baseTarget = actor.crewSkillValue;
+      rollData.baseTarget = enums.CrewSkill.DATA[actorData.crew.skill].rating ?? 0;
     rollData.characteristicSource = actor;
     rollData.modifier = 0;
     rollData.damageBonus = 0;
-    rollData.damageFormula = weapon.damage;
-    rollData.weaponType = weapon.ShipWeaponClass;
-    rollData.weaponStrength = weapon.strength;
-    rollData.critRating = weapon.critRating;
-    rollData.side = weapon.side;
-    rollData.ignoreArmor = weapon.ignoreArmor;
-    rollData.ignoreShields = weapon.ignoreShields;
-    rollData.dosPerHit = weapon.dosPerHit;
+    rollData.damageFormula = weaponData.damage;
+    rollData.weaponType = weaponData.class;
+    rollData.weaponStrength = weaponData.strength;
+    rollData.critRating = weaponData.critRating;
+    rollData.side = weaponData.side;
+    rollData.ignoreArmor = weaponData.ignoreArmour;
+    rollData.ignoreShields = weaponData.ignoreShields;
+    rollData.dosPerHit = weaponData.rof;
     return rollData;
   }
   

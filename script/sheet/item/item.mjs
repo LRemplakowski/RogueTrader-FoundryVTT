@@ -1,5 +1,5 @@
 import {showAddCharacteristicModifierDialog, showAddSkillModifierDialog} from "../../common/dialog.js";
-import * as enums from "../../data/enums/_module.mjs";
+import RogueTraderUtil from "../../common/util.mjs";
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ItemSheetV2 } = foundry.applications.sheets;
 
@@ -19,8 +19,17 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 			closeOnSubmit: false,
 			submitOnChange: true
 		},
+		actions: {
+			postItem: RogueTraderItemSheet.#postToChat,
+		},
 		window: {
-			resizable: true
+			resizable: true,
+			controls: [{
+				icon: "fas fa-comment",
+				label: "BUTTON.POST_ITEM",
+				action: "postItem",
+				visible: true,
+			}]
 		},
 		position: {
 			width: 540,
@@ -39,7 +48,9 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 		...super.PARTS,
 		sheet: {
 			label: "TITLE.NAME",
-			template: "systems/rogue-trader/template/sheet/item/item.html"
+			template: "systems/rogue-trader/template/sheet/item/item.html",
+			classes: ["item-content", "item-sheet"],
+			scrollable: [''],
 		},
 	};
 
@@ -51,7 +62,7 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 					group: "primary",
 					label: "TAB.NOTES",
 					icon: "fa-solid fa-shield",
-					cssClass: "tab-combat"
+					cssClass: "flex tab-notes"
 				},
 			],
 			initial: "notes"
@@ -70,6 +81,16 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 		event.preventDefault();
 		await this.document.update(formData.object);
 	}
+	
+	/**
+	 * Handle item creation.
+	 * @this {RogueTraderItemSheet}
+	 * @param {PointerEvent} event
+	 * @param {HTMLElement} target
+	 */
+	static async #postToChat(event, target) {
+		this.document.sendToChat();
+	}
 
 	_getHeaderButtons() {
 		let buttons = super._getHeaderButtons();
@@ -83,37 +104,6 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 		].concat(buttons);
 		return buttons;
 	}
-
-	_preapareDropdownOptions() {
-		const result = {
-			craftsmanshipOptions: enums.Craftsmanship.options(),
-			availabilityOptions: enums.Availability.options(),
-			damageTypeOptions: enums.DamageType.options(),
-			shipWeaponClassOptions: enums.ShipWeaponClass.options(),
-			shipFacingOptions: enums.ShipFacing.options(),
-			shipComponentClassOptions: enums.ShipComponentClass.options(),
-			armourTypeOptions: enums.ArmourType.options(),
-			criticalInjuryPartOptions: enums.HitLocations.options(),
-			crewSkillOptions: enums.CrewSkill.options(),
-			characteristicOptions: enums.Characteristics.options(),
-			characteristicAdvanceOptions: enums.CharacteristicAdvance.options(),
-			npcTypeOptions: enums.NPCType.options(),
-			skillAdvanceOptions: enums.SkillAdvance.options(),
-			psyClassOptions: enums.PsyClass.options(),
-			psyStrengthOptions: enums.PsyStrength.options(),
-			psyZoneOptions: enums.PsyZone.options(),
-			initiativeOptions: enums.Characteristics.options(),
-			governorTypeOptions: enums.GovernorType.options(),
-			colonyTypeOptions: enums.ColonyType.options(),
-			hullClassOptions: enums.HullClass.options(),
-			hullClassOptions: enums.HullClass.options(),
-			skillsOptions: enums.Skills.options(true),
-			weaponClassOptions: enums.WeaponClass.options(),
-			weaponTypeOptions: enums.WeaponType.options()
-		};
-		return result;
-	}
-
 
 	/**
 	 * Persist the currently active tab across renders.
@@ -163,7 +153,7 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 			}
 		);
 		// Provide reusable option lists for templates using selectOptions
-		const optionsData = this._preapareDropdownOptions();
+		const optionsData = RogueTraderUtil.preapareDropdownOptions();
 		// Return context including options for selectOptions helper
 		context.options = {
 			...(context.options || {}),

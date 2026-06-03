@@ -3,7 +3,7 @@ import { EnumBase } from "./enum-base.mjs";
 export default class Availability extends EnumBase {
   static DEFAULT = "common";
 
-  static DATA = {
+  static DATA = Object.freeze({
     ubiquitous: { label: "AVAILABILITY.UBIQUITOUS" },
     abundant: { label: "AVAILABILITY.ABUNDANT" },
     plentiful: { label: "AVAILABILITY.PLENTIFUL" },
@@ -15,7 +15,7 @@ export default class Availability extends EnumBase {
     extremelyRare: { label: "AVAILABILITY.EXTREMELY_RARE" },
     nearUnique: { label: "AVAILABILITY.NEAR_UNIQUE" },
     unique: { label: "AVAILABILITY.UNIQUE" }
-  };
+  });
 
   static tryParseLegacyValue(value) {
     if (!value || typeof value !== "string") return this.DEFAULT;

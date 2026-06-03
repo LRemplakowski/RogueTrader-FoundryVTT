@@ -1,4 +1,4 @@
-import RogueTraderUtil from "./util.js";
+import RogueTraderUtil from "./util.mjs";
 import { prepareCombatRoll, preparePsychicPowerRoll } from "./dialog.js";
 
 export default class RtMacroUtil {

@@ -1,4 +1,6 @@
+import ShipWeaponClass from "../data/enums/ship-weapon-class.mjs";
 import { commonRoll, combatRoll, shipCombatRoll, forceFieldRoll, reportEmptyClip, consumeResourceRoll } from "./roll.js";
+import RogueTraderUtil from "./util.mjs";
 
 /**
  * Show a generic roll dialog.
@@ -362,6 +364,7 @@ export async function prepareShipCombatRoll(rollData, actorRef) {
 
   // Attach option lists to rollData for template rendering
   rollData.performerOptions = performerOptions;
+  rollData.options = RogueTraderUtil.preapareDropdownOptions();
   rollData.rangeOptions = rangeOptions;
 
   const html = await renderTemplate("systems/rogue-trader/template/dialog/ship-combat-roll.html", rollData);
@@ -382,10 +385,9 @@ export async function prepareShipCombatRoll(rollData, actorRef) {
                       rollData.range = range.value;
                       rollData.rangeText = range.options[range.selectedIndex].text;
                   }
-                  const attackType = [];
                   rollData.attackType = { 
                     name : rollData.weaponType,
-                    text : rollData.weaponType,
+                    text : game.i18n.localize(ShipWeaponClass.DATA[rollData.weaponType]?.label),
                     modifier : 0
                   };
                   rollData.damageFormula = html.find("#damageFormula")[0].value.replace(' ', '');

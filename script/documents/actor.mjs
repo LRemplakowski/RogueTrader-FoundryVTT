@@ -1,5 +1,6 @@
 import BaseDocumentMixin from "./base-document-mixin.mjs";
 
+const Properties = foundry.utils;
 export class RogueTraderActor extends BaseDocumentMixin(foundry.documents.Actor) {
 	static metadata = {
 		...super.metadata,
@@ -7,9 +8,17 @@ export class RogueTraderActor extends BaseDocumentMixin(foundry.documents.Actor)
 		types: ["explorer", "npc", "ship", "colony"]
 	};
 
+  static migrateData(source) {
+    if (!source) return super.migrateData(source);
+    if (source.type === "voidship") {
+      Properties.setProperty(source, `type`, "ship");
+    }
+    return super.migrateData(source);
+  }
+
   async _preCreate(data, options, user) {
     let initData;
-    if (this.type === 'ship') {
+    if (this.type === 'voidship') {
       initData = {
         "prototypeToken.bar1": { attribute: "hull.integrity" },
         "prototypeToken.bar2": { attribute: "crew.count" },

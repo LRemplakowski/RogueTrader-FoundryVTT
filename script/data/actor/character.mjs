@@ -2,7 +2,7 @@ import { default as BaseActorModel } from "./base-actor.mjs";
 import { requiredInteger } from "../helpers.mjs";
 import { PsyClass, Characteristics, Skills, SkillAdvance, CharacteristicAdvance, HitLocations } from "../enums/_module.mjs";
 import { FormulaField } from "../fields/_module.mjs";
-import Utils from "../../common/util.js";
+import RogueTraderUtil from "../../common/util.mjs";
 import { EquipmentModel, TalentModel, PsychicPowerModel, ArmourModel, CharacterItemModel } from "../item/character/_module.mjs";
 import { ValidateSchemaVersion } from "../../../utils/migration.mjs";
 const Characteristic = Characteristics.DATA;
@@ -340,10 +340,11 @@ export default class CharacterModel extends BaseActorModel {
     #computeCharacteristicData() {
         const middle = Object.entries(this.characteristics).length / 2;
         for (const [key, char] of Object.entries(this.characteristics)) {
-            char.value = char.base + CharacteristicAdvance.value(char.advance) + char.itemBonus.valueBonus;
+            const advanceBonus = CharacteristicAdvance.DATA[char.advance].rating ?? 0;
+            char.value = char.base + advanceBonus + char.itemBonus.valueBonus;
             char.unnatural.value = char.unnatural.base + char.itemBonus.unnaturalBonus;
             char.unnatural.rollBonus = Math.ceil(char.unnatural.value / 2);
-            char.bonus = Utils.getCharacteristicBonus(char.value, char.unnatural.value);
+            char.bonus = RogueTraderUtil.getCharacteristicBonus(char.value, char.unnatural.value);
         }
     }
 
@@ -377,7 +378,7 @@ export default class CharacterModel extends BaseActorModel {
             const charBonus = char.bonus;
             if (charBonus < this.fatigue.value) {
                 char.value = Math.ceil(charValue / 2);
-                char.bonus = Utils.getCharacteristicBonus(char.value, char.unnatural.value);
+                char.bonus = RogueTraderUtil.getCharacteristicBonus(char.value, char.unnatural.value);
             }
         }
     }
@@ -389,7 +390,7 @@ export default class CharacterModel extends BaseActorModel {
                             .filter(item => item.system instanceof EquipmentModel)
                             .reduce((sum, item) => sum + item.system.weight, 0);
         this.encumbrance = {
-            max: Utils.getMaxEncumbrance(sb + tb),
+            max: RogueTraderUtil.getMaxEncumbrance(sb + tb),
             value: totalWeight,
         };
     }
@@ -468,7 +469,7 @@ export default class CharacterModel extends BaseActorModel {
         const agility = this.characteristics.agility;
         if (cap < Number.MAX_SAFE_INTEGER && agility.value > cap) {
             agility.value = cap;
-            agility.bonus = Utils.getCharacteristicBonus(agility.value, agility.unnatural.value);
+            agility.bonus = RogueTraderUtil.getCharacteristicBonus(agility.value, agility.unnatural.value);
         }
     }
 

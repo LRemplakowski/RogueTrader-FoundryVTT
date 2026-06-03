@@ -1,6 +1,6 @@
 import { prepareCommonRoll, prepareConsumeResourcesRoll } from "../../common/dialog.js";
 import { rollColonyEvents, rollColonyGrowth } from "../../common/roll.js";
-import RogueTraderUtil from "../../common/util.js";
+import RogueTraderUtil from "../../common/util.mjs";
 import RogueTraderSheet from "./actor.mjs";
 
 export default class ColonySheet extends RogueTraderSheet {

@@ -1,5 +1,5 @@
 import * as enums from "../../data/enums/_module.mjs";
-import { default as RogueTraderUtil } from "../util.js";
+import  RogueTraderUtil from "../util.mjs";
 
 export default class CharacterRollData {
     static createCharacteristicRollData(actor, characteristic) {

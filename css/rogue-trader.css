@@ -785,7 +785,8 @@ li.folder.collapsed > .folder-header {
 .rogue-trader .tabs .item.active {
   text-shadow: 0 0 10px var(--color-highlight);
 }
-.rogue-trader .actor-sheet {
+.rogue-trader .actor-sheet,
+.rogue-trader .item-sheet {
   max-height: 100%;
   min-height: 100%;
 }
@@ -1432,6 +1433,17 @@ li.folder.collapsed > .folder-header {
 }
 .rogue-trader .combat {
   height: 100%;
+}
+.rogue-trader .voidship .combat {
+  width: 100%;
+}
+.rogue-trader .voidship .gear {
+  width: 100%;
+}
+.rogue-trader .voidship .gear .all-gear { 
+  overflow-y: unset;
+  height: unset;
+  max-height: unset;
 }
 .rogue-trader .combat .weapons .item-list .header {
   margin-top: 5px;
@@ -2155,10 +2167,10 @@ li.folder.collapsed > .folder-header {
 .rogue-trader .notes-tab .information .information-row .nature label {
   flex-basis: 15%;
 }
-.rogue-trader.ship .stats.border {
+.rogue-trader.voidship .stats.border {
   width: 100%;
 }
-.rogue-trader.ship .stats .stats.flex.column {
+.rogue-trader.voidship .stats .stats.flex.column {
   align-items: end;
   width: 50%;
   flex-direction: column;
@@ -2166,7 +2178,7 @@ li.folder.collapsed > .folder-header {
   flex-grow: 1;
   justify-content: space-evenly;
 }
-.rogue-trader.ship .stats input {
+.rogue-trader.voidship .stats input {
   margin: 2px;
   width: 3em;
 }
@@ -2191,7 +2203,8 @@ li.folder.collapsed > .folder-header {
   margin-right: 20px;
 }
 
-.rogue-trader .colony {
+.rogue-trader .colony,
+.rogue-trader .voidship {
   display: flex;
   flex-direction: column;
   height: 100%;
