@@ -1,7 +1,7 @@
 import BaseActorModel from "./base-actor.mjs";
 import { requiredInteger, immutableIntegerField } from "../helpers.mjs";
 import { ActorReferenceField, ItemReferenceField } from "../fields/_module.mjs";
-import { CrewSkill, HullClass, ShipComponentClass, ShipFacing } from "../enums/_module.mjs";
+import { CrewRoles, CrewSkill, HullClass, ShipComponentClass, ShipFacing } from "../enums/_module.mjs";
 import { VoidshipItemModel, VoidshipComponentModel, VoidshipWeaponModel } from "../item/_module.mjs";
 import { RogueTraderActor, RogueTraderItem } from "../../documents/_module.mjs";
 import { ValidateSchemaVersion } from "../../../utils/migration.mjs";
@@ -91,30 +91,7 @@ export default class VoidshipModel extends BaseActorModel {
                 value: requiredInteger(),
             }),
             skill: CrewSkill.schema(),
-            namedCrew: new SchemaField({
-                lordCaptain: this.#crewRole(1),
-                firstOfficer: this.#crewRole(2),
-                enginseerPrime: this.#crewRole(2),
-                highFactotum: this.#crewRole(2),
-                masterArms: this.#crewRole(3),
-                masterHelmsman: this.#crewRole(3),
-                masterOrdnance: this.#crewRole(3),
-                masterEtherics: this.#crewRole(3),
-                masterChirurgeon: this.#crewRole(3),
-                masterWhispers: this.#crewRole(3),
-                masterTelepathica: this.#crewRole(3),
-                masterWarp: this.#crewRole(3),
-                confessor: this.#crewRole(4),
-                drivesmaster: this.#crewRole(4),
-                congregator: this.#crewRole(4),
-                bosun: this.#crewRole(4),
-                infernus: this.#crewRole(4),
-                twistcatcher: this.#crewRole(4),
-                voxmaster: this.#crewRole(4),
-                purser: this.#crewRole(4),
-                cartographer: this.#crewRole(4),
-                steward: this.#crewRole(4),
-            }),
+            namedCrew: new SchemaField(VoidshipModel.#defineCrewRoles()),
         });
         schema.hull = new SchemaField({
             class: HullClass.schema(),
@@ -153,6 +130,14 @@ export default class VoidshipModel extends BaseActorModel {
             essential: new SchemaField(VoidshipModel.#essentialComponentsSchema()),
         });
         return schema;
+    }
+
+    static #defineCrewRoles() {
+        const roles = {};
+        for (const [key, role] of Object.entries(CrewRoles.DATA)) {
+            roles[key] = VoidshipModel.#crewRole(role.rank);
+        }
+        return roles;
     }
 
     /** Private helper for creating a crew role schema */
@@ -210,7 +195,7 @@ export default class VoidshipModel extends BaseActorModel {
         for (const [key, data] of Object.entries(this.crew.namedCrew)) {
             const crewMemberData = this.crew.namedCrew[key];
             const actor = crewMemberData.actor;
-            crewMemberData.name = actor?.name ?? "Not Assigned";
+            crewMemberData.name = actor?.name ?? game.i18n.localize(CrewRoles.DATA[key].label);
             crewMemberData.img = actor?.img ?? "icons/svg/mystery-man.svg";
             crewMemberData.characteristics = actor?.system?.characteristics ?? {};
         }

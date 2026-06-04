@@ -343,13 +343,16 @@ export async function prepareShipCombatRoll(rollData, actorRef) {
   rollData.ignoreArmor |= rollData.weaponType === "Lance";
   // Build performer options (crew + any named crew members)
   const performerOptions = [{ value: 'crew', label: game.i18n.localize('DIALOG.CREW') }];
+  console.log("Preparing roll options");
   try {
     const characteristicSource = rollData.characteristicSource || actorRef;
-    const named = characteristicSource?.system?.namedCrew || {};
-    for (const [role, id] of Object.entries(named)) {
-      if (id) {
-        const a = game.actors.get(id);
-        if (a) performerOptions.push({ value: a.id, label: a.name });
+    const named = characteristicSource?.system?.crew?.namedCrew || {};
+    console.log(rollData);
+    console.log(named);
+    for (const [role, value] of Object.entries(named)) {
+      if (value) {
+        console.log(`actor: ${value.actor.name}`);
+        performerOptions.push({ value: value.actor.id, label: value.name });
       }
     }
   } catch (err) {
@@ -366,7 +369,7 @@ export async function prepareShipCombatRoll(rollData, actorRef) {
   rollData.performerOptions = performerOptions;
   rollData.options = RogueTraderUtil.preapareDropdownOptions();
   rollData.rangeOptions = rangeOptions;
-
+  console.log(performerOptions);
   const html = await renderTemplate("systems/rogue-trader/template/dialog/ship-combat-roll.html", rollData);
   let dialog = new Dialog({
       title: rollData.name,

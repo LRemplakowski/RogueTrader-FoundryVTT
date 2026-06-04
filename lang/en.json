@@ -675,6 +675,7 @@
   "SHIP.NAMED_CREW.PURSER": "Purser",
   "SHIP.NAMED_CREW.CARTOGRAPHER": "Carto-Artifex",
   "SHIP.NAMED_CREW.STEWARD": "Ship's Steward",
+  "SHIP.ROLL_CREW_SKILL": "Roll Crew Skill",
 
   "SHIP.SIDE.STARBOARD": "Starboard",
   "SHIP.SIDE.PORT": "Port",

@@ -1,6 +1,7 @@
 import { prepareCommonRoll, prepareShipCombatRoll, prepareCrewSkillRoll } from "../../common/dialog.js";
 import RogueTraderUtil from "../../common/util.mjs";
 import RogueTraderSheet from "./actor.mjs";
+import { CharacterModel } from "../../data/actor/_module.mjs";
 
 export default class VoidshipSheet extends RogueTraderSheet {
   side = "";
@@ -137,12 +138,6 @@ export default class VoidshipSheet extends RogueTraderSheet {
     target.blur();
   }
 
-  _getHeaderButtons() {
-    let buttons = super._getHeaderButtons();
-    buttons = [].concat(buttons);
-    return buttons;
-  }
-
   async selectTargetToken() {
     this.minimize();
     this.selectedToken = null;
@@ -171,13 +166,21 @@ export default class VoidshipSheet extends RogueTraderSheet {
   }
 
   async _onDropActor(event, data) {
-    const droppedActorId = data.uuid.split(".")[1];
+    if (!foundry.utils.parseUuid(data.uuid)) {
+      ui.notifications.error("Dropped actor has invalid UUID!");
+    }
+    const actor = await fromUuid(data.uuid);
+    if (actor === this.document) return;
+    if (!(actor.system instanceof CharacterModel)) return;
     const role = event.target.dataset.crewrole;
-    if (!role) return;
-
+    if (!role) {
+      console.warn("Dropped foreign actor on area with no crew role.");
+      return;
+    }
     await this.actor.update({
-      [`system.namedCrew.${role}.id`]: droppedActorId
+      [`system.crew.namedCrew.${role}.actor`]: actor
     });
+    event.preventDefault();
   }
 
 
