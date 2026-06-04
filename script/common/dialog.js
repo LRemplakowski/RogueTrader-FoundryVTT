@@ -420,6 +420,40 @@ export async function prepareShipCombatRoll(rollData, actorRef) {
   dialog.render({ force: true });
 }
 
+export async function prepareCrewSkillRoll(rollData, actor) {
+  const html = await renderTemplate("systems/rogue-trader/template/dialog/common-roll.html", rollData);
+  let dialog = new Dialog({
+    title: game.i18n.localize(rollData.name),
+    content: html,
+    buttons: {
+      roll: {
+        icon: '<i class="fas fa-check"></i>',
+        label: game.i18n.localize("BUTTON.ROLL"),
+        callback: async html => {
+          const system = rollData.actor.system;
+          rollData.name = game.i18n.localize(rollData.name);
+          rollData.baseTarget = parseInt(html.find("#target")[0].value, 10);
+          rollData.rolledWith = game.i18n.localize("DIALOG.CREW");
+          rollData.modifier = html.find("#modifier")[0].value;
+          rollData.isCombatTest = false;
+          await commonRoll(rollData);
+        }
+      },
+      cancel: {
+        icon: '<i class="fas fa-times"></i>',
+        label: game.i18n.localize("BUTTON.CANCEL"),
+        callback: () => {}
+      }
+
+    },
+    default: "roll",
+    close: () => {},
+  }, {
+    width: 200
+  });
+  dialog.render({ force: true });
+}
+
 /**
  * Show a psychic power roll dialog.
  * @param {object} rollData

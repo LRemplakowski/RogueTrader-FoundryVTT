@@ -27,7 +27,7 @@ export default class VoidshipModel extends BaseActorModel {
         if (source.namedCrew) {
             for (const [key, crewMember] of Object.entries(source.namedCrew)) {
                 const oldPath = `namedCrew.${key}`;
-                const newPath = `crew.namedCrew.${key}.id`;
+                const newPath = `crew.namedCrew.${key}.actor`;
                 Migration._addDataFieldMigration(source, oldPath, newPath);
             }
             Properties.deleteProperty(source, `namedCrew`);
@@ -158,7 +158,7 @@ export default class VoidshipModel extends BaseActorModel {
     /** Private helper for creating a crew role schema */
     static #crewRole(rank) {
         return new SchemaField({
-            id: new ForeignDocumentField(RogueTraderActor),
+            actor: new ForeignDocumentField(RogueTraderActor),
             rank: new NumberField({
                 initial: rank,
                 readonly: true,
@@ -208,9 +208,8 @@ export default class VoidshipModel extends BaseActorModel {
 
     #prepareVoidshipCrew() {
         for (const [key, data] of Object.entries(this.crew.namedCrew)) {
-            const actor = game.actors.get(data.id) ?? null;
             const crewMemberData = this.crew.namedCrew[key];
-            crewMemberData.actor = actor;
+            const actor = crewMemberData.actor;
             crewMemberData.name = actor?.name ?? "Not Assigned";
             crewMemberData.img = actor?.img ?? "icons/svg/mystery-man.svg";
             crewMemberData.characteristics = actor?.system?.characteristics ?? {};

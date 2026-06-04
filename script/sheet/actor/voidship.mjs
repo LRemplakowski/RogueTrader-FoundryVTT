@@ -1,4 +1,4 @@
-import {prepareCommonRoll, prepareShipCombatRoll, preparePsychicPowerRoll} from "../../common/dialog.js";
+import { prepareCommonRoll, prepareShipCombatRoll, prepareCrewSkillRoll } from "../../common/dialog.js";
 import RogueTraderUtil from "../../common/util.mjs";
 import RogueTraderSheet from "./actor.mjs";
 
@@ -14,7 +14,8 @@ export default class VoidshipSheet extends RogueTraderSheet {
       height: 835
     },
     actions: {
-      rollShipWeapon: VoidshipSheet.#rollShipWeapon
+      rollShipWeapon: VoidshipSheet.#rollShipWeapon,
+      rollCrewSkill: VoidshipSheet.#rollCrewSkill
     }
   };
 
@@ -118,6 +119,22 @@ export default class VoidshipSheet extends RogueTraderSheet {
       RogueTraderUtil.createShipWeaponRollData(this.document, weapon), 
       this.document
     );
+    target.blur();
+  }
+
+  /**
+   * Handle ship weapon roll.
+   * @this {VoidshipSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #rollCrewSkill(event, target) {
+    event.preventDefault();
+    await prepareCrewSkillRoll(
+      RogueTraderUtil.createCrewSkillRollData(this.document),
+      this.document
+    );
+    target.blur();
   }
 
   _getHeaderButtons() {

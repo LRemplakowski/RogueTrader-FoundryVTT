@@ -133,6 +133,17 @@ export default class RogueTraderUtil {
     rollData.dosPerHit = weaponData.rof;
     return rollData;
   }
+
+  static createCrewSkillRollData(actor) {
+    const rollData = {
+      name: actor.name,
+      ownerId: actor.id,
+      actor: actor,
+      baseTarget: enums.CrewSkill.DATA[actor.system.crew.skill]?.rating ?? 0,
+      modifier: 0
+    }
+    return rollData;
+  }
   
   static createPsychicRollData(actor, power) {
     let focusPowerTarget = this.getFocusPowerTarget(actor, power);

@@ -3,7 +3,12 @@
         <div class="stats flex border">
             <div class="stats flex row">
                 <div class="stat crewSkill">
-                    <label>{{localize "SHIP.CREW_SKILL"}}</label>
+                    <div class="flex row crew-skill-label">
+                        <label>{{localize "SHIP.CREW_SKILL"}}</label>
+                        <button class="button roll-icon" data-action="rollCrewSkill">
+                            <img src="icons/svg/d10-grey.svg"/>
+                        </button>
+                    </div>
                     <select name="system.crew.skill">
                         {{{selectOptions options.crewSkillOptions selected=system.crew.skill}}}
                     </select>
@@ -13,13 +18,9 @@
         <h1>{{localize "TITLE.CREW_RANK_ONE"}}</h1>
         <div class="crew flex border">
             <div class="crew flex column">
-                <div class="stat border rank1" data-crewRole="captain">
+                <div class="stat border crew-rank1" data-crewRole="captain">
                     <div class="avatar" data-crewRole="captain">
-                        {{#if system.crew.namedCrew.actor.lordCaptain}}
-                            <img class="crew-img-captain" src="{{system.crew.namedCrew.lordCaptain.img}}" title="{{system.crew.namedCrew.lordCaptain.name}}" data-crewRole="captain">
-                        {{else}}
-                            <img class="crew-img-captain" src="icons/svg/mystery-man.svg" title="Lord Captain" data-crewRole="captain">
-                        {{/if}}
+                        <img class="crew-img-captain" src="{{system.crew.namedCrew.lordCaptain.img}}" title="{{system.crew.namedCrew.lordCaptain.name}}" data-crewRole="captain">
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.LORD_CAPTAIN"}}</label>
                 </div>
@@ -28,17 +29,13 @@
         <h1>{{localize "TITLE.CREW_RANK_TWO"}}</h1>
         <div class="crew flex border">
             <div class="crew flex row">
-                <div class="stat border rank2" data-crewRole="firstOfficer">
+                <div class="stat border crew-rank2" data-crewRole="firstOfficer">
                     <div class="avatar" data-crewRole="firstOfficer">
-                        {{#if system.crew.namedCrew.actor.firstOfficer}}
-                            <img class="crew-img-big" src="{{system.crew.namedCrew.firstOfficer.img}}" title="{{system.crew.namedCrew.firstOfficer.name}}" data-crewRole="firstOfficer">
-                        {{else}}
-                            <img class="crew-img-big" src="icons/svg/mystery-man.svg" title="First Officer" data-crewRole="firstOfficer">
-                        {{/if}}
+                        <img class="crew-img-big" src="{{system.crew.namedCrew.firstOfficer.img}}" title="{{system.crew.namedCrew.firstOfficer.name}}" data-crewRole="firstOfficer">
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.FIRST_OFFICER"}}</label>
                 </div>
-                <div class="stat border rank2" data-crewRole="enginseerPrime">
+                <div class="stat border crew-rank2" data-crewRole="enginseerPrime">
                     <div class="avatar" data-crewRole="enginseerPrime">
                         {{#if system.crew.namedCrew.actor.enginseerPrime}}
                             <img class="crew-img-big" src="{{system.crew.namedCrew.enginseerPrime.img}}" title="{{system.crew.namedCrew.enginseerPrime.name}}" data-crewRole="enginseerPrime">
@@ -48,7 +45,7 @@
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.PRIME_ENGINSEER"}}</label>
                 </div>
-                <div class="stat border rank2" data-crewRole="highFactotum">
+                <div class="stat border crew-rank2" data-crewRole="highFactotum">
                     <div class="avatar" data-crewRole="highFactotum">
                         {{#if system.crew.namedCrew.actor.highFactotum}}
                             <img class="crew-img-big" src="{{system.crew.namedCrew.highFactotum.img}}" title="{{system.crew.namedCrew.highFactotum.name}}" data-crewRole="highFactotum">
