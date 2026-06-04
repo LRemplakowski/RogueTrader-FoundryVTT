@@ -21,9 +21,9 @@
                 <div class="stat border crew-rank1" data-crewRole="captain">
                     <div class="avatar" data-crewRole="captain">
                         <img class="crew-img-captain" src="{{system.crew.namedCrew.lordCaptain.img}}" title="{{system.crew.namedCrew.lordCaptain.name}}" data-crewRole="captain">
-                        <div class="button remove-crew-btn" data-action="remoweCrewMember" data-crewRole="captain">
-                            <a class="crew-control" data-action="remoweCrewMember" data-crewRole="captain"><i class="fas fa-trash"></i></a>
-                        </div>
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="captain">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="captain"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.LORD_CAPTAIN"}}</label>
                 </div>
@@ -36,17 +36,26 @@
                     <div class="avatar" data-crewRole="firstOfficer">
                         <img class="crew-img-big" src="{{system.crew.namedCrew.firstOfficer.img}}" title="{{system.crew.namedCrew.firstOfficer.name}}" data-crewRole="firstOfficer">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="firstOfficer">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="firstOfficer"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.FIRST_OFFICER"}}</label>
                 </div>
                 <div class="stat border crew-rank2" data-crewRole="enginseerPrime">
                     <div class="avatar" data-crewRole="enginseerPrime">
                         <img class="crew-img-big" src="{{system.crew.namedCrew.enginseerPrime.img}}" title="{{system.crew.namedCrew.enginseerPrime.name}}" data-crewRole="enginseerPrime">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="enginseerPrime">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="enginseerPrime"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.PRIME_ENGINSEER"}}</label>
                 </div>
                 <div class="stat border crew-rank2" data-crewRole="highFactotum">
                     <div class="avatar" data-crewRole="highFactotum">
                         <img class="crew-img-big" src="{{system.crew.namedCrew.highFactotum.img}}" title="{{system.crew.namedCrew.highFactotum.name}}" data-crewRole="highFactotum">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="highFactotum">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="highFactotum"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.HIGH_FACTOTUM"}}</label>
                 </div>
@@ -59,11 +68,17 @@
                     <div class="avatar" data-crewRole="masterArms">
                         <img class="crew-img-medium" src="{{system.crew.namedCrew.masterArms.img}}" title="{{system.crew.namedCrew.masterArms.name}}" data-crewRole="masterArms">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="masterArms">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="masterArms"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.MASTER_ARMS"}}</label>
                 </div>
                 <div class="crew-rank3 border" data-crewRole="masterHelmsman">
                     <div class="avatar" data-crewRole="masterHelmsman">
                         <img class="crew-img-medium" src="{{system.crew.namedCrew.masterHelmsman.img}}" title="{{system.crew.namedCrew.masterHelmsman.name}}" data-crewRole="masterHelmsman">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="masterHelmsman">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="masterHelmsman"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.MASTER_HELMSMAN"}}</label>
                 </div>
@@ -71,11 +86,17 @@
                     <div class="avatar" data-crewRole="masterOrdnance">
                         <img class="crew-img-medium" src="{{system.crew.namedCrew.masterOrdnance.img}}" title="{{system.crew.namedCrew.masterOrdnance.name}}" data-crewRole="masterOrdnance">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="masterOrdnance">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="masterOrdnance"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.MASTER_ORDNANCE"}}</label>
                 </div>
                 <div class="crew-rank3 border" data-crewRole="masterEtherics">
                     <div class="avatar" data-crewRole="masterEtherics">
                         <img class="crew-img-medium" src="{{system.crew.namedCrew.masterEtherics.img}}" title="{{system.crew.namedCrew.masterEtherics.name}}" data-crewRole="masterEtherics">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="masterEtherics">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="masterEtherics"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.MASTER_ETHERICS"}}</label>
                 </div>
@@ -83,11 +104,17 @@
                     <div class="avatar" data-crewRole="masterChirurgeon">
                         <img class="crew-img-medium" src="{{system.crew.namedCrew.masterChirurgeon.img}}" title="{{system.crew.namedCrew.masterChirurgeon.name}}" data-crewRole="masterChirurgeon">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="masterChirurgeon">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="masterChirurgeon"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.MASTER_CHIRURGEON"}}</label>
                 </div>
                 <div class="crew-rank3 border" data-crewRole="masterWhispers">
                     <div class="avatar" data-crewRole="masterWhispers">
                         <img class="crew-img-medium" src="{{system.crew.namedCrew.masterWhispers.img}}" title="{{system.crew.namedCrew.masterWhispers.name}}" data-crewRole="masterWhispers">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="masterWhispers">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="masterWhispers"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.MASTER_WHISPERS"}}</label>
                 </div>
@@ -95,11 +122,17 @@
                     <div class="avatar" data-crewRole="masterTelepathica">
                         <img class="crew-img-medium" src="{{system.crew.namedCrew.masterTelepathica.img}}" title="{{system.crew.namedCrew.masterTelepathica.name}}" data-crewRole="masterTelepathica">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="masterTelepathica">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="masterTelepathica"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.MASTER_TELEPATHICA"}}</label>
                 </div>
                 <div class="crew-rank3 border" data-crewRole="masterWarp">
                     <div class="avatar" data-crewRole="masterWarp">
                         <img class="crew-img-medium" src="{{system.crew.namedCrew.masterWarp.img}}" title="{{system.crew.namedCrew.masterWarp.name}}" data-crewRole="masterWarp">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="masterWarp">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="masterWarp"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.MASTER_WARP"}}</label>
                 </div>
@@ -112,11 +145,17 @@
                     <div class="avatar" data-crewRole="confessor">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.confessor.img}}" title="{{system.crew.namedCrew.confessor.name}}" data-crewRole="confessor">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="confessor">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="confessor"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.CONFESSOR"}}</label>
                 </div>
                 <div class="crew-rank4 border" data-crewRole="drivesmaster">
                     <div class="avatar" data-crewRole="drivesmaster">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.drivesmaster.img}}" title="{{system.crew.namedCrew.drivesmaster.name}}" data-crewRole="drivesmaster">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="drivesmaster">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="drivesmaster"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.DRIVESMASTER"}}</label>
                 </div>
@@ -124,11 +163,17 @@
                     <div class="avatar" data-crewRole="congregator">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.congregator.img}}" title="{{system.crew.namedCrew.congregator.name}}" data-crewRole="congregator">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="congregator">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="congregator"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.CONGREGATOR"}}</label>
                 </div>
                 <div class="crew-rank4 border" data-crewRole="bosun">
                     <div class="avatar" data-crewRole="bosun">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.bosun.img}}" title="{{system.crew.namedCrew.bosun.name}}" data-crewRole="bosun">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="bosun">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="bosun"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.CHIEF_BOSUN"}}</label>
                 </div>
@@ -136,11 +181,17 @@
                     <div class="avatar" data-crewRole="infernus">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.infernus.img}}" title="{{system.crew.namedCrew.infernus.name}}" data-crewRole="infernus">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="infernus">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="infernus"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.INFERNUS_MASTER"}}</label>
                 </div>
                 <div class="crew-rank4 border" data-crewRole="twistcatcher">
                     <div class="avatar" data-crewRole="twistcatcher">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.twistcatcher.img}}" title="{{system.crew.namedCrew.twistcatcher.name}}" data-crewRole="twistcatcher">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="twistcatcher">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="twistcatcher"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.TWISTCATCHER"}}</label>
                 </div>
@@ -148,11 +199,17 @@
                     <div class="avatar" data-crewRole="voxmaster">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.voxmaster.img}}" title="{{system.crew.namedCrew.voxmaster.name}}" data-crewRole="voxmaster">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="voxmaster">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="voxmaster"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.VOXMASTER"}}</label>
                 </div>
                 <div class="crew-rank4 border" data-crewRole="purser">
                     <div class="avatar" data-crewRole="purser">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.purser.img}}" title="{{system.crew.namedCrew.purser.name}}" data-crewRole="purser">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="purser">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="purser"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.PURSER"}}</label>
                 </div>
@@ -160,11 +217,17 @@
                     <div class="avatar" data-crewRole="cartographer">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.cartographer.img}}" title="{{system.crew.namedCrew.cartographer.name}}" data-crewRole="cartographer">
                     </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="cartographer">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="cartographer"><i class="fas fa-trash"></i></a>
+                    </div>
                     <label>{{localize "SHIP.NAMED_CREW.CARTOGRAPHER"}}</label>
                 </div>
                 <div class="crew-rank4 border" data-crewRole="steward">
                     <div class="avatar" data-crewRole="steward">
                         <img class="crew-img-small" src="{{system.crew.namedCrew.steward.img}}" title="{{system.crew.namedCrew.steward.name}}" data-crewRole="steward">
+                    </div>
+                    <div class="button remove-crew-btn" data-action="removeCrewMember" data-crewRole="steward">
+                        <a class="crew-control" data-action="removeCrewMember" data-crewRole="steward"><i class="fas fa-trash"></i></a>
                     </div>
                     <label>{{localize "SHIP.NAMED_CREW.STEWARD"}}</label>
                 </div>

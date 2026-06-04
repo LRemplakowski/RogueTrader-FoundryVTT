@@ -2,6 +2,7 @@ import { prepareCommonRoll, prepareShipCombatRoll, prepareCrewSkillRoll } from "
 import RogueTraderUtil from "../../common/util.mjs";
 import RogueTraderSheet from "./actor.mjs";
 import { CharacterModel } from "../../data/actor/_module.mjs";
+import CrewRoles from "../../data/enums/crew-roles.mjs";
 
 export default class VoidshipSheet extends RogueTraderSheet {
   side = "";
@@ -16,7 +17,8 @@ export default class VoidshipSheet extends RogueTraderSheet {
     },
     actions: {
       rollShipWeapon: VoidshipSheet.#rollShipWeapon,
-      rollCrewSkill: VoidshipSheet.#rollCrewSkill
+      rollCrewSkill: VoidshipSheet.#rollCrewSkill,
+      removeCrewMember: VoidshipSheet.#removeCrewMember,
     }
   };
 
@@ -136,6 +138,25 @@ export default class VoidshipSheet extends RogueTraderSheet {
       this.document
     );
     target.blur();
+  }
+
+  /**
+   * Handle ship weapon roll.
+   * @this {VoidshipSheet}
+   * @param {PointerEvent} event
+   * @param {HTMLElement} target
+   */
+  static async #removeCrewMember(event, target) {
+    event.preventDefault();
+    const actor = this.document;
+    const roleToRemove = target.dataset.crewrole;
+    if (!roleToRemove && !CrewRoles.KEYS[roleToRemove]) {
+      console.error(`Tried to remove invalid role! ${roleToRemove}`);
+      return;
+    }
+    await actor.update({[
+      `system.crew.namedCrew.${roleToRemove}.actor`]: null
+    });
   }
 
   async selectTargetToken() {
