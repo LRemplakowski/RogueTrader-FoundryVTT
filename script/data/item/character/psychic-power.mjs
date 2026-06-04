@@ -5,7 +5,18 @@ import CharacterItemModel from "./character-item.mjs";
 
 const { StringField, SchemaField, HTMLField } = foundry.data.fields;
 
-export default class PsychicPowerModel extends CharacterItemModel {    
+const Properties = foundry.utils;
+export default class PsychicPowerModel extends CharacterItemModel {
+    static migrateData(source) {
+        if (!source) return super.migrateData(source);
+        if (!(typeof source.damage.penetration === "number")) {
+            let pen = Number(source.damage.penetration);
+            pen = Number.isFinite(pen) ? pen : 0;
+            Properties.setProperty(source, `damage.penetration`, pen);
+        }
+        return super.migrateData(source);
+    }
+    
     /** @inheritdoc */
     static get metadata() {
         return {

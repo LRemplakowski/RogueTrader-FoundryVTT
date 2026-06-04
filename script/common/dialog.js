@@ -1,6 +1,7 @@
 import ShipWeaponClass from "../data/enums/ship-weapon-class.mjs";
 import { commonRoll, combatRoll, shipCombatRoll, forceFieldRoll, reportEmptyClip, consumeResourceRoll } from "./roll.js";
 import RogueTraderUtil from "./util.mjs";
+import * as enums from "../data/enums/_module.mjs"
 
 /**
  * Show a generic roll dialog.
@@ -17,14 +18,55 @@ export async function prepareCommonRoll(rollData) {
         label: game.i18n.localize("BUTTON.ROLL"),
         callback: async html => {
           const system = rollData.actor.system;
-          const charHTML = html.find("[name=characteristic] :selected")[0];
-          const characteristic = system.characteristics[charHTML.value];
+          const characteristic = system.characteristics[rollData.characteristic];
+          const unnatural = characteristic?.unnatural?.rollBonus ?? rollData.unnatural ?? 0;
+          const rolledWith = rollData.hideCharacteristic ? null : game.i18n.localize(enums.Characteristics.DATA[rollData.characteristic]?.label);
           rollData.name = game.i18n.localize(rollData.name);
           rollData.baseTarget = parseInt(html.find("#target")[0].value, 10);
-          rollData.rolledWith = charHTML.text;
+          rollData.rolledWith = rolledWith;
           rollData.modifier = html.find("#modifier")[0].value;
           rollData.isCombatTest = false;
-          rollData.unnatural = characteristic.unnatural.rollBonus;
+          rollData.unnatural = unnatural;
+          await commonRoll(rollData);
+        }
+      },
+      cancel: {
+        icon: '<i class="fas fa-times"></i>',
+        label: game.i18n.localize("BUTTON.CANCEL"),
+        callback: () => {}
+      },
+    },
+    default: "roll",
+    close: () => {},
+    render: html => {
+      const sel = html.find("select[name=characteristic");
+      const target = html.find("#target");
+      sel?.change(ev => {
+        const system = rollData.actor.system;
+        const characteristic = system.characteristics[sel[0].value];
+        target.val(characteristic.value);
+      });
+    }
+  }, {
+    width: 200
+  });
+  dialog.render({ force: true });
+}
+
+export async function prepareGovernorRoll(rollData) {
+  const html = await renderTemplate("systems/rogue-trader/template/dialog/common-roll.html", rollData);
+  let dialog = new Dialog({
+    title: game.i18n.localize(rollData.name),
+    content: html,
+    buttons: {
+      roll: {
+        icon: '<i class="fas fa-check"></i>',
+        label: game.i18n.localize("BUTTON.ROLL"),
+        callback: async html => {
+          rollData.name = game.i18n.localize(rollData.name);
+          rollData.baseTarget = parseInt(html.find("#target")[0].value, 10);
+          rollData.modifier = html.find("#modifier")[0].value;
+          rollData.isCombatTest = false;
           await commonRoll(rollData);
         }
       },
@@ -37,15 +79,6 @@ export async function prepareCommonRoll(rollData) {
     },
     default: "roll",
     close: () => {},
-    render: html => {
-      const sel = html.find("select[name=characteristic");
-      const target = html.find("#target");
-      sel.change(ev => {
-        const system = rollData.actor.system;
-        const characteristic = system.characteristics[sel[0].value];
-        target.val(characteristic.value);
-      });
-    }
   }, {
     width: 200
   });

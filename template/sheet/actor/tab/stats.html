@@ -131,9 +131,9 @@
                             {{#each group.entries as |skill key|}}
                                 {{#if skill.isKnown}}
                                     <div class="speciality item flex row" data-skill="{{key}}">
-                                        <div class="name">
-                                            <button class="roll-speciality" data-action="rollSpeciality" data-speciality="{{key}}" type="button">{{skill.label}}</button>
-                                        </div>
+                                        <button class="name" data-action="rollSkill" data-skill="{{key}}" type="button">
+                                            <label>{{skill.label}}</label>
+                                        </button>
                                         <input class="total" type="number" value="{{skill.total}}" data-dtype="Number" disabled />
                                         <div class="information">
                                             <input type="text" value="{{skill.advance.short}}" disabled />

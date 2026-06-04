@@ -6,7 +6,6 @@ const Properties = foundry.utils;
 export default class BaseActorModel extends RogueTraderSystemModel {
     /** @inheritdoc */
     static migrateData(source) {
-        console.log(source);
         if (source.aptitudes) Properties.deleteProperty(source, `aptitudes`);
         if (source.notesHTML) Properties.deleteProperty(source, `notesHTML`);
         return super.migrateData(source);

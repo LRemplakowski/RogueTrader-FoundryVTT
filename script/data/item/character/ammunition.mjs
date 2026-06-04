@@ -16,6 +16,12 @@ export default class AmmunitionModel extends EquipmentModel {
         Migration._addDataFieldMigration(source, `effect.penetration`, `penetration`);
         Migration._addDataFieldMigration(source, `effect.attack.modifier`, `attack`);
         Properties.deleteProperty(source, `effect`);
+        let dmgMod = source.damage.modifier;
+        if (!(typeof dmgMod === "number")) {
+            dmgMod = Number(dmgMod);
+            dmgMod = Number.isFinite(dmgMod) ? dmgMod : 0;
+            Properties.setProperty(source, `damage.modifier`, dmgMod);
+        }
         return super.migrateData(source);
     }
 

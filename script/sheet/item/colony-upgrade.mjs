@@ -6,14 +6,23 @@ export default class ColonyUpgradeSheet extends RogueTraderItemSheet {
     ...super.DEFAULT_OPTIONS,
     id: "colony-upgrade-sheet",
     classes: ["rogue-trader", "sheet", "colony-upgrade"],
-    position: {
-      width: 500,
-      height: 400
-    }
   };
 
   static METADATA = {
     types: ["colonyUpgrade"],
     makeDefault: true,
+  }
+
+  static {
+    const tabs = foundry.utils.deepClone(super.TABS);
+    tabs.primary.tabs.unshift({
+      id: "colony-upgrade-data",
+      group: "primary",
+      label: "TAB.DATA",
+      icon: "fa-solid fa-star",
+      cssClass: "tab-data"
+		});
+    tabs.primary.initial = "colony-upgrade-data";
+    this.TABS = tabs;
   }
 }

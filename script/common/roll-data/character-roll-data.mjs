@@ -1,5 +1,6 @@
 import * as enums from "../../data/enums/_module.mjs";
-import  RogueTraderUtil from "../util.mjs";
+import RogueTraderUtil from "../util.mjs";
+import WeaponUtility from "../utility/weapon-utility.mjs";
 
 export default class CharacterRollData {
     static createCharacteristicRollData(actor, characteristic) {
@@ -8,16 +9,20 @@ export default class CharacterRollData {
         const baseTarget = char.value;
         const unnatural = char.unnatural.rollBonus;
         const result = {
-        name: label,
-        baseTarget: baseTarget,
-        modifier: 0,
-        ownerId: actor.id,
-        unnatural: unnatural,
+            name: label,
+            actor: actor,
+            baseTarget: baseTarget,
+            modifier: 0,
+            ownerId: actor.id,
+            unnatural: unnatural,
+            characteristic: characteristic,
+            hideCharacteristic: true,
+            options: RogueTraderUtil.preapareDropdownOptions(),
         };
         return result;
     }
 
-    static createCommonAttackRollData(actor, item) {
+    static #createCommonAttackRollData(actor, item) {
         return {
             name: item.name,      
             attributeBoni: actor.attributeBoni,
@@ -25,7 +30,8 @@ export default class CharacterRollData {
             itemId: item.id,      
             damageBonus: 0,
             damageType: item.damage.type,
-            unnatural: 0,      
+            unnatural: 0, 
+            options: RogueTraderUtil.preapareDropdownOptions(),     
         };
     }
 
@@ -39,7 +45,7 @@ export default class CharacterRollData {
         }
         let isMelee = weapon.class === "melee";
         
-        let rollData = this.createCommonAttackRollData(actor, weapon);
+        let rollData = CharacterRollData.#createCommonAttackRollData(actor, weapon);
         rollData.baseTarget = characteristic.value,
         rollData.unnatural = characteristic.unnatural.rollBonus;
         rollData.modifier = 0,
@@ -49,7 +55,7 @@ export default class CharacterRollData {
         rollData.clip = weapon.clip;
         rollData.rateOfFire= rateOfFire;
         rollData.weaponSpecial = weapon.special;
-        rollData.weaponTraits = RogueTraderUtil.extractWeaponTraits(weapon.special);
+        rollData.weaponTraits = WeaponUtility.extractWeaponTraits(weapon.special);
         rollData.damageFormula = weapon.damage.formula + (isMelee && !weapon.damage.formula.match(/SB/gi) ? "+SB" : "") + (rollData.weaponTraits.force ? "+PR" : "");
         if (rollData.weaponTraits.warp)
         {
@@ -63,6 +69,7 @@ export default class CharacterRollData {
         }
         rollData.special= weapon.special;
         rollData.psy = { value: actor.psy.rating, display: false};
+        rollData.options = RogueTraderUtil.preapareDropdownOptions();
         return rollData;
     }
 
@@ -76,5 +83,43 @@ export default class CharacterRollData {
             description: forceField.description,
         }
         return rollData;
+    }
+
+    static createPsychicRollData(actor, power) {       
+        let rollData = CharacterRollData.#createCommonAttackRollData(actor, power); 
+        rollData.baseTarget = this.#getFocusPowerTarget(actor, power);
+        rollData.modifier = power.focusPower.difficulty;      
+        rollData.damageFormula = power.damage.formula;      
+        rollData.penetrationFormula = power.damage.penetration;
+        rollData.attackType = { name: power.damage.zone, text: "" };
+        rollData.weaponTraits = WeaponUtility.extractWeaponTraits(power.damage.special);
+        rollData.special = power.damage.special;
+        rollData.psy = {
+            value: actor.psy.rating,
+            rating: actor.psy.rating,
+            psyStrength: enums.PsyStrength.DEFAULT,
+            push: 1,
+            maxPush: CharacterRollData.#getMaxPushPR(actor),
+            warpConduit: false,
+            disciplineMastery: false,
+            display: true
+        };
+        rollData.options = RogueTraderUtil.preapareDropdownOptions();
+        return rollData;
+    }
+
+    static #getFocusPowerTarget(actor, psychicPower) {
+        const normalizeName = psychicPower.focusPower.test.toLowerCase();
+        if (actor.characteristics.hasOwnProperty(normalizeName)) {
+            return actor.characteristics[normalizeName].value;
+        } else if (actor.skills.hasOwnProperty(normalizeName)) {
+            return actor.skills[normalizeName].value;
+        } else {
+            return actor.characteristics.willpower.value;
+        }
+    }
+
+    static #getMaxPushPR(actor) {
+        return enums.PsyClass.DATA[actor.psy.class].maxPushPR;
     }
 }

@@ -78,6 +78,10 @@ function preloadHandlebarsTemplates() {
     "systems/rogue-trader/template/sheet/item/tab/weapon-modification-data.html",
     "systems/rogue-trader/template/sheet/item/tab/ship-weapon-data.html",
     "systems/rogue-trader/template/sheet/item/tab/ship-component-data.html",
+    "systems/rogue-trader/template/sheet/item/tab/colony-event-data.html",
+    "systems/rogue-trader/template/sheet/item/tab/colony-event-effect.html",
+    "systems/rogue-trader/template/sheet/item/tab/colony-upgrade-data.html",
+    "systems/rogue-trader/template/sheet/item/tab/colony-resource-data.html",
   ];
   // v13: Use global loadTemplates() function instead of foundry.utils.loadTemplates
   return foundry.applications.handlebars.loadTemplates(templatePaths);

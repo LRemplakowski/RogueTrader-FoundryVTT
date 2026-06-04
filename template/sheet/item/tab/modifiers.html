@@ -54,7 +54,7 @@
         </div>
         {{#each modifiers.skill as |skillMod index|}}
           <div class="modifier-item flex row" data-modifier-id="skill" data-modifier-key="{{index}}">
-              <select class="flex row modifier-column" name="system.modifiers.skill.{{index}}.skill">
+              <select class="flex row modifier-column" name="system.modifiers.skill.{{index}}.propertyKey">
                 {{{selectOptions ../options.skillsOptions selected=skillMod.propertyKey}}}
               </select>
             <div class="flex row modifier-column">

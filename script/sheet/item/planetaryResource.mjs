@@ -6,14 +6,23 @@ export default class PlanetaryResourceSheet extends RogueTraderItemSheet {
     ...super.DEFAULT_OPTIONS,
     id: "planetary-resource-sheet",
     classes: ["rogue-trader", "sheet", "planetary-resource"],
-    position: {
-      width: 500,
-      height: 400
-    }
   };
 
   static METADATA = {
     types: ["planetaryResource"],
     makeDefault: true,
+  }
+
+  static {
+    const tabs = foundry.utils.deepClone(super.TABS);
+    tabs.primary.tabs.unshift({
+      id: "colony-resource-data",
+      group: "primary",
+      label: "TAB.DATA",
+      icon: "fa-solid fa-star",
+      cssClass: "tab-data"
+		});
+    tabs.primary.initial = "colony-resource-data";
+    this.TABS = tabs;
   }
 }

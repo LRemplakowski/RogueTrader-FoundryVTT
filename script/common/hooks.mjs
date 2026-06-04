@@ -66,20 +66,13 @@ Hooks.once("init", () => {
 
   // Initialize handlebars templates (will use global loadTemplates)
   initializeHandlebars();
-  console.log(CONFIG);
 });
 
 Hooks.once("setup", () => {
-  console.log("SETUP HOOK");
-  console.log(CONFIG);
+  
 });
 
 Hooks.once("ready", () => {
-  console.log("READY HOOK");
-  if (!ValidateSchemaVersion()) {
-    // MigrateWorld();
-    UpdateWorldSchemaVersion();
-  }
   const ChatMessageClass = CONFIG.ChatMessage.documentClass || game.messages.documentClass;
   if (ChatMessageClass && ChatMessageClass.prototype) {
     ChatMessageClass.prototype.getRollData = function() {

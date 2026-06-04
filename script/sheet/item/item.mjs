@@ -92,19 +92,6 @@ export default class RogueTraderItemSheet extends HandlebarsApplicationMixin(Ite
 		this.document.sendToChat();
 	}
 
-	_getHeaderButtons() {
-		let buttons = super._getHeaderButtons();
-		buttons = [
-			{
-				label: game.i18n.localize("BUTTON.POST_ITEM"),
-				class: "item-post",
-				icon: "fas fa-comment",
-				onclick: ev => this.document.sendToChat()
-			}
-		].concat(buttons);
-		return buttons;
-	}
-
 	/**
 	 * Persist the currently active tab across renders.
 	 */

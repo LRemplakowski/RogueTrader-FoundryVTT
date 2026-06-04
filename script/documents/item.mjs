@@ -1,4 +1,5 @@
 import RogueTraderUtil from "../common/util.mjs";
+import WeaponUtility from "../common/utility/weapon-utility.mjs";
 import BaseDocumentMixin from "./base-document-mixin.mjs";
 
 export class RogueTraderItem extends BaseDocumentMixin(foundry.documents.Item) {
@@ -278,7 +279,7 @@ export class RogueTraderItem extends BaseDocumentMixin(foundry.documents.Item) {
   }
 
   get explorerRangeBrackets() {
-    if (RogueTraderUtil.extractWeaponTraits(this.special)?.skipAttackRoll) {
+    if (WeaponUtility.extractWeaponTraits(this.special)?.skipAttackRoll) {
       return `${this.range}`;
     }
     if (this.range <= 0)

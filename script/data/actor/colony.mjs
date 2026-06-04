@@ -15,12 +15,7 @@ export default class ColonyModel extends BaseActorModel {
         
         if (source.resources) Properties.deleteProperty(source, `resources`);
         if (source.upgrades) Properties.deleteProperty(source, `upgrades`);
-        ColonyModel.#migrateGovernorData(source);
         return super.migrateData(source);
-    }
-
-    static #migrateGovernorData(source) {
-        Migration._addDataFieldMigration(source, `governor.actor`, `governor.id`);
     }
 
     /** @inheritdoc */
@@ -35,7 +30,7 @@ export default class ColonyModel extends BaseActorModel {
     static defineSchema() {
         const schema = super.defineSchema(); 
         schema.governor = new SchemaField({
-            id: new ForeignDocumentField(RogueTraderActor),
+            actor: new ForeignDocumentField(RogueTraderActor),
             governorType: GovernorType.schema(),
             skillBonus: requiredInteger(),
             advancedTraining: new BooleanField(),
@@ -85,8 +80,6 @@ export default class ColonyModel extends BaseActorModel {
         this.#prepareGovernorReference();
         this.#computeSlots();
         this.#computeYearlyGains();   
-        console.log("Colony");
-        console.log(this);
     }
 
     #prepareItemsLists() {
@@ -104,7 +97,10 @@ export default class ColonyModel extends BaseActorModel {
     }
 
     #prepareGovernorReference() {
-
+        const governorData = this.governor;
+        const actor = this.governor.actor;
+        governorData.name = actor?.name ?? "Governor";
+        governorData.img = actor?.img ?? "icons/svg/mystery-man.svg";
     }
 
     #computeSlots() {

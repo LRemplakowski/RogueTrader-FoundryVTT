@@ -7,13 +7,9 @@
                     <div class="governor-avatar flex column space10">
                         <div class="stat border" data-crewRole="governor">
                             <div class="avatar" data-crewRole="governor">
-                                {{#if system.governor.actor}}
-                                    <img class="crew-img-governor" src="{{actor.governor.img}}" title="{{actor.governor.name}}" data-crewRole="governor">
-                                {{else}}
-                                    <img class="crew-img-governor" src="icons/svg/mystery-man.svg" title="Governor" data-crewRole="governor">
-                                {{/if}}
+                                <img class="crew-img-governor" src="{{system.governor.img}}" title="{{system.governor.name}}" data-crewRole="governor">
                             </div>
-                            <label>{{localize "COLONY.GOVERNOR"}}</label>
+                            <a>{{localize "COLONY.GOVERNOR"}}</a>
                         </div>
                     </div>
                     <div class="flex column justify-space-between space10" style="width: 125px;">
@@ -60,12 +56,12 @@
                     <b class="name">{{localize "COLONY.RESOURCE.HEADER"}}</b>
                     <b class="source">{{localize "COLONY.RESOURCE.SOURCE"}}</b>
                     <b class="amount">{{localize "COLONY.RESOURCE.AMOUNT"}}</b>
-                    <a class="button item-create" title="Add Resource" data-type="planetaryResource"><i class="fas fa-plus"></i></a>
+                    <a class="button item-create" title="Add Resource" data-action="itemCreate" data-type="planetaryResource"><i class="fas fa-plus"></i></a>
                 </div>
                 <div class="resources items">
                     {{#each system.resources as |resource|}}
                     <div class="resource item flex row" data-item-id="{{resource.id}}">
-                        <div class="flex name item-edit">
+                        <div class="flex name item-edit" data-action="itemEdit" data-item-id="{{resource.id}}">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{resource.img}}')"></div>
                             </div>
@@ -74,7 +70,7 @@
                         <div class="source">{{resource.system.source}}</div>
                         <div class="amount">{{resource.system.amount}}</div>
                         <div class="button">
-                            <a class="item-control item-delete" title="Delete Resource"><i class="fas fa-trash"></i></a>
+                            <a class="item-control item-delete" data-action="itemDelete" data-item-id="{{resource.id}}" title="Delete Resource"><i class="fas fa-trash"></i></a>
                         </div>
                     </div>
                     {{/each}}

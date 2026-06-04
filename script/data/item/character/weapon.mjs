@@ -14,7 +14,8 @@ export default class WeaponModel extends EquipmentModel {
         // Dirty but if damage is string then pen and damageType should exist too
         if (source.damage && typeof source.damage === "string") {
             const damageValue = source.damage;
-            const penetration = source.penetration || 0;
+            let penetration = Number(source.penetration);
+            penetration = Number.isFinite(penetration) ? penetration : 0;
             const damageType = source.damageType || DamageType.DEFAULT;
             Properties.deleteProperty(source, `damage`);
             Properties.deleteProperty(source, `damageType`);

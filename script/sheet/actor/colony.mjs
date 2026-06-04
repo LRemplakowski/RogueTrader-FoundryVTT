@@ -1,4 +1,5 @@
-import { prepareCommonRoll, prepareConsumeResourcesRoll } from "../../common/dialog.js";
+import { prepareCommonRoll, prepareConsumeResourcesRoll, prepareGovernorRoll } from "../../common/dialog.js";
+import ColonyRollData from "../../common/roll-data/colony-roll-data.mjs";
 import { rollColonyEvents, rollColonyGrowth } from "../../common/roll.js";
 import RogueTraderUtil from "../../common/util.mjs";
 import RogueTraderSheet from "./actor.mjs";
@@ -57,8 +58,6 @@ export default class ColonySheet extends RogueTraderSheet {
     }
   };
 
-  // v13 MIGRATION: PARTS defines the template structure
-  // DocumentSheetV2 automatically renders PARTS and handles form submission
   static PARTS = {
     sheet: {
       template: "systems/rogue-trader/template/sheet/actor/colony.html",
@@ -74,11 +73,10 @@ export default class ColonySheet extends RogueTraderSheet {
    * @param {HTMLElement} target
    */
   static async #rollGrowth(event, target) {
-    event.preventDefault();
-    const context = await this._prepareContext();
-    const growthData = this._updateGrowthPoints(context);
-    await rollColonyGrowth(RogueTraderUtil.prepareColonyGrowthRollData(this.document, growthData));
-    await this.document.update(context.system);
+    const actor = this.document;
+    const growthData = this.#updateGrowthPoints(actor);
+    await rollColonyGrowth(ColonyRollData.createColonyGrowthRollData(this.document, growthData));
+    await this.document.update(this.#growthUpdate(growthData));
   }
 
   /**
@@ -89,7 +87,7 @@ export default class ColonySheet extends RogueTraderSheet {
    */
   static async #rollEvents(event, target) {
     event.preventDefault();
-    await rollColonyEvents(RogueTraderUtil.prepareColonyRollData(this.document));
+    await rollColonyEvents(ColonyRollData.createEventRollData(this.document));
   }
 
   /**
@@ -100,7 +98,7 @@ export default class ColonySheet extends RogueTraderSheet {
    */
   static async #rollGovernor(event, target) {
     event.preventDefault();
-    await this._prepareGovernorRoll();
+    await prepareGovernorRoll(ColonyRollData.createGovernorRollData(this.document));;
   }
 
   /**
@@ -111,18 +109,18 @@ export default class ColonySheet extends RogueTraderSheet {
    */
   static async #rollResources(event, target) {
     event.preventDefault();
-    await prepareConsumeResourcesRoll(RogueTraderUtil.prepareResourceRollData(this.document), this.document);
+    await prepareConsumeResourcesRoll(ColonyRollData.createResourceRollData(this.document), this.document);
   }
 
-  _updateGrowthPoints(context) {
-    const actorStats = context.system.stats;
+  #updateGrowthPoints(actor) {
+    const actorStats = foundry.utils.deepClone(actor.system.stats);
     const startLoyalty = actorStats.loyalty;
     const startProsperity = actorStats.prosperity;
     const startSecurity = actorStats.security;
     actorStats.loyalty += actorStats.loyaltyGain;
     actorStats.prosperity += actorStats.prosperityGain;
     actorStats.security += actorStats.securityGain;
-    switch (context.system.governor.governorType) {
+    switch (actor.system.governor.governorType) {
       case "accounting":
         actorStats.prosperity = Math.max(actorStats.prosperity, 0);
         break;
@@ -152,15 +150,12 @@ export default class ColonySheet extends RogueTraderSheet {
     }
   }
 
-  async _prepareGovernorRoll() {
-    const context = await this._prepareContext();
-    const rollData = {
-      name: "DIALOG.GOVERNOR_SKILL_ROLL",
-      baseTarget: context.system.governor.skillBonus,
-      modifier: 0,
-      ownerId: context.system.governor.actor
-    };
-    await prepareCommonRoll(rollData);
+  #growthUpdate(growthData) {
+    return {
+      [`system.stats.loyalty`]: growthData.loyalty.updated,
+      [`system.stats.prosperity`]: growthData.prosperity.updated,
+      [`system.stats.security`]: growthData.security.updated
+    }
   }
 
   async _onDropActor(event, data) {
