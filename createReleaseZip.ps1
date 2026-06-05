@@ -7,7 +7,7 @@ Copy-Item -Path ".\logo" -Destination ".\release\RogueTrader-FoundryVTT-master" 
 Copy-Item -Path ".\packs" -Destination ".\release\RogueTrader-FoundryVTT-master" -Recurse
 Copy-Item -Path ".\script" -Destination ".\release\RogueTrader-FoundryVTT-master" -Recurse
 Copy-Item -Path ".\template" -Destination ".\release\RogueTrader-FoundryVTT-master" -Recurse
-Copy-item -Path ".\utils" -Destination ".\release\RogueTrader-FoundryVTT-master"
+Copy-item -Path ".\utils" -Destination ".\release\RogueTrader-FoundryVTT-master" -Recurse
 Copy-item -Path ".\CONTRIBUTING.md" -Destination ".\release\RogueTrader-FoundryVTT-master"
 Copy-item -Path ".\README.md" -Destination ".\release\RogueTrader-FoundryVTT-master"
 Copy-item -Path ".\LICENSE" -Destination ".\release\RogueTrader-FoundryVTT-master"
