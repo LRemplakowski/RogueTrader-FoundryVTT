@@ -11,7 +11,6 @@ Copy-item -Path ".\CONTRIBUTING.md" -Destination ".\release\RogueTrader-FoundryV
 Copy-item -Path ".\README.md" -Destination ".\release\RogueTrader-FoundryVTT-master"
 Copy-item -Path ".\LICENSE" -Destination ".\release\RogueTrader-FoundryVTT-master"
 Copy-item -Path ".\system.json" -Destination ".\release\RogueTrader-FoundryVTT-master"
-Copy-item -Path ".\template.json" -Destination ".\release\RogueTrader-FoundryVTT-master"
 
 $compress = @{
 	Path = ".\release\*"
