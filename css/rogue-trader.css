@@ -118,7 +118,7 @@
 li.folder.collapsed > .folder-header {
   background: rgba(86, 78, 74, 0.4);
 }
-.application .window-content {
+.application.rogue-trader .window-content {
   background: url("../asset/image/background.jpg") center;
   padding: var(--spacer-8);
 }
