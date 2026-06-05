@@ -571,6 +571,7 @@
   "WEAPON.SPECIAL": "Special",
   "WEAPON.CRAFTSMANSHIP": "Craftsmanship",
   "WEAPON.AVAILABILITY": "Availability",
+  "WEAPON.SIDE": "Facing",
   "WEAPON.WEIGHT": "Weight",
   "WEAPON.ATTACK": "Attack",
   "WEAPON.MELEE": "Melee",
