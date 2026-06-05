@@ -8,6 +8,7 @@ const { StringField } = foundry.data.fields;
 const Migration = foundry.abstract.Document;
 const Properties = foundry.utils;
 export default class VoidshipWeaponModel extends VoidshipItemModel {
+    /** @inheritdoc */
     static migrateData(source) {
         if (!source) return super.migrateData(source);
         if (source.side === "star")
@@ -23,6 +24,7 @@ export default class VoidshipWeaponModel extends VoidshipItemModel {
         };
     }
 
+    /** @inheritdoc */
     static defineSchema() {
         const schema = super.defineSchema();
         schema.class = ShipWeaponClass.schema();
@@ -35,6 +37,7 @@ export default class VoidshipWeaponModel extends VoidshipItemModel {
         return schema;
     }
 
+    /** @inheritdoc */
     prepareBaseData() {
         super.prepareBaseData();
         const weaponClassData = ShipWeaponClass.DATA[this.class];

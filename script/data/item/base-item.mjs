@@ -3,6 +3,7 @@ import RogueTraderSystemModel from "../system-model.mjs";
 const { HTMLField } = foundry.data.fields;
 
 export default class BaseItemModel extends RogueTraderSystemModel {
+    /** @inheritdoc */
     static defineSchema() {
         const schema = {};
         schema.description = new HTMLField({ blank: true, initial: "" });

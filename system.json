@@ -99,35 +99,89 @@
   "license": "LICENSE.txt",
   "documentTypes": {
     "Actor": {
-      "explorer": {},
-      "npc": {},
-      "ship": {},
-      "colony": {}
+      "explorer": {
+        "htmlFields": [ "bio.notes" ]
+      },
+      "npc": {
+        "htmlFields": [ "bio.notes" ]
+      },
+      "ship": {
+        "htmlFields": [ "bio.notes", "bio.complications", "bio.pastHistory" ]
+      },
+      "colony": {
+        "htmlFields": [ "bio.notes" ]
+      }
     },
     "Item": {
-      "weapon":{},
-      "ammunition":{},
-      "weaponModification":{},
-      "armour":{},
-      "forceField":{},
-      "cybernetic":{},
-      "drug":{},
-      "gear":{},
-      "tool":{},
-      "criticalInjury":{},
-      "malignancy":{},
-      "mentalDisorder":{},
-      "mutation":{},
-      "psychicPower":{},
-      "talent":{},
-      "specialAbility":{},
-      "trait":{},
-      "aptitude":{},
-      "shipWeapon":{},
-      "shipComponent":{},
-      "planetaryResource":{},
-      "colonyUpgrade":{},
-      "colonyEvent":{}
+      "weapon":{
+        "htmlFields": [ "description" ]
+      },
+      "ammunition":{
+        "htmlFields": [ "description" ]
+      },
+      "weaponModification":{
+        "htmlFields": [ "description" ]
+      },
+      "armour":{
+        "htmlFields": [ "description" ]
+      },
+      "forceField":{
+        "htmlFields": [ "description" ]
+      },
+      "cybernetic":{
+        "htmlFields": [ "description" ]
+      },
+      "drug":{
+        "htmlFields": [ "description" ]
+      },
+      "gear":{
+        "htmlFields": [ "description" ]
+      },
+      "tool":{
+        "htmlFields": [ "description" ]
+      },
+      "criticalInjury":{
+        "htmlFields": [ "description" ]
+      },
+      "malignancy":{
+        "htmlFields": [ "description" ]
+      },
+      "mentalDisorder":{
+        "htmlFields": [ "description" ]
+      },
+      "mutation":{
+        "htmlFields": [ "description" ]
+      },
+      "psychicPower":{
+        "htmlFields": [ "description", "effect" ]
+      },
+      "talent":{
+        "htmlFields": [ "description" ]
+      },
+      "specialAbility":{
+        "htmlFields": [ "description" ]
+      },
+      "trait":{
+        "htmlFields": [ "description" ]
+      },
+      "aptitude":{
+        "htmlFields": [ "description" ]
+      },
+      "shipWeapon":{
+        "htmlFields": [ "description" ]
+      },
+      "shipComponent":{
+        "htmlFields": [ "description" ]
+      },
+      "planetaryResource":{
+        "htmlFields": [ "description" ]
+      },
+      "colonyUpgrade":{
+        "htmlFields": [ "description" ]
+      },
+      "colonyEvent":{
+        "htmlFields": [ "description", "effect" ]
+      }
     }
   }
 }
