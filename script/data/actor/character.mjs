@@ -428,10 +428,11 @@ export default class CharacterModel extends BaseActorModel {
         for (const item of this.parent.items) {
             const itemData = item.system;
             if (!(itemData instanceof ArmourModel)) continue;
-            if (!itemData.isAdditive) continue;
+            if (itemData.isAdditive) continue; // Skip additive armor for now
 
             for (const loc of locations) {
                 const armourValue = itemData.part?.[loc] ?? 0;
+                // Use highest armor value per location to support mixing & matching different armors
                 if (armourValue > maxArmour[loc]) {
                     maxArmour[loc] = armourValue;
                     armour[loc].item = item;
