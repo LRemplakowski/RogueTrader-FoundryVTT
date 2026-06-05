@@ -349,10 +349,17 @@ export default class CharacterModel extends BaseActorModel {
     }
 
     #computeSkillData() {
+        const modifiersAddValue = game.settings.get("rogue-trader", "skillModifiersAddValue");
         for (const [key, skill] of Object.entries(this.skills)) {
             const skillAdvance = SkillAdvance.DATA[skill.advance];
             skill.isKnown = !skill.isSpecialist || skillAdvance.rating >= 0;
-            skill.value = this.characteristics[skill.characteristic].value + skillAdvance.rating;
+            // Support for legacy Skill Modifier behaviour
+            let valueBonus = 0;
+            if (modifiersAddValue) {
+                valueBonus = skill.itemBonus.rollBonus;
+                skill.itemBonus.rollBonus = 0;
+            }
+            skill.value = this.characteristics[skill.characteristic].value + skillAdvance.rating + valueBonus;
             skill.byCharacteristic = this.#skillValueByCharacteristic.bind(this, skill);
         }
     }

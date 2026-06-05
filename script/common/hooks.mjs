@@ -105,7 +105,8 @@ function registerSettings() {
   registerColonyGrowthModifier();
   registerColonyCalamityTable();
   registerColonyFortuneTable();
-  registerArmougAgilityCapToggle();
+  registerArmourAgilityCapToggle();
+  registerSkillModifiersBonusToggle();
 }
 
 function registerWorldVersion() {
@@ -152,13 +153,24 @@ function registerColonyFortuneTable() {
   });
 }
 
-function registerArmougAgilityCapToggle() {
+function registerArmourAgilityCapToggle() {
   game.settings.register("rogue-trader", "enableArmourAgilityCap", {
     name: "Enable Armour Agility Cap",
     hint: "When enabled, character's Agility is capped based on worn armour's Max Agi value.",
     scope: "world",
     config: true,
     default: true,
+    type: Boolean,
+  })
+}
+
+function registerSkillModifiersBonusToggle() {
+  game.settings.register("rogue-trader", "skillModifiersAddValue", {
+    name: "Direct Skill Modifiers",
+    hint: "When enabled, skill modifiers from items will directly increase given skill value, same as skill advances. Otherwise they provide a roll modifier, subject to +/-60 modifier cap.",
+    scope: "world",
+    config: true,
+    default: false,
     type: Boolean,
   })
 }
