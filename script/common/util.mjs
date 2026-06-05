@@ -37,6 +37,7 @@ export default class RogueTraderUtil {
       name: item.name,
       ownerId: actor.id,
       itemId: item.id,
+      actor: actor,
     };
   }
 
@@ -45,10 +46,14 @@ export default class RogueTraderUtil {
     const actorData = actor.system;
     const weaponData = weapon.system;
     const masterOrdnance = actorData.crew.namedCrew.masterOrdnance;
-    if (masterOrdnance.actor)
+    if (masterOrdnance.actor) {
+      rollData.performer = masterOrdnance.actor.id;
       rollData.baseTarget = masterOrdnance.characteristics[enums.Characteristics.KEYS.ballisticSkill].value;
-    else
+    }
+    else {
+      rollData.performer = "crew";
       rollData.baseTarget = enums.CrewSkill.DATA[actorData.crew.skill].rating ?? 0;
+    }
     rollData.characteristicSource = actor;
     rollData.modifier = 0;
     rollData.damageBonus = 0;
