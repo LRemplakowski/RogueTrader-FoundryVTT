@@ -1,5 +1,6 @@
 const { DocumentIdField, StringField, FilePathField, IntegerSortField, DocumentTypeField } = foundry.data.fields;
 
+/** PSEUDO DOCUMENTS ARE WORK IN PROGRESS, DO NOT USE THEM! */
 export default class PseudoDocument extends foundry.abstract.DataModel {
 
   static get TYPE() {

@@ -2,6 +2,7 @@ import { Characteristics } from "../../enums/_module.mjs";
 import { requiredInteger } from "../../helpers.mjs";
 import BaseModifier from "./base-modifier.mjs";
 
+/** PSEUDO DOCUMENTS ARE WORK IN PROGRESS, DO NOT USE THEM! */
 export default class CharacteristicModifier extends BaseModifier {
 
     static get TYPE() {
