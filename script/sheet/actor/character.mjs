@@ -286,14 +286,41 @@ export default class CharacterSheet extends RogueTraderSheet {
         return characteristics;
     }
 
-    _prepareItemGroups() {
-        
-    }
-
     async _prepareContext(options) {
         const context = await super._prepareContext(options);
         context.skills = this._prepareSkillGroups();
         context.characteristics = this._prepareCharacteristicGroups();
+        context.items = this._constructItemLists();
         return context;
+    }
+
+    _constructItemLists() {
+        const items = super._constructItemLists();
+        let itemTypes = this.document.itemTypes;
+        items.mentalDisorders = itemTypes["mentalDisorder"];
+        items.malignancies = itemTypes["malignancy"];
+        items.mutations = itemTypes["mutation"];
+        if (this.document.type === "npc") {
+            items.abilities = itemTypes["talent"]
+            .concat(itemTypes["trait"])
+            .concat(itemTypes["specialAbility"]);
+        }
+        items.talents = itemTypes["talent"];
+        items.traits = itemTypes["trait"];
+        items.specialAbilities = itemTypes["specialAbility"];
+        items.aptitudes = itemTypes["aptitude"];
+        items.psychicPowers = itemTypes["psychicPower"];
+        items.criticalInjuries = itemTypes["criticalInjury"];
+        items.gear = itemTypes["gear"];
+        items.drugs = itemTypes["drug"];
+        items.tools = itemTypes["tool"];
+        items.cybernetics = itemTypes["cybernetic"];
+        items.armour = itemTypes["armour"];
+        items.forceFields = itemTypes["forceField"];
+        items.weapons = itemTypes["weapon"];
+        items.weaponMods = itemTypes["weaponModification"];
+        items.ammunitions = itemTypes["ammunition"];
+        this._sortItemLists(items)
+        return items;
     }
 }

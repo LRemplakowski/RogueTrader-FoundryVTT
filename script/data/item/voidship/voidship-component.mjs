@@ -4,10 +4,11 @@ import VoidshipItemModel from "./voidship-item.mjs";
 const Migration = foundry.abstract.Document;
 const Properties = foundry.utils;
 export default class VoidshipComponentModel extends VoidshipItemModel {
+    /** @inheritdoc */
     static migrateData(source) {
         if (!source) return super.migrateData(source);
-        if (source.class === "augurArrays")
-            source.class = ShipComponentClass.KEYS.augurArray;
+        if (source.class.trim() === "augurArrays")
+            Properties.setProperty(source, `class`, ShipComponentClass.KEYS.augurArray);
         return super.migrateData(source);
     }
     
@@ -19,6 +20,7 @@ export default class VoidshipComponentModel extends VoidshipItemModel {
         };
     }
 
+    /** @inheritdoc */
     static defineSchema() {
         const schema = super.defineSchema();
         schema.class = ShipComponentClass.schema();

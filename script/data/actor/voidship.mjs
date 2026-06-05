@@ -154,9 +154,8 @@ export default class VoidshipModel extends BaseActorModel {
 
     static #essentialComponentsSchema() {
         const essentials = {};
-        for (const key of Object.keys(ShipComponentClass.DATA)) {
-            if (key === ShipComponentClass.keyOf(ShipComponentClass.DATA.supplemental))
-                continue;
+        for (const [key, value] of Object.entries(ShipComponentClass.DATA)) {
+            if (!value.isEssential) continue;
             essentials[key] = VoidshipModel.#shipComponent(key);
         }
         return essentials;
@@ -203,27 +202,28 @@ export default class VoidshipModel extends BaseActorModel {
 
     #prepareVoidshipComponents() {
         const items = Array.from(this.parent.items ?? []);
-        const shipComponents = ShipComponentClass.DATA;
+        const shipComponents = ShipComponentClass.KEYS;
         const isWeapon = (item) => item.system instanceof VoidshipWeaponModel;
         const isEssential = (item) => {
-            return item.system instanceof VoidshipComponentModel &&
-                ShipComponentClass.compare(shipComponents.essential, item.system.class)
-        }
-        for (const [key, item] of Object.entries(this.parent.items ?? [])) {
-            if (!isEssential(item)) continue;
-            const data = item.system;
-            const existing = this.components.essential[data.class];
-            if (existing && existing.uuid !== item.uuid) {
-                console.warn(`Multiple essential components of class ${data.class} found on ship ${this.parent.name}. This is not allowed and may cause issues.`, { existing, duplicate: item });
-                continue;
-            }
-            this.components.essential[data.class].uuid = item.uuid;
+            return item.system instanceof VoidshipComponentModel && ShipComponentClass.DATA[item.system.class].isEssential;
         }
         // Everything that's not a weapon or essential component goes here
         this.components.supplemental = items.filter(item => 
             !isWeapon(item) && !isEssential(item)
         );
         this.components.weapons = items.filter(item => isWeapon(item));
+        for (const item of items) {
+            if (!isEssential(item)) continue;
+            const data = item.system;
+            const existing = this.components.essential[data.class];
+            if (existing && existing.uuid && existing.uuid !== item.uuid) {
+                console.warn(`Multiple essential components of class ${data.class} found on ship ${this.parent.name}. This is not allowed and may cause issues.`, { existing, duplicate: item });
+                this.components.supplemental.push(item);
+                continue;
+            }
+            this.components.essential[data.class].uuid = item.uuid;
+            this.components.essential[data.class].item = item;
+        }
     }
 
     #computePower() {

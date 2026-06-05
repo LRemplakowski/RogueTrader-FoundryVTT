@@ -53,11 +53,7 @@ export class EnumBase {
     if (!value) return null;
     for (const [key, entry] of Object.entries(this.DATA)) {
       if (entry === value) return key;
-    }
-    if (value.short) {
-      for (const [key, entry] of Object.entries(this.DATA)) {
-        if (entry.short === value.short) return key;
-      }
+      if (entry.short === value.short) return key;
     }
     return null;
   }

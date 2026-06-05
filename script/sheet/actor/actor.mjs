@@ -1,4 +1,5 @@
 import RogueTraderUtil from "../../common/util.mjs";
+import BaseItemModel from "../../data/item/base-item.mjs";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const { ActorSheetV2 } = foundry.applications.sheets;
@@ -238,7 +239,7 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     const context = await super._prepareContext(options);
     context.actor = this.document;
     context.system = this.document.system;
-    context.items = this.constructItemLists(context);
+    context.items = this._constructItemLists();
     context.tabs = this._prepareTabs("primary");
     context.notesHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       context.system.bio.notes,
@@ -260,63 +261,23 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     return context;
   }
 
-  constructItemLists() {
+  _constructItemLists() {
       let items = {}
-      let itemTypes = this.document.itemTypes;
-      items.mentalDisorders = itemTypes["mentalDisorder"];
-      items.malignancies = itemTypes["malignancy"];
-      items.mutations = itemTypes["mutation"];
-      if (this.document.type === "npc") {
-          items.abilities = itemTypes["talent"]
-          .concat(itemTypes["trait"])
-          .concat(itemTypes["specialAbility"]);
-      }
-      items.talents = itemTypes["talent"];
-      items.traits = itemTypes["trait"];
-      items.specialAbilities = itemTypes["specialAbility"];
-      items.aptitudes = itemTypes["aptitude"];
-
-      items.psychicPowers = itemTypes["psychicPower"];
-
-      items.criticalInjuries = itemTypes["criticalInjury"];
-
-      items.gear = itemTypes["gear"];
-      items.drugs = itemTypes["drug"];
-      items.tools = itemTypes["tool"];
-      items.cybernetics = itemTypes["cybernetic"];
-
-      items.armour = itemTypes["armour"];
-      items.forceFields = itemTypes["forceField"];
-
-      items.weapons = itemTypes["weapon"];
-      items.weaponMods = itemTypes["weaponModification"];
-      items.ammunitions = itemTypes["ammunition"];
-      items.shipWeapons = itemTypes["shipWeapon"];
-      items.portWeapons = [];
-      items.starWeapons = [];
-      items.dorsalWeapons = [];
-      items.keelWeapons = [];
-      items.prowWeapons = [];
-      items.shipWeapons.forEach(wp => {
-        items[`${wp.system.side}Weapons`].push(wp)
-      });
-      items.shipComponents = itemTypes["shipComponent"];
-      const componentClasses = ["voidEngine", "warpEngine", "gellarField", "voidShield", "bridge", "lifeSupport", "crewQuarters", "augurArrays"];
-      const itemsByClass = {};
-      for (const componentClass of componentClasses) {
-        itemsByClass[componentClass] = items.shipComponents.find(cp => cp.system.class === componentClass);
-      }
-      items.supplemental = items.shipComponents.filter(cp => cp.system.class === "supplemental");    
       this._sortItemLists(items)
       return items;
   }
 
-    _sortItemLists(items) {
-        for (let list in items) {
-            if (Array.isArray(items[list]))
-                items[list] = items[list].sort((a, b) => a.sort - b.sort)
-            else if (typeof items[list] == "object")
-                this._sortItemLists(items[list])
-        }
-    }
+  _sortItemLists(items, visited = new WeakSet()) {
+      if (visited.has(items)) return;
+      visited.add(items);
+      for (const key in items) {
+          const value = items[key];
+          if (Array.isArray(value)) {
+              items[key] = value.sort((a, b) => a.sort - b.sort);
+          }
+          else if (value && !value?.system instanceof BaseItemModel) {
+              this._sortItemLists(value, visited);
+          }
+      }
+  }
 }

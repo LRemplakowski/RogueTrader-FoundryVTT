@@ -265,7 +265,7 @@ export default class VoidshipSheet extends RogueTraderSheet {
   // v13 MIGRATION: appv2 uses _prepareContext() instead of getData()
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
-    
+    context.items = this._constructItemLists();
     context.system.pastHistoryHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
       context.system.pastHistory,
       {
@@ -288,5 +288,30 @@ export default class VoidshipSheet extends RogueTraderSheet {
     return context;
   }
 
-
+  _constructItemLists() {
+      const items = super._constructItemLists();
+      const actorData = this.document.system;
+      let itemTypes = this.document.itemTypes;
+      items.shipWeapons = itemTypes["shipWeapon"];
+      items.portWeapons = [];
+      items.starWeapons = [];
+      items.dorsalWeapons = [];
+      items.keelWeapons = [];
+      items.prowWeapons = [];
+      items.shipWeapons.forEach(wp => {
+        items[`${wp.system.side}Weapons`].push(wp)
+      });
+      items.shipComponents = itemTypes["shipComponent"];
+      for (const [key, value] of Object.entries(actorData.components.essential)) {
+        items[key] = value.item;
+      }
+      const componentClasses = ["voidEngine", "warpEngine", "gellarField", "voidShield", "bridge", "lifeSupport", "crewQuarters", "augurArrays"];
+      const itemsByClass = {};
+      for (const componentClass of componentClasses) {
+        itemsByClass[componentClass] = items.shipComponents.find(cp => cp.system.class === componentClass);
+      }
+      items.supplemental = actorData.components.supplemental;  
+      this._sortItemLists(items)
+      return items;  
+  }
 }
