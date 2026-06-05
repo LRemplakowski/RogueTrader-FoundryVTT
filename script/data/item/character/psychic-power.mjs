@@ -9,11 +9,6 @@ const Properties = foundry.utils;
 export default class PsychicPowerModel extends CharacterItemModel {
     static migrateData(source) {
         if (!source) return super.migrateData(source);
-        if (!(typeof source.damage.penetration === "number")) {
-            let pen = Number(source.damage.penetration);
-            pen = Number.isFinite(pen) ? pen : 0;
-            Properties.setProperty(source, `damage.penetration`, pen);
-        }
         return super.migrateData(source);
     }
     
@@ -44,7 +39,7 @@ export default class PsychicPowerModel extends CharacterItemModel {
             zone: PsyZone.schema(),
             type: DamageType.schema(),
             formula: new StringField({ initial: "1d10" }),
-            penetration: requiredInteger(),
+            penetration: new StringField({ blank: false, initial: "0" }),
             special: new StringField({ blank: true, initial: "" }),
         });
         return schema;

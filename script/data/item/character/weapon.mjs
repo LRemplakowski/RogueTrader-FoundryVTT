@@ -14,8 +14,7 @@ export default class WeaponModel extends EquipmentModel {
         // Dirty but if damage is string then pen and damageType should exist too
         if (source.damage && typeof source.damage === "string") {
             const damageValue = source.damage;
-            let penetration = Number(source.penetration);
-            penetration = Number.isFinite(penetration) ? penetration : 0;
+            const penetration = source.penetration;
             const damageType = source.damageType || DamageType.DEFAULT;
             Properties.deleteProperty(source, `damage`);
             Properties.deleteProperty(source, `damageType`);
@@ -51,7 +50,7 @@ export default class WeaponModel extends EquipmentModel {
         schema.damage = new SchemaField({
             formula: new StringField({ blank: false, initial: "1d10" }),
             type: DamageType.schema(),
-            penetration: requiredInteger(),
+            penetration: new StringField({ blank: false, initial: "0" }),
         });
         schema.clip = new SchemaField({
             max: requiredInteger({ initial: 0 }),
