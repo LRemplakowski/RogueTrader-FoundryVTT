@@ -124,12 +124,6 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     this.document.deleteEmbeddedDocuments("Item", [itemId]);
   }
 
-  activateListeners(html) {
-      super.activateListeners(html);
-      // Re-enable tab buttons even for non-owners
-      html.find("button.tab-button").prop("disabled", false);
-  }
-
   async _updateObject(event, formData) {
     const expanded = foundry.utils.expandObject(formData);
     const itemUpdates = [];
