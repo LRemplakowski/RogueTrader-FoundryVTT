@@ -124,6 +124,12 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
     this.document.deleteEmbeddedDocuments("Item", [itemId]);
   }
 
+  activateListeners(html) {
+      super.activateListeners(html);
+      // Re-enable tab buttons even for non-owners
+      html.find("button.tab-button").prop("disabled", false);
+  }
+
   async _updateObject(event, formData) {
     const expanded = foundry.utils.expandObject(formData);
     const itemUpdates = [];
@@ -203,23 +209,6 @@ export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSh
         return base + 4;
       case "daemonic":
         return base + 3;
-    }
-  }
-
-  /**
-   * Persist the currently active tab across renders.
-   */
-  activeTab = this.constructor.TABS?.primary?.initial;
-
-  /**
-  * Capture tab clicks so the sheet remembers the last selected tab.
-  * AppV2 dispatches tab clicks into _onClickTab; store the id for later restoration.
-  */
-  _onClickTab(event, target) {
-    super._onClickTab(event, target);
-    // Store the selected tab id so it can be restored after re-render
-    if (target?.dataset?.tab) {
-      this.activeTab = target.dataset.tab;
     }
   }
 
