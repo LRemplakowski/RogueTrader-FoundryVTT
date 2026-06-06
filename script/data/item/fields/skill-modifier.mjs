@@ -7,7 +7,7 @@ export default class SkillModifier {
     static schemaDefinition() { 
         return new SchemaField({
             propertyKey: Skills.schema(),
-            rollBonus: requiredInteger(),
+            rollBonus: requiredInteger({min: Number.MIN_SAFE_INTEGER}),
         });
     }
 

@@ -1,5 +1,6 @@
 import { EnumBase } from "./enum-base.mjs";
 import { default as Characteristics } from "./characteristics.mjs";
+import { capitalizeWordsInString } from "../../utils/string-utility.mjs";
 const Characteristic = Characteristics.DATA;
 
 export default class Skills extends EnumBase {
@@ -694,7 +695,7 @@ export default class Skills extends EnumBase {
                 groupLabel: "SKILL.PILOT",
                 characteristic: this.#charKey(Characteristic.agility)
             },
-            pilot_spaceCraft: {
+            pilot_spacecraft: {
                 label: "SKILL.SPACE-CRAFT",
                 isSpecialist: true,
                 group: "pilot",
@@ -1050,6 +1051,22 @@ export default class Skills extends EnumBase {
                 groupLabel: "SKILL.TRADE",
                 characteristic: this.#charKey(Characteristic.intelligence)
             }
+        }
+    }
+
+    static convertLegacyKey(key) {
+        if (Skills.DATA[key]) return key;
+        const capitalized = capitalizeWordsInString(key, 
+            ["lore", "warrants", "nobilite", "imperialis", "creed"]
+        )
+        if (Skills.DATA[capitalized]) return capitalized;
+        switch (key) {
+            case `sleightofhand`: return Skills.KEYS.sleightOfHand;
+            case `techuse`: return Skills.KEYS.techUse;
+            default: { 
+                console.error(`Failed to parse string ${key}`);
+                return "ERROR!"
+            };
         }
     }
 }

@@ -7,8 +7,8 @@ export default class CharacteristicModifier {
     static schemaDefinition() { 
         return new SchemaField({
             propertyKey: Characteristics.schema(),
-            valueBonus: requiredInteger(),
-            unnaturalBonus: requiredInteger(),
+            valueBonus: requiredInteger({min: Number.MIN_SAFE_INTEGER}),
+            unnaturalBonus: requiredInteger({min: Number.MIN_SAFE_INTEGER}),
         });
     }
 
