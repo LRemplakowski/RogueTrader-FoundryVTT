@@ -44,14 +44,18 @@ export default class CharacterModel extends BaseActorModel {
         if (skill.isSpecialist) {
             // We need to flatten specialities
             if (skill.specialities) {
-                for (const [specKey, spec] of Object.entries(skill.specialities)) {
+                for (let [specKey, spec] of Object.entries(skill.specialities)) {
                     if (skillKey.startsWith('adv')) {
                         // Advanced X skills can be mapped directly
                         Properties.setProperty(source, `skills.${specKey}.cost`, spec.cost);
                         Properties.setProperty(source, `skills.${specKey}.advance`, SkillAdvance.ratingToKey(spec.advance));
                     }
                     else {
-                        const newKey = `${skillKey}_${specKey}`;
+                        let modifiedSpecKey = specKey;
+                        if (skillKey === "pilot") {
+                            modifiedSpecKey = specKey.toLowerCase();
+                        }
+                        const newKey = `${skillKey}_${modifiedSpecKey}`;
                         Properties.setProperty(source, `skills.${newKey}.cost`, spec.cost);
                         Properties.setProperty(source, `skills.${newKey}.advance`, SkillAdvance.ratingToKey(spec.advance));
                     }

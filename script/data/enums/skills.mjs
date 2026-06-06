@@ -1060,6 +1060,10 @@ export default class Skills extends EnumBase {
             ["lore", "warrants", "nobilite", "imperialis", "creed"]
         )
         if (Skills.DATA[capitalized]) return capitalized;
+        if (capitalized.startsWith("pilot")) {
+            let lowerCasePilot = capitalized.toLowerCase();
+            if (Skills.DATA[lowerCasePilot]) return lowerCasePilot;
+        }
         switch (key) {
             case `sleightofhand`: return Skills.KEYS.sleightOfHand;
             case `techuse`: return Skills.KEYS.techUse;
