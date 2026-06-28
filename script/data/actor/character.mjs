@@ -88,7 +88,6 @@ export default class CharacterModel extends BaseActorModel {
         schema.corruption = new SchemaField({
             value: requiredInteger()
         });
-        schema.aptitudes = new SchemaField({});
         schema.size = requiredInteger({ initial: 4 });
         schema.characteristics = new SchemaField(CharacterModel.#defineCharacteristics());
         schema.skills = new SchemaField(CharacterModel.#defineSkills());
