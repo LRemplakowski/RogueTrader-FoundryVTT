@@ -1,4 +1,4 @@
-import RogueTraderUtil from "./util.mjs";
+import { CharacterRollData } from "../common/roll-data/_module.mjs";
 import { prepareCombatRoll, preparePsychicPowerRoll } from "./dialog.js";
 
 export default class RtMacroUtil {
@@ -52,12 +52,12 @@ export default class RtMacroUtil {
   }
   
   static rollPsychicPower(actor, item) {
-    let rollData = RogueTraderUtil.createPsychicRollData(actor, item);
+    let rollData = CharacterRollData.createPsychicRollData(actor, item);
     preparePsychicPowerRoll(rollData);
   }
   
   static rollWeapon(actor, item) {
-    let rollData = RogueTraderUtil.createWeaponRollData(actor, item);
+    let rollData = CharacterRollData.createWeaponRollData(actor, item);
     prepareCombatRoll(rollData);
   }
 }

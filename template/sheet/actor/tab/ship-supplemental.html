@@ -12,7 +12,7 @@
             </div>
             <div class="flex items item-list weapons">
                 {{#each items.supplemental as |item|}}
-                    <div class="weapon item flex row" data-item-id="{{item.id}}">
+                    <div class="weapon item flex row draggable" data-item-id="{{item.id}}">
                         <div class="flex name item-edit" data-action="itemEdit" data-item-id="{{item.id}}">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{item.img}}')"></div>

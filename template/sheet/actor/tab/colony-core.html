@@ -60,7 +60,7 @@
                 </div>
                 <div class="resources items">
                     {{#each system.resources as |resource|}}
-                    <div class="resource item flex row" data-item-id="{{resource.id}}">
+                    <div class="resource item flex row draggable" data-item-id="{{resource.id}}">
                         <div class="flex name item-edit" data-action="itemEdit" data-item-id="{{resource.id}}">
                             <div class="image-container">
                                 <div class="image" style="background-image: url('{{resource.img}}')"></div>
