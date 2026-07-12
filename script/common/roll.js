@@ -711,7 +711,7 @@ async function _sendToChat(rollData) {
 
   if (rollData.rollObject) {
     rollData.render = await rollData.rollObject.render();
-    chatData.roll = rollData.rollObject;
+    chatData.rolls = [rollData.rollObject];
   }
 
   const html = await renderTemplate("systems/rogue-trader/template/chat/roll.html", rollData);

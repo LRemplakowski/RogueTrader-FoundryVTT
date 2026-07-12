@@ -86,8 +86,8 @@ Hooks.once("ready", () => {
 /*  Other Hooks                                 */
 /* -------------------------------------------- */
 
-Hooks.on("getChatLogEntryContext", chat.addChatMessageContextOptions);
-Hooks.on("getChatLogEntryContext", chat.showRolls);
+Hooks.on("getChatMessageContextOptions", chat.addChatMessageContextOptions);
+Hooks.on("getChatMessageContextOptions", chat.showRolls);
 /**
  * Create a macro when dropping an entity on the hotbar
  * Item      - open roll dialog for item
