@@ -9,7 +9,6 @@ export default class VoidshipSheet extends RogueTraderSheet {
 
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
-    id: "ship-sheet",
     classes: ["rogue-trader", "sheet", "actor", "voidship"],
     position: {
       width: 775,

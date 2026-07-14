@@ -3,8 +3,6 @@ import CharacterSheet from "./character.mjs";
 export default class ExplorerSheet extends CharacterSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
-    ...super.DEFAULT_OPTIONS,
-    id: "explorer-sheet",
     classes: ["rogue-trader", "sheet", "actor", "explorer"],
     actions: {
       aptitudeCreate: ExplorerSheet.#aptitudeCreate,

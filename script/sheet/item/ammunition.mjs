@@ -15,8 +15,6 @@ export default class AmmunitionSheet extends CharacterItemSheet {
   }
 
   static DEFAULT_OPTIONS = {
-    ...super.DEFAULT_OPTIONS,
-    id: "ammunition-sheet",
     classes: ["rogue-trader", "sheet", "ammunition"],
   };
 

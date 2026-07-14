@@ -6,8 +6,6 @@ import RogueTraderSheet from "./actor.mjs";
 
 export default class ColonySheet extends RogueTraderSheet {
   static DEFAULT_OPTIONS = {
-    ...super.DEFAULT_OPTIONS,
-    id: "colony-sheet",
     classes: ["rogue-trader", "sheet", "actor", "colony"],
     position: {
       width: 760,

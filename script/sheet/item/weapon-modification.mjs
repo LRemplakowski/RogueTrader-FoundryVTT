@@ -3,8 +3,6 @@ import CharacterItemSheet from "./character-item.mjs";
 export default class WeaponModificationSheet extends CharacterItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
-    ...super.DEFAULT_OPTIONS,
-    id: "weapon-modification-sheet",
     classes: ["rogue-trader", "sheet", "weapon-modification"],
     position: {
       width: 500,

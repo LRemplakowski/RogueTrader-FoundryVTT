@@ -3,7 +3,6 @@ import RogueTraderItemSheet from "./item.mjs";
 export default class ColonyEventSheet extends RogueTraderItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
-    id: "colony-event-sheet",
     classes: ["rogue-trader", "sheet", "colony-event"],
     position: {
 			width: 540,

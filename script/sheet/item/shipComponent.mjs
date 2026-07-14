@@ -3,7 +3,6 @@ import RogueTraderItemSheet from "./item.mjs";
 export default class ShipComponentSheet extends RogueTraderItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
-    id: "ship-component-sheet",
     classes: ["rogue-trader", "sheet", "ship-component"],
   };
 

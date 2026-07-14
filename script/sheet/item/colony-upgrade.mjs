@@ -3,8 +3,6 @@ import RogueTraderItemSheet from "./item.mjs";
 export default class ColonyUpgradeSheet extends RogueTraderItemSheet {
   // v13 MIGRATION: appv2 uses DEFAULT_OPTIONS static property
   static DEFAULT_OPTIONS = {
-    ...super.DEFAULT_OPTIONS,
-    id: "colony-upgrade-sheet",
     classes: ["rogue-trader", "sheet", "colony-upgrade"],
   };
 

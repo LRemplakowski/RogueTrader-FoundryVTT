@@ -9,8 +9,6 @@ const { ActorSheetV2 } = foundry.applications.sheets;
 export default class RogueTraderSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   static DEFAULT_OPTIONS = {
-    ...super.DEFAULT_OPTIONS,
-    id: "rogue-trader-sheet",
     classes: ["rogue-trader", "sheet", "actor"],
     tag: "form",
     form: {

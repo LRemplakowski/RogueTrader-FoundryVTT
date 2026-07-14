@@ -2,7 +2,6 @@ import RogueTraderItemSheet from "./item.mjs";
 
 export default class ShipWeaponSheet extends RogueTraderItemSheet {
   static DEFAULT_OPTIONS = {
-    id: "ship-weapon-sheet",
     classes: ["rogue-trader", "sheet", "ship-weapon"],
   };
 
